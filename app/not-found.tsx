@@ -18,7 +18,7 @@ export default function NotFound({
 }) {
   const router = useRouter();
   return (
-    <div className="flex flex-col items-center justify-center h-screen w-screen">
+    <div className="flex flex-col items-center justify-center h-screen w-screen py-10">
       <Image
         src={"/svg/404.svg"}
         alt="error"

@@ -1,18 +1,18 @@
-import { IUser } from "../app/api/user/getUser";
-import { redirect } from "next/navigation";
+import { IUser } from "../app/api/user/getUser"
+import { redirect } from "next/navigation"
 
 export const handleUserRedirection = (
   user: IUser | null,
   customRedirectFn?: Function
 ) => {
-  if (!user) return;
+  if (!user) return
 
-  const redirectFn = customRedirectFn || redirect;
+  const redirectFn = customRedirectFn || redirect
   if (!user.isEmailVerified) {
-    return redirectFn("/confirmation");
+    return redirectFn("/confirmation")
   }
   if (user.userType === "non-profit" && !user.organizationId) {
-   return redirectFn("/register-organization");
+    return redirectFn("/register-organization")
   }
-  return redirectFn("/campaigns");
-};
+  return redirectFn("/dashboard/campaigns")
+}

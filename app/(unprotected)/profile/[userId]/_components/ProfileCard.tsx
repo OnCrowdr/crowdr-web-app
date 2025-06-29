@@ -1,5 +1,5 @@
 "use client"
-import { Edit, ExternalLink, Instagram, Mail, Twitter } from "lucide-react"
+import { Edit, ExternalLink, Instagram, Link as LinkIcon, Link2, Mail, Twitter } from "lucide-react"
 import Image from "next/image"
 import { IGetProfileResponseData } from "../../../../../api/_profile/models/GetProfile"
 import { RFC } from "../../../../common/types"
@@ -107,8 +107,8 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                 onClick={handleCopyLink}
                 className="text-[#00B964] flex items-center text-sm hover:underline"
               >
-                Copy Profile Link
-                <ExternalLink size={14} color="#00B964" className="ml-1" />
+                Profile Link
+                <LinkIcon size={14} color="#00B964" className="ml-1" />
               </button>
             </div>
           </div>
