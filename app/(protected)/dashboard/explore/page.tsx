@@ -1,45 +1,47 @@
-"use client";
-import Image from "next/image";
-import { Search } from "lucide-react";
-import debounce from "lodash/debounce";
-import { useUser } from "../_common/hooks/useUser";
-import ExploreCard from "../_components/ExploreCard";
-import makeRequest from "../../../../utils/makeRequest";
-import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
-import { campaignsTag } from "../../../../tags";
+"use client"
+import Image from "next/image"
+import { Search } from "lucide-react"
+import debounce from "lodash/debounce"
+import { useUser } from "../_common/hooks/useUser"
+import ExploreCard from "../_components/ExploreCard"
+import makeRequest from "../../../../utils/makeRequest"
+import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
+import { campaignsTag } from "../../../../tags"
 
-import { Nullable, QF } from "../../../common/types";
-import { ICampaignResponse } from "../../../common/types/Campaign";
-import { useCallback, useEffect, useState } from "react";
-import { Mixpanel } from "../../../../utils/mixpanel";
-import { Campaign, getCampaigns } from "../../../api/campaigns/getCampaigns";
-import Loading from "../../../loading";
-import { campaignCategories as interests } from "../../../../utils/campaignCategory";
-import { useDebounceCallback } from "usehooks-ts";
+import { IPagination, Nullable, QF } from "../../../common/types"
+import { ICampaignResponse } from "../../../common/types/Campaign"
+import { useCallback, useEffect, useState } from "react"
+import { Mixpanel } from "../../../../utils/mixpanel"
+import { Campaign, getCampaigns } from "../../../api/campaigns/getCampaigns"
+import Loading from "../../../loading"
+import { campaignCategories as interests } from "../../../../utils/campaignCategory"
+import { useDebounceCallback } from "usehooks-ts"
+import Pagination from "../_components/Pagination"
 
 const Explore = () => {
   const user = useUser()
 
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [page, setPage] = useState(1);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [hasNextPage, setHasNextPage] = useState<any>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [page, setPage] = useState(1)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [hasNextPage, setHasNextPage] = useState<any>()
+  const [isLoading, setIsLoading] = useState(true)
+  const [pagination, setPagination] = useState<IPagination>()
 
   // Add "All" as the default selected interest
-  const [selectedInterest, setSelectedInterest] = useState<string>("all");
-  const [filteredCampaigns, setFilteredCampaigns] = useState<Campaign[]>([]);
+  const [selectedInterest, setSelectedInterest] = useState<string>("all")
+  const [filteredCampaigns, setFilteredCampaigns] = useState<Campaign[]>([])
 
   // Define the "All" category
   const allCategory = {
     value: "all",
     label: "All categories",
-    icon:"",
-    bgColor: "#F8F8F8"
-  };
+    icon: "",
+    bgColor: "#F8F8F8",
+  }
   // Combine "All" with existing interests
-  const allInterests = [allCategory, ...interests];
+  const allInterests = [allCategory, ...interests]
 
   const loadCampaigns = async (pageNum: number, search: string = "") => {
     try {
@@ -50,6 +52,7 @@ const Explore = () => {
         title: search,
       })
       setHasNextPage(newCampaigns.pagination.hasNextPage)
+      setPagination(newCampaigns.pagination)
 
       const campaignsArray = newCampaigns?.campaigns as Campaign[]
 
@@ -79,20 +82,20 @@ const Explore = () => {
 
   // Handle interest selection
   const handleInterestToggle = (interest: string) => {
-    setSelectedInterest(interest);
-  };
+    setSelectedInterest(interest)
+  }
 
   // Filter campaigns based on selected interests
   useEffect(() => {
     if (selectedInterest === "all") {
-      setFilteredCampaigns(campaigns);
+      setFilteredCampaigns(campaigns)
     } else {
-      const filtered = campaigns.filter((campaign) =>
-        campaign.category === selectedInterest
-      );
-      setFilteredCampaigns(filtered);
+      const filtered = campaigns.filter(
+        (campaign) => campaign.category === selectedInterest
+      )
+      setFilteredCampaigns(filtered)
     }
-  }, [selectedInterest, campaigns]);
+  }, [selectedInterest, campaigns])
 
   const debouncedSearch = useCallback(
     debounce((search: string) => {
@@ -156,7 +159,8 @@ const Explore = () => {
 
       <div
         id="interests"
-        className="flex flex-row scrollbar-thin scrollbar-track-[#f9f9f9] scrollbar-thumb-[#E5E7EB] overflow-x-scroll gap-5 mt-6">
+        className="flex flex-row scrollbar-thin scrollbar-track-[#f9f9f9] scrollbar-thumb-[#E5E7EB] overflow-x-scroll gap-5 mt-6"
+      >
         {allInterests.map(({ value, label, icon, bgColor }) => (
           <label
             key={value}
@@ -164,7 +168,8 @@ const Explore = () => {
               backgroundColor: selectedInterest === value ? "#00B964" : bgColor,
             }}
             className={`flex justify-center items-center gap-x-[5px] rounded-full cursor-pointer py-[8px] px-[21px] mr-[5.5px] ${bgColor}`}
-            onClick={() => handleInterestToggle(value)}>
+            onClick={() => handleInterestToggle(value)}
+          >
             {icon && (
               <Image
                 src={`/svg/emoji/${icon}.svg`}
@@ -175,10 +180,9 @@ const Explore = () => {
             )}
             <span
               className={`${
-                selectedInterest === value
-                ? "text-[#F8F8F8]"
-                : "text-[#0B5351]"
-              } text-[12px] md:text-base w-max`}>
+                selectedInterest === value ? "text-[#F8F8F8]" : "text-[#0B5351]"
+              } text-[12px] md:text-base w-max`}
+            >
               {label}
             </span>
           </label>
@@ -231,7 +235,8 @@ const Explore = () => {
                   />
                 )
               })}
-            {hasNextPage && (
+
+            {/* {hasNextPage && (
               <div className="flex justify-center mt-8">
                 <button
                   onClick={handleSeeMore}
@@ -241,7 +246,8 @@ const Explore = () => {
                   {loadingMore ? "Loading..." : "Load More"}
                 </button>
               </div>
-            )}
+            )} */}
+
             {filteredCampaigns?.length < 1 && !isLoading && (
               <p className="absolute inset-0 flex justify-center items-center text-center font-semibold text-[18px] md:text-[30px] top-64">
                 No campaigns available at this moment.
@@ -250,8 +256,19 @@ const Explore = () => {
           </div>
         </>
       )}
+
+      {/* pagination */}
+      {pagination && pagination.total !== 0 && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          perPage={pagination.perPage}
+          total={pagination.total}
+          onPageChange={setPage}
+          className="px-4 py-3 md:p-0 mt-10"
+        />
+      )}
     </div>
   )
 }
 
-export default Explore;
+export default Explore
