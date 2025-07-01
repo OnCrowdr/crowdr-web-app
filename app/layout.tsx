@@ -102,7 +102,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </head>
-      {/* <GoogleAnalyticsComponents /> */}
+      <GoogleAnalyticsComponents />
       {/* <Script id="google-tag-manager" strategy="afterInteractive">
         {`
           (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
