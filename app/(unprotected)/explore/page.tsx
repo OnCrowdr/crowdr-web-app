@@ -122,8 +122,8 @@ export default function DynamicExplore() {
     Mixpanel.track("Explore Page viewed")
   }, [])
 
-  const handleSeeMore = () => {
-    const nextPage = page + 1
+  const handleSeeMore = (nextPage: number) => {
+    // const nextPage = page + 1
     setPage(nextPage)
     loadCampaigns(nextPage, searchTerm)
   }
@@ -264,7 +264,7 @@ export default function DynamicExplore() {
             currentPage={pagination.currentPage}
             perPage={pagination.perPage}
             total={pagination.total}
-            onPageChange={setPage}
+            onPageChange={handleSeeMore}
             className="px-4 py-3 md:p-0 mt-10"
           />
         )}
