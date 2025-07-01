@@ -19,11 +19,10 @@ export default function Header({ openModal }: Props) {
           For individuals, non-profits & businesses
         </div>
         <h1 className="content-header">
-          Build community through <span>giving.</span>
+         The easiest way for Nigerians to<br/> crowdfund online in Nigeria 
         </h1>
         <p className="">
-          Crowdr helps you fundraise and find volunteering opportunities that
-          make a change in our world.
+          Crowdr is the crowdfunding platform that makes it easy to fundraise in Nigeria and build trust with donors.
         </p>
         <div className="button-group">
           <button className="btn-primary" onClick={() => router.push("signup")}>
