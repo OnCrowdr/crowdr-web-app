@@ -6,11 +6,11 @@ import { useUser } from "../_common/hooks/useUser"
 import ExploreCard from "../_components/ExploreCard"
 
 import { RFC } from "../../../common/types"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Mixpanel } from "../../../../utils/mixpanel"
 import { campaignCategories } from "../../../../utils/campaignCategory"
 import Pagination from "../_components/Pagination"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { mapParamsToObject, sanitizeParams, useParamKey } from "@/utils/params"
 import { IGetCampaignsParams } from "@/api/_campaigns/models/GetCampaigns"
 import useQueryKey from "@/app/_hooks/useQueryKey"
@@ -22,13 +22,15 @@ import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton"
 const Explore = () => {
   const user = useUser()
   const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
   const params = mapParamsToObject<IGetCampaignsParams>(searchParams)
-  const url = new URL(pathname)
+  const [currentUrl, setCurrentUrl] = useState(
+    "https://oncrowdr.com/dashboard/explore"
+  )
   const [searchTerm, setSearchTerm] = useState(params.title)
   const queryKey = useQueryKey()
   const paramKey = useParamKey<IGetCampaignsParams>()
+  const url = useMemo(() => new URL(currentUrl), [currentUrl])
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.GET_CAMPAIGNS, params),
@@ -38,6 +40,7 @@ const Explore = () => {
   const selectedInterest = params.category ?? ALL_CATEGORY.value
 
   useEffect(() => {
+    setCurrentUrl(window.location.href)
     Mixpanel.track("Explore Page viewed")
   }, [])
 
@@ -47,7 +50,7 @@ const Explore = () => {
       url.searchParams.set(paramKey("title"), search)
       updatePageParams()
     }, 500),
-    [url]
+    [url, currentUrl]
   )
 
   const updatePageParams = () => {

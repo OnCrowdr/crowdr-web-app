@@ -1,6 +1,6 @@
 "use client"
 import ExploreCard from "../../(protected)/dashboard/_components/ExploreCard"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import Footer from "../../common/components/Footer"
 import OldModal from "../../common/components/OldModal"
 import WaitlistForm from "../../_components/home/home-components/WaitlistForm"
@@ -16,7 +16,7 @@ import { RFC } from "@/app/common/types"
 import { useQuery } from "react-query"
 import _campaigns from "@/api/_campaigns"
 import { IGetCampaignsParams } from "@/api/_campaigns/models/GetCampaigns"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import useQueryKey from "@/app/_hooks/useQueryKey"
 import query from "@/api/query"
 import { mapParamsToObject, sanitizeParams, useParamKey } from "@/utils/params"
@@ -24,14 +24,14 @@ import CampaignCardSkeleton from "@/app/(protected)/dashboard/_components/skelet
 
 const Explore = () => {
   const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
   const params = mapParamsToObject<IGetCampaignsParams>(searchParams)
-  const url = new URL(pathname)
+  const [currentUrl, setCurrentUrl] = useState("https://oncrowdr.com/explore")
   const [searchTerm, setSearchTerm] = useState(params.title)
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const queryKey = useQueryKey()
   const paramKey = useParamKey<IGetCampaignsParams>()
+  const url = useMemo(() => new URL(currentUrl), [currentUrl])
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.GET_CAMPAIGNS, params),
@@ -41,6 +41,7 @@ const Explore = () => {
   const selectedInterest = params.category ?? ALL_CATEGORY.value
 
   useEffect(() => {
+    setCurrentUrl(window.location.href)
     Mixpanel.track("Explore Page viewed")
   }, [])
 
@@ -50,7 +51,7 @@ const Explore = () => {
       url.searchParams.set(paramKey("title"), search)
       updatePageParams()
     }, 500),
-    [url]
+    [url, currentUrl]
   )
 
   const updatePageParams = () => {
@@ -75,6 +76,7 @@ const Explore = () => {
   const handleInterestToggle = (interest: string) => {
     url.searchParams.set(paramKey("page"), "1")
     url.searchParams.set(paramKey("category"), interest)
+    console.log(url.search)
     updatePageParams()
   }
 
