@@ -18,8 +18,8 @@ export default function Header () {
       id: 2,
       title: 'Fundraising fee',
       description:
-        'A 2% fee is deducted from the total funds raised by a campaign creator.',
-      percentageCharge: '2%',
+        'A 5% fee is deducted from the total funds raised by a campaign creator.',
+      percentageCharge: '5%',
       percentageDescription: 'amount raised',
       bgColor: 'bg-[#3B8249]',
       textColor: 'text-[#EBECED]'

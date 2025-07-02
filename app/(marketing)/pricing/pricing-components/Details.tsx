@@ -19,9 +19,9 @@ export default function Details () {
           <input type='number' value={value} name="value" 
            onWheel={(e) => e.currentTarget.blur()}
           onChange={handleChange} className='rounded-[8px] text-[24px] max-w-[200px] bg-[#393E46] border-[1px] border-[#D0D5DD] py-[10px] px-[14px] text-[#EBECED] outline-none focus:outline-none'/> from
-          donors. You receive {value > 0 && <span className="font-bold text-[#EBECED]">{formatCurrency(value - (2/100 * value))}</span>}
+          donors. You receive {value > 0 && <span className="font-bold text-[#EBECED]">{formatCurrency(value - (5/100 * value))}</span>}
         </p>
-        <p className="text-[24px] leading-[44px] text-[#EBECED] md:text-[32px] text-center mt-2">Transaction fee: {formatCurrency(2/100 *value)}</p>
+        <p className="text-[24px] leading-[44px] text-[#EBECED] md:text-[32px] text-center mt-2">Transaction fee: {formatCurrency(5/100 *value)}</p>
       </div>
     </section>
   )
