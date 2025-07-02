@@ -7,7 +7,6 @@ import { NotificationProvider } from "./_common/hooks/useNotification";
 
 import { RFC } from "../../common/types";
 import { PropsWithChildren } from "react";
-import "react-loading-skeleton/dist/skeleton.css";
 
 const DashboardLayout: RFC = (props: PropsWithChildren) => {
   return (
