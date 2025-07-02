@@ -1,134 +1,92 @@
 "use client"
-
-import { Campaign, getCampaigns } from "../../api/campaigns/getCampaigns"
 import ExploreCard from "../../(protected)/dashboard/_components/ExploreCard"
 import { useState, useEffect, useCallback } from "react"
-import Navigation from "../../common/components/Navigation"
 import Footer from "../../common/components/Footer"
 import OldModal from "../../common/components/OldModal"
 import WaitlistForm from "../../_components/home/home-components/WaitlistForm"
 import Head from "next/head"
 import NavBar from "./components/NavBar"
-import Loading from "../../loading"
 import { Mixpanel } from "../../../utils/mixpanel"
 import { Search } from "lucide-react"
 import debounce from "lodash/debounce"
 import Image from "next/image"
-import { campaignCategories as interests } from "../../../utils/campaignCategory"
+import { campaignCategories } from "../../../utils/campaignCategory"
 import Pagination from "@/app/(protected)/dashboard/_components/Pagination"
-import { IPagination } from "@/app/common/types"
+import { RFC } from "@/app/common/types"
+import { useQuery } from "react-query"
+import _campaigns from "@/api/_campaigns"
+import { IGetCampaignsParams } from "@/api/_campaigns/models/GetCampaigns"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import useQueryKey from "@/app/_hooks/useQueryKey"
+import query from "@/api/query"
+import { mapParamsToObject, sanitizeParams, useParamKey } from "@/utils/params"
+import CampaignCardSkeleton from "@/app/(protected)/dashboard/_components/skeletons/CampaignCardSkeleton"
 
-export default function DynamicExplore() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([])
-  const [page, setPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [hasNextPage, setHasNextPage] = useState<boolean>(false)
+const Explore = () => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const params = mapParamsToObject<IGetCampaignsParams>(searchParams)
+  const url = new URL(pathname)
+  const [searchTerm, setSearchTerm] = useState(params.title)
   const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [pagination, setPagination] = useState<IPagination>()
+  const queryKey = useQueryKey()
+  const paramKey = useParamKey<IGetCampaignsParams>()
 
-  // Add state for selected interest and filtered campaigns
-  const [selectedInterest, setSelectedInterest] = useState<string>("all")
-  const [filteredCampaigns, setFilteredCampaigns] = useState<Campaign[]>([])
+  const campaignsQuery = useQuery({
+    queryKey: queryKey(query.keys.GET_CAMPAIGNS, params),
+    queryFn: () => _campaigns.getCampaigns(params),
+  })
+  const campaigns = campaignsQuery.data
+  const selectedInterest = params.category ?? ALL_CATEGORY.value
 
-  // Define the "All" category
-  const allCategory = {
-    value: "all",
-    label: "All categories",
-    icon: "",
-    bgColor: "#F8F8F8",
-  }
-
-  // Combine "All" with existing interests
-  const allInterests = [allCategory, ...interests]
-
-  const openModal = () => setModalIsOpen(true)
-  const closeModal = () => setModalIsOpen(false)
-
-  const loadCampaigns = async (pageNum: number, search: string = "") => {
-    try {
-      setLoadingMore(pageNum > 1)
-      const newCampaigns = await getCampaigns({
-        page: pageNum,
-        noAuth: true,
-        title: search,
-      })
-      setHasNextPage(newCampaigns?.pagination.hasNextPage || false)
-      setPagination(newCampaigns?.pagination)
-
-      const campaignsArray = newCampaigns?.campaigns as Campaign[]
-
-      if (Array.isArray(campaignsArray)) {
-        setCampaigns((prevCampaigns) => {
-          // If it's a new search or first page, replace all campaigns
-          if (pageNum === 1) {
-            return campaignsArray
-          }
-
-          // For pagination, merge with existing campaigns
-          const existingCampaignIds = new Set(
-            prevCampaigns.map((campaign) => campaign._id)
-          )
-          const filteredNewCampaigns = campaignsArray.filter(
-            (campaign) => !existingCampaignIds.has(campaign._id)
-          )
-          return [...prevCampaigns, ...filteredNewCampaigns]
-        })
-      }
-    } catch (error) {
-      console.error("Error fetching campaigns:", error)
-    } finally {
-      setIsLoading(false)
-      setLoadingMore(false)
-    }
-  }
-
-  // Handle interest selection
-  const handleInterestToggle = (interest: string) => {
-    setSelectedInterest(interest)
-  }
-
-  // Filter campaigns based on selected interests
   useEffect(() => {
-    if (selectedInterest === "all") {
-      setFilteredCampaigns(campaigns)
-    } else {
-      const filtered = campaigns.filter(
-        (campaign) => campaign.category === selectedInterest
-      )
-      setFilteredCampaigns(filtered)
-    }
-  }, [selectedInterest, campaigns])
+    Mixpanel.track("Explore Page viewed")
+  }, [])
 
-  // Debounced search function
   const debouncedSearch = useCallback(
     debounce((search: string) => {
-      setPage(1)
-      loadCampaigns(1, search)
+      url.searchParams.set(paramKey("page"), "1")
+      url.searchParams.set(paramKey("title"), search)
+      updatePageParams()
     }, 500),
-    []
+    [url]
   )
 
-  // Handle search input change
+  const updatePageParams = () => {
+    const pageKey = paramKey("page")
+    const categoryKey = paramKey("category")
+    if (url.searchParams.get(pageKey) === "1") {
+      url.searchParams.delete(pageKey)
+    }
+    if (url.searchParams.get(categoryKey) === ALL_CATEGORY.value) {
+      url.searchParams.delete(categoryKey)
+    }
+
+    const urlWithSanitizedParams = sanitizeParams(url)
+    router.replace(urlWithSanitizedParams.toString())
+  }
+
+  const handlePageChange = (page: number) => {
+    url.searchParams.set(paramKey("page"), page.toString())
+    updatePageParams()
+  }
+
+  const handleInterestToggle = (interest: string) => {
+    url.searchParams.set(paramKey("page"), "1")
+    url.searchParams.set(paramKey("category"), interest)
+    updatePageParams()
+  }
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchTerm(value)
     debouncedSearch(value)
   }
 
-  useEffect(() => {
-    loadCampaigns(1, "")
-    Mixpanel.track("Explore Page viewed")
-  }, [])
-
-  const handleSeeMore = (nextPage: number) => {
-    // const nextPage = page + 1
-    setPage(nextPage)
-    loadCampaigns(nextPage, searchTerm)
+  const openModal = (open: boolean) => {
+    return () => setModalIsOpen(open)
   }
-
-  if (isLoading) return <Loading />
 
   return (
     <div className="font-satoshi">
@@ -145,11 +103,7 @@ export default function DynamicExplore() {
         />
       </Head>
       <NavBar />
-      <div
-        className={`py-10 px-6 md:px-40 relative ${
-          filteredCampaigns?.length < 1 ? "h-screen" : "h-full"
-        }`}
-      >
+      <div className={`py-10 px-6 md:px-40 relative min-h-screen`}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-[5px]">
             <h2 className="text-[18px] md:text-[24px] font-normal text-[#000]">
@@ -160,7 +114,7 @@ export default function DynamicExplore() {
             </p>
           </div>
 
-          {/* Search Input */}
+          {/* search input */}
           <div className="relative w-full md:w-[400px]">
             <input
               type="text"
@@ -172,12 +126,12 @@ export default function DynamicExplore() {
             <Search className="absolute left-[14px] top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           </div>
 
-          {/* Interest Categories Filter */}
+          {/* categories */}
           <div
             id="interests"
-            className="flex flex-row overflow-x-scroll gap-5 mt-2"
+            className="flex flex-row scrollbar-thin overflow-x-scroll gap-5 mt-2"
           >
-            {allInterests.map(({ value, label, icon, bgColor }) => (
+            {categories.map(({ value, label, icon, bgColor }) => (
               <label
                 key={value}
                 style={{
@@ -209,83 +163,111 @@ export default function DynamicExplore() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-2.5 min-w-full md:grid-cols-2 mt-6">
-          {Array.isArray(filteredCampaigns) &&
-            filteredCampaigns?.map((campaign: Campaign, index: number) => {
-              const urlsOnly = campaign.campaignAdditionalImages.map(
-                (item) => item.url
-              )
+        {campaigns ? (
+          campaigns.campaigns.length !== 0 ? (
+            <CampaignsContainer>
+              {campaigns.campaigns.map((campaign) => {
+                const urlsOnly = campaign.campaignAdditionalImages.map(
+                  (item) => item.url
+                )
 
-              const userDetails = campaign?.user
-              const donatedAmount = campaign?.totalAmountDonated?.[0]?.amount
+                const userDetails = campaign?.user
+                const donatedAmount = campaign?.totalAmountDonated?.[0]?.amount
 
-              return (
-                <ExploreCard
-                  key={campaign._id}
-                  userId={userDetails?._id}
-                  id={campaign._id}
-                  name={
-                    userDetails?.userType === "individual"
-                      ? userDetails?.fullName
-                      : userDetails?.organizationName
-                  }
-                  tier={userDetails?.userType}
-                  header={campaign?.title}
-                  subheader={campaign?.story}
-                  category={campaign?.category}
-                  totalAmount={campaign.fundraise?.fundingGoalDetails[0].amount}
-                  currency={campaign.fundraise?.fundingGoalDetails[0].currency}
-                  currentAmount={donatedAmount}
-                  timePosted={campaign?.campaignEndDate}
-                  volunteer={campaign?.volunteer}
-                  slideImages={[
-                    campaign?.campaignCoverImage?.url,
-                    ...(urlsOnly || []),
-                  ]}
-                  donateImage=""
-                  routeTo={`/explore/c/${campaign._id}`}
-                  avatar={campaign?.photo?.url || ""}
-                  campaignType={campaign.campaignType}
-                  user={userDetails}
-                />
-              )
-            })}
-        </div>
-
-        {filteredCampaigns?.length < 1 && !isLoading && (
-          <p className="text-center font-semibold text-[18px] md:text-[30px] mt-10">
-            No campaigns found.
-          </p>
+                return (
+                  <ExploreCard
+                    key={campaign._id}
+                    userId={userDetails?._id}
+                    id={campaign._id}
+                    name={
+                      (userDetails?.userType === "individual"
+                        ? userDetails?.fullName
+                        : userDetails?.organizationName) ?? "User"
+                    }
+                    tier={userDetails?.userType}
+                    header={campaign?.title}
+                    subheader={campaign?.story}
+                    category={campaign?.category}
+                    totalAmount={
+                      campaign.fundraise?.fundingGoalDetails[0].amount
+                    }
+                    currency={
+                      campaign.fundraise?.fundingGoalDetails[0].currency
+                    }
+                    currentAmount={donatedAmount}
+                    timePosted={campaign?.campaignEndDate}
+                    volunteer={campaign?.volunteer}
+                    slideImages={[
+                      campaign?.campaignCoverImage?.url,
+                      ...(urlsOnly || []),
+                    ]}
+                    donateImage=""
+                    routeTo={`/explore/c/${campaign._id}`}
+                    avatar={campaign?.photo?.url || ""}
+                    campaignType={campaign.campaignType}
+                    user={userDetails}
+                  />
+                )
+              })}
+            </CampaignsContainer>
+          ) : (
+            <MessageContainer>No campaigns found.</MessageContainer>
+          )
+        ) : campaignsQuery.error ? (
+          <MessageContainer>Something unexpected happened.</MessageContainer>
+        ) : (
+          <CampaignsContainer>
+            {Array.from({ length: 10 }).map((item, index) => (
+              <CampaignCardSkeleton key={index} />
+            ))}
+          </CampaignsContainer>
         )}
 
         {/* pagination */}
-        {pagination && pagination.total !== 0 && (
-          <Pagination
-            currentPage={pagination.currentPage}
-            perPage={pagination.perPage}
-            total={pagination.total}
-            onPageChange={handleSeeMore}
-            className="px-4 py-3 md:p-0 mt-10"
-          />
-        )}
-
-        {/* {hasNextPage && (
-          <div className="flex justify-center mt-8">
-            <button
-              onClick={handleSeeMore}
-              disabled={loadingMore}
-              className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 text-[15px]"
-            >
-              {loadingMore ? "Loading..." : "Load More"}
-            </button>
-          </div>
-        )} */}
+        {campaigns &&
+          campaigns.pagination &&
+          campaigns.pagination.total !== 0 && (
+            <Pagination
+              currentPage={campaigns.pagination.currentPage}
+              perPage={campaigns.pagination.perPage}
+              total={campaigns.pagination.total}
+              onPageChange={handlePageChange}
+              className="px-4 py-3 md:p-0 mt-10"
+            />
+          )}
       </div>
 
       <Footer />
-      <OldModal isOpen={modalIsOpen} onClose={closeModal}>
+      <OldModal isOpen={modalIsOpen} onClose={openModal(false)}>
         <WaitlistForm />
       </OldModal>
+    </div>
+  )
+}
+
+export default Explore
+
+const ALL_CATEGORY = {
+  value: "all",
+  label: "All categories",
+  icon: "",
+  bgColor: "#F8F8F8",
+} as const
+
+const categories = [ALL_CATEGORY, ...campaignCategories]
+
+const CampaignsContainer: RFC = ({ children }) => {
+  return (
+    <div className="grid grid-cols-1 gap-2.5 gap-y-10 min-w-full md:grid-cols-2 mt-8">
+      {children}
+    </div>
+  )
+}
+
+const MessageContainer: RFC = ({ children }) => {
+  return (
+    <div className="text-center font-semibold text-[18px] md:text-[30px] mt-10">
+      {children}
     </div>
   )
 }

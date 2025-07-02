@@ -23,6 +23,7 @@ import { Mixpanel } from "../../../../utils/mixpanel"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Campaign } from "../../../api/campaigns/getCampaigns"
+import { IGetCampaignsResponse } from "@/api/_campaigns/models/GetCampaigns"
 
 const ExploreCard: RFC<ExploreCardProps> = (props) => {
   const {
@@ -170,7 +171,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
   }
 
   return (
-    <div className="p-6 rounded-xl border-[#393e4614] border mt-8 h-fit bg-white">
+    <div className="p-6 rounded-xl border-[#393e4614] border h-fit bg-white">
       <div className="flex items-center justify-between ">
         <Link
           href={`/profile/${user?._id}`}
@@ -451,5 +452,6 @@ type ExploreCardProps = {
   category?: string
   volunteer?: VolunteerDetails
   currency?: string
-  user?: Campaign['user']
+  user?: User
 }
+type User = IGetCampaignsResponse['data']['campaigns'][number]['user']
