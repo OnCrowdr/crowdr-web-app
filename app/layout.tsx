@@ -5,6 +5,8 @@ import { Public_Sans } from "next/font/google"
 import localFont from "next/font/local"
 import "./globals.css"
 import "./common/styles/button.css"
+import "react-loading-skeleton/dist/skeleton.css";
+
 import RootApp from "./app"
 import { isProd } from "../config"
 import GoogleAnalyticsComponents from "./_components/home/GoogleAnalyticsComponents"
