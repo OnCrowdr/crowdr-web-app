@@ -1,4 +1,4 @@
-import { WithdrawalStatus } from "../../../../../../common/types/Withdrawal"
+import { WithdrawalStatus } from "@/types/Withdrawal"
 
 export interface IGetWithdrawal {
   withdrawalId: string

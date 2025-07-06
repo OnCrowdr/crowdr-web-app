@@ -2,14 +2,14 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Button } from '../../../common/components/Button';
+import { Button } from '../../../../components/shared/Button';
 import ProgressBar from './ProgressBar';
-import { getUser } from "../../../api/user/getUser";
+import { getUser } from "../../../../utils/api/user/getUser";
 import makeRequest from "../../../../utils/makeRequest";
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
 import { calculateTransactionFee } from "../../../../utils/seperateText";
-import { useToast } from "../../../common/hooks/useToast";
-import { useModal } from "../../../common/hooks/useModal";
+import { useToast } from "../../../../hooks/useToast";
+import { useModal } from "../../../../hooks/useModal";
 import { Mixpanel } from "../../../../utils/mixpanel";
 import { formatAmount } from '../_common/utils/currency';
 import { Campaign } from '../../../../api/_campaigns/models/GetCampaigns';

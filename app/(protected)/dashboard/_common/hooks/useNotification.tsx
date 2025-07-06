@@ -8,7 +8,7 @@ import {
   ReactNode,
 } from "react"
 import { HeadlessService, IMessage } from "@novu/headless"
-import { useUser } from "./useUser"
+import { useUser } from "../../../../../contexts/UserProvider"
 import { useSetAtom } from "jotai"
 import { pageDrawerAtom } from "../../_components/Sidebar"
 

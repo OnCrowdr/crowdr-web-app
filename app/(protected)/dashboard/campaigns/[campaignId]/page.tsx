@@ -2,7 +2,7 @@
 import { useState, use } from "react"
 import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { useQuery } from "react-query"
-import { useUser } from "../../_common/hooks/useUser"
+import { useUser } from "../../../../../contexts/UserProvider"
 import moment from "moment"
 import makeRequest from "../../../../../utils/makeRequest"
 import { formatAmount } from "../../_common/utils/currency"
@@ -10,7 +10,7 @@ import { mapCampaignResponseToView } from "../../_common/utils/campaign"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import { keys } from "../../_utils/queryKeys"
 
-import { Button, GrayButton } from "../../../../common/components/Button"
+import { Button, GrayButton } from "../../../../../components/shared/Button"
 import Detail from "../../_components/Detail"
 import Pagination from "../../_components/Pagination"
 import Table from "../../_components/Table"
@@ -20,27 +20,27 @@ import ProgressBar from "../../_components/ProgressBar"
 import Text from "../../_components/Text"
 import { pill } from "../../_components/Pill"
 
-import { Nullable, QF, Route } from "../../../../common/types"
+import { Nullable, QF, Route } from "@/types"
 import {
   ICampaign,
   IFundraiseVolunteerCampaign,
-} from "../../../../common/types/Campaign"
+} from "@/types/Campaign"
 import {
   IDonationResponse,
   IVolunteeringResponse,
-} from "../../../../common/types/DonationsVolunteering"
-import { useToast } from "../../../../common/hooks/useToast"
-import { useModal } from "../../../../common/hooks/useModal"
+} from "@/types/DonationsVolunteering"
+import { useToast } from "../../../../../hooks/useToast"
+import { useModal } from "../../../../../hooks/useModal"
 import { BiSearch } from "react-icons/bi"
 import { IoShareSocial, IoDownload } from "react-icons/io5"
 import FileDownloadIcon from "@/public/svg/file-download.svg"
-import OldModal from "../../../../common/components/OldModal"
-import ShareCampaign from "../../../../common/components/share-campaign"
+import OldModal from "../../../../(homepage)/_components/layout/OldModal"
+import ShareCampaign from "../../../../../components/shared/ShareCampaign"
 import { Parser } from "json2csv"
 import { Mixpanel } from "../../../../../utils/mixpanel"
 import SidebarModal from "../../_components/SidebarModal"
 import VolunteerProfile from "../../_components/VolunteerProfile"
-import ModalTrigger from "../../../../common/components/ModalTrigger"
+import ModalTrigger from "../../../../../components/shared/ModalTrigger"
 import { regex } from "regex"
 
 const Campaign = () => {

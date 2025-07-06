@@ -2,10 +2,10 @@
 import Header from "./_components/Header";
 import Sidebar from "./_components/Sidebar";
 import Page from "./_components/Page";
-import UserProvider from "./_common/hooks/useUser";
+import UserProvider from "../../../contexts/UserProvider";
 import { NotificationProvider } from "./_common/hooks/useNotification";
 
-import { RFC } from "../../common/types";
+import { RFC } from "@/types";
 import { PropsWithChildren } from "react";
 
 const DashboardLayout: RFC = (props: PropsWithChildren) => {

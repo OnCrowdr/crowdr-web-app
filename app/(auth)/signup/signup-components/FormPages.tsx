@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import _ from "lodash";
-import { useToast } from "../../../common/hooks/useToast";
+import { useToast } from "../../../../hooks/useToast";
 import {
   FormFields,
   RegisterFormContext
@@ -9,10 +9,10 @@ import {
 import Intro from "./Intro";
 import AccountDetails from "./AccountDetails";
 import { useRouter } from "next/navigation";
-import setUserCookie from "../../../api/user/setUser";
+import setUserCookie from "../../../../utils/api/user/setUser";
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
 import makeRequest from "../../../../utils/makeRequest";
-import { IUser } from "../../../api/user/getUser";
+import { IUser } from "../../../../utils/api/user/getUser";
 import { Mixpanel } from "../../../../utils/mixpanel";
 import { setClientSideCookie } from "../../../../utils/cookie-setup";
 

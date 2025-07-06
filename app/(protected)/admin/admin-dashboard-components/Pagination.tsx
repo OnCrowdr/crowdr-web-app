@@ -1,5 +1,5 @@
-import { WhiteButton } from "../../../common/components/Button"
-import { RFC } from "../../../common/types"
+import { WhiteButton } from "../../../../components/shared/Button"
+import { RFC } from "@/types"
 
 const Pagination: RFC<PaginationProps> = ({
   currentPage,

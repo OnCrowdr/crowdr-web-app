@@ -1,15 +1,15 @@
-import { useUser } from "../../../../../_common/hooks/useUser";
+import { useUser } from "../../../../../../../../contexts/UserProvider";
 import CaretIcon from "@/public/svg/caret.svg";
 import Image from "next/image";
-import InputTitle from "../../../../../../../common/components/InputTitle";
-import SelectInput from "../../../../../../../common/components/SelectInput";
-import NumberInput from "../../../../../../../common/components/NumberInput";
+import InputTitle from "../../../../../../../../components/shared/InputTitle";
+import SelectInput from "../../../../../../../../components/shared/SelectInput";
+import NumberInput from "../../../../../../../../components/shared/NumberInput";
 import { Option } from "../../../../../_common/utils/form";
 import { useMemo } from "react";
 import { CampaignFormContext } from "../useCampaignForm";
 import { useFormContext } from "react-hook-form";
-import { Button } from "../../../../../../../common/components/Button";
-import { RFC } from "../../../../../../../common/types";
+import { Button } from "../../../../../../../../components/shared/Button";
+import { RFC } from "@/types";
 import Link from "next/link";
 
 const Step1: RFC<Props> = ({ index, onStep }) => {

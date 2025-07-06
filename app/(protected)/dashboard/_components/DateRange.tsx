@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import moment from "moment"
 import flatpickr from "flatpickr"
-import { Button, GrayButton } from "../../../common/components/Button"
+import { Button, GrayButton } from "../../../../components/shared/Button"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import { Instance as Flatpickr } from "flatpickr/dist/types/instance"
 import "flatpickr/dist/flatpickr.min.css"
 

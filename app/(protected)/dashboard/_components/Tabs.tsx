@@ -12,7 +12,7 @@ import {
 import _ from "lodash"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 const Tabs: Tabs = ({ children, activeTab: initialTab, styles }) => {
   const currentRoute = usePathname()

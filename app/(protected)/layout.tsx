@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react"
-import { getUser } from "../api/user/getUser"
+import { getUser } from "../../utils/api/user/getUser"
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
 
@@ -27,7 +27,7 @@ export default async function ProtectedLayout({ children }: PropsWithChildren) {
       !user?.organizationId:
       redirect(registerOrgPath)
 
-    // prevent non-profit user with an already registerd busines from going to register again
+    // prevent non-profit user with an already registerd business from going to register again
     case currentPath === registerOrgPath &&
       user?.userType === "non-profit" &&
       Boolean(user?.organizationId):
@@ -46,8 +46,8 @@ export default async function ProtectedLayout({ children }: PropsWithChildren) {
       redirect(explore)
 
     // redirect to /admin/dashboard if user tries to go to /admin
-    case currentPath === adminPath && user.isAdmin:
-      redirect(adminDashboard)
+    // case currentPath === adminPath && user.isAdmin:
+    //   redirect(adminDashboard)
 
     default:
       break

@@ -1,4 +1,4 @@
-import { RFC } from "../../../common/types";
+import { RFC } from "@/types";
 
 const Table: Table = ({ children, className }) => {
   return (

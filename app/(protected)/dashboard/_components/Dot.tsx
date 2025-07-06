@@ -1,4 +1,4 @@
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 const Dot: RFC<DotProps> = ({color = '#17B26A', size = 8}) => {
   const styles = {

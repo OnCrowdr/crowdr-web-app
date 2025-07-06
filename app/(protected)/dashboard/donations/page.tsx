@@ -11,14 +11,14 @@ import Detail from "../_components/Detail"
 import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton"
 import DateRange, { IDateRange } from "../_components/DateRange"
 import { formatAmount } from "../_common/utils/currency"
-import { useUser } from "../_common/hooks/useUser"
+import { useUser } from "../../../../contexts/UserProvider"
 import makeRequest from "../../../../utils/makeRequest"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import { keys } from "../_utils/queryKeys"
 
-import { Nullable, QF } from "../../../common/types"
-import { IDonationResponse, IVolunteeringResponse } from "../../../common/types/DonationsVolunteering"
-import { IDonationStats } from "../../../common/types/UserStats"
+import { Nullable, QF } from "@/types"
+import { IDonationResponse, IVolunteeringResponse } from "@/types/DonationsVolunteering"
+import { IDonationStats } from "@/types/UserStats"
 
 const Donations = () => {
   const [dateRange, setDateRange] = useState<IDateRange>()

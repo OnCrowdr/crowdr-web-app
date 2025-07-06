@@ -1,8 +1,8 @@
 import { useFormContext } from "react-hook-form"
-import { useUser, userAtom } from "../../_common/hooks/useUser"
-import { useToast } from "../../../../common/hooks/useToast"
-import { Button } from "../../../../common/components/Button"
-import TextInput from "../../../../common/components/TextInput"
+import { useUser, userAtom } from "../../../../../contexts/UserProvider"
+import { useToast } from "../../../../../hooks/useToast"
+import { Button } from "../../../../../components/shared/Button"
+import TextInput from "../../../../../components/shared/TextInput"
 import makeRequest from "../../../../../utils/makeRequest"
 
 import ProfileFormContext, { FormFields } from "../utils/useProfileForm"

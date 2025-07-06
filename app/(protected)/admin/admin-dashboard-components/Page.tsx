@@ -1,6 +1,6 @@
-import deleteCookie from "../../../api/deleteCookie"
+import deleteCookie from "@/utils/api/deleteCookie"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 const Page: RFC = ({ children }) => {
   const logout = async () => {

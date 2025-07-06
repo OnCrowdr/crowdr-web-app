@@ -8,14 +8,14 @@ import { extractErrorMessage } from "../../../../../../utils/extractErrorMessage
 import CampaignFormContext, { FormFields } from "../utils/useCreateCampaign"
 import CampaignForm from "../../../_components/CampaignForm"
 import CompletionCard from "../../../_components/CompletionCard"
-import { useUser } from "../../../_common/hooks/useUser"
-import { useModal } from "../../../../../common/hooks/useModal"
-import { useToast } from "../../../../../common/hooks/useToast"
+import { useUser } from "../../../../../../contexts/UserProvider"
+import { useModal } from "../../../../../../hooks/useModal"
+import { useToast } from "../../../../../../hooks/useToast"
 import { Mixpanel } from "../../../../../../utils/mixpanel"
 import kycService from "../../../_common/services/kycService"
 import { shareCampaignModalAtom } from "../../../_utils/atoms"
 
-import { ICampaign } from "../../../../../common/types/Campaign"
+import { ICampaign } from "@/types/Campaign"
 import { regex } from "regex"
 
 const CreateEditCampaign = () => {

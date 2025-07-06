@@ -5,7 +5,7 @@ import { useFormContext, useWatch, Controller } from "react-hook-form";
 import { RegisterFormContext } from "../utils/useRegisterForm";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { CgSpinner } from "react-icons/cg";
-import PhoneNumberInput from "../../../common/components/PhoneNumberInput";
+import PhoneNumberInput from "../../../../components/shared/PhoneNumberInput";
 
 const AccountDetails = () => {
   const {

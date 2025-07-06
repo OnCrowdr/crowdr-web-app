@@ -1,4 +1,4 @@
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import { Children } from "react"
 
 // TODO: ADD SORTING FUNCTIONALITY TO TABLE

@@ -1,16 +1,16 @@
 "use client"
 import { useState } from "react"
 import { useQuery } from "react-query"
-import { useUser } from "../_common/hooks/useUser"
+import { useUser } from "../../../../contexts/UserProvider"
 import ExploreCard from "./ExploreCard"
 import makeRequest from "../../../../utils/makeRequest"
 import { isFundraise, isVolunteer } from "../_common/utils/campaign"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import { keys } from "../_utils/queryKeys"
-import { campaignsTag } from "../../../../tags"
+import { campaignsTag } from "../../../../utils/tags"
 
-import { ICampaignResponse, IFundraiseVolunteerCampaign } from "../../../common/types/Campaign"
-import { QF } from "../../../common/types"
+import { ICampaignResponse, IFundraiseVolunteerCampaign } from "@/types/Campaign"
+import { QF } from "@/types"
 
 export default function DynamicExplore({
   hasNextPage,

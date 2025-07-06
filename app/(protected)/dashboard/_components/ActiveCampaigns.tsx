@@ -2,7 +2,7 @@ import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatCurrency } from "../../../../utils/seperateText"
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import { formatAmount } from "../_common/utils/currency"
 import {
   Campaign,

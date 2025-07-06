@@ -2,10 +2,10 @@ import SidebarModal from "./SidebarModal"
 import { useAtomValue } from "jotai"
 import Notifications from "./Notifications"
 import CompletionCard from "./CompletionCard"
-import deleteCookie from "../../../api/deleteCookie"
-import { modalStoreAtom } from "../../../common/components/ModalTrigger"
+import deleteCookie from "@/utils/api/deleteCookie"
+import { modalStoreAtom } from "../../../../components/shared/ModalTrigger"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 const Page: RFC = ({ children }) => {
   const modalStore = useAtomValue(modalStoreAtom)

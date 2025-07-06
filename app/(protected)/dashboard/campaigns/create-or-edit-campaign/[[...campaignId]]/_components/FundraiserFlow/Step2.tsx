@@ -1,15 +1,15 @@
-import InputTitle from "../../../../../../../common/components/InputTitle"
-import TextInput from "../../../../../../../common/components/TextInput"
+import InputTitle from "../../../../../../../../components/shared/InputTitle"
+import TextInput from "../../../../../../../../components/shared/TextInput"
 import Link from "next/link"
 import { useFormContext } from "react-hook-form"
 import { CampaignFormContext } from "../useCampaignForm"
-import SelectInput from "../../../../../../../common/components/SelectInput"
+import SelectInput from "../../../../../../../../components/shared/SelectInput"
 import { Option } from "../../../../../_common/utils/form"
 import { campaignCategories } from "../../../../../../../../utils/campaignCategory"
-import DateInput from "../../../../../../../common/components/DateInput"
-import TextAreaInput from "../../../../../../../common/components/TextAreaInput"
-import { WhiteButton, Button } from "../../../../../../../common/components/Button"
-import { RFC } from "../../../../../../../common/types"
+import DateInput from "../../../../../../../../components/shared/DateInput"
+import TextAreaInput from "../../../../../../../../components/shared/TextAreaInput"
+import { WhiteButton, Button } from "../../../../../../../../components/shared/Button"
+import { RFC } from "@/types"
 
 const Step2: RFC<Props> = ({ index, onStep }) => {
   const { ...form } = useFormContext() as CampaignFormContext

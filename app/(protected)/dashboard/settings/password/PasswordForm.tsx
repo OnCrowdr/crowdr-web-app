@@ -1,12 +1,12 @@
 import { useFormContext } from "react-hook-form"
-import { useUser } from "../../_common/hooks/useUser"
-import { useToast } from "../../../../common/hooks/useToast"
-import InputTitle from "../../../../common/components/InputTitle"
-import { Button } from "../../../../common/components/Button"
+import { useUser } from "../../../../../contexts/UserProvider"
+import { useToast } from "../../../../../hooks/useToast"
+import InputTitle from "../../../../../components/shared/InputTitle"
+import { Button } from "../../../../../components/shared/Button"
 import PasswordFormContext, { FormFields } from "../utils/usePasswordForm"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import makeRequest from "../../../../../utils/makeRequest"
-import PasswordInput from "../../../../common/components/PasswordInput"
+import PasswordInput from "../../../../../components/shared/PasswordInput"
 
 const PasswordForm = () => {
   const {
