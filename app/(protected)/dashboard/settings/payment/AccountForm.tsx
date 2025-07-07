@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react"
 import { useFormContext, Controller } from "react-hook-form"
-import TextInput from "../../../../common/components/TextInput"
-import SelectInput from "../../../../common/components/SelectInput"
+import TextInput from "../../../../../components/shared/TextInput"
+import SelectInput from "../../../../../components/shared/SelectInput"
 import AccountFormContext, { FormFields } from "../utils/useAccountForm"
 import { Option } from "../../_common/utils/form"
-import { Button } from "../../../../common/components/Button"
+import { Button } from "../../../../../components/shared/Button"
 import _banks from "../../_common/utils/banks"
 import { IBankDetail } from "./page"
-import { QF, RFC } from "../../../../common/types"
+import { QF, RFC } from "@/types"
 import { useQuery } from "react-query"
 import makeRequest from "../../../../../utils/makeRequest"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import { keys } from "../../_utils/queryKeys"
-import { useToast } from "../../../../common/hooks/useToast"
+import { useToast } from "../../../../../hooks/useToast"
 
 const AccountForm: RFC<AccountFormProps> = ({
   onSubmit,

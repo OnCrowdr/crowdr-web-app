@@ -2,10 +2,10 @@
 import Image from "next/image"
 import { useState } from "react"
 import { useQuery } from "react-query"
-import { useUser } from "../../_common/hooks/useUser"
-import { useModal } from "../../../../common/hooks/useModal"
-import { useToast } from "../../../../common/hooks/useToast"
-import { Button } from "../../../../common/components/Button"
+import { useUser } from "../../../../../contexts/UserProvider"
+import { useModal } from "../../../../../hooks/useModal"
+import { useToast } from "../../../../../hooks/useToast"
+import { Button } from "../../../../../components/shared/Button"
 import Table from "../../_components/Table"
 import Detail from "../../_components/Detail"
 import Pagination from "../../_components/Pagination"
@@ -21,9 +21,9 @@ import {
 } from "../../_common/utils/campaign"
 import { keys } from "../../_utils/queryKeys"
 
-import { Nullable, IPagination, QF } from "../../../../common/types"
-import { ICampaignStats } from "../../../../common/types/UserStats"
-import { ICampaignResponse } from "../../../../common/types/Campaign"
+import { Nullable, IPagination, QF } from "@/types"
+import { ICampaignStats } from "@/types/UserStats"
+import { ICampaignResponse } from "@/types/Campaign"
 import DollarIcon from "@/public/svg/dollar.svg"
 
 const Withdrawal = () => {

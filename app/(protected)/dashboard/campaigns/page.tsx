@@ -6,30 +6,30 @@ import {
   Button,
   GrayButton,
   WhiteButton,
-} from "../../../common/components/Button"
-import TextInput from "../../../common/components/TextInput"
+} from "../../../../components/shared/Button"
+import TextInput from "../../../../components/shared/TextInput"
 import DateRange from "../_components/DateRange"
 import StatCard from "../_components/StatCard"
 import Pagination from "../_components/Pagination"
 import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton"
 import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton"
-import { useUser } from "../_common/hooks/useUser"
+import { useUser } from "../../../../contexts/UserProvider"
 import { formatAmount } from "../_common/utils/currency"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import makeRequest from "../../../../utils/makeRequest"
 import { keys } from "../_utils/queryKeys"
 import { time } from "../_utils/time"
 
-import { Nullable, QF } from "../../../common/types"
+import { Nullable, QF } from "@/types"
 // import { CampaignResponse, ICampaignStats } from "@/app/common/types/Campaign"
 import { IDateRange } from "../_components/DateRange"
-import { IUser } from "../../../api/user/getUser"
+import { IUser } from "../../../../utils/api/user/getUser"
 
 import { BiSearch } from "react-icons/bi"
 import FileDownloadIcon from "@/public/svg/file-download.svg"
 import FilterIcon from "@/public/svg/filter.svg"
-import { ICampaignStats } from "../../../common/types/UserStats"
-import { ICampaignResponse } from "../../../common/types/Campaign"
+import { ICampaignStats } from "@/types/UserStats"
+import { ICampaignResponse } from "@/types/Campaign"
 import { Mixpanel } from "../../../../utils/mixpanel"
 
 const Campaigns = () => {

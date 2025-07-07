@@ -2,27 +2,27 @@
 
 import { useState, useEffect, useRef, use } from "react";
 import Image from "next/image";
-import { getUser } from "../../../../../api/user/getUser";
+import { getUser } from "../../../../../../utils/api/user/getUser";
 import ProgressBar from "../../../_components/ProgressBar";
 import ExploreCard from "../../../_components/ExploreCard";
 import Filter from "../../../_components/Filter";
 import Input from "../../../_components/Input";
 import Checkbox from "../../../_components/Checkbox";
 import Select from "../../../_components/Select";
-import { getSingleCampaign } from "../../../../../api/campaigns/getCampaigns";
+import { getSingleCampaign } from "../../../../../../utils/api/campaigns/getCampaigns";
 import makeRequest from "../../../../../../utils/makeRequest";
 import { extractErrorMessage } from "../../../../../../utils/extractErrorMessage";
 import HeartHand from "@/public/svg/hand-holding-heart.svg";
-import { useToast } from "../../../../../common/hooks/useToast";
+import { useToast } from "../../../../../../hooks/useToast";
 import { formatAmount } from "../../../_common/utils/currency";
 import Link from "next/link";
 import Head from "next/head";
-import { Button } from "../../../../../common/components/Button";
+import { Button } from "../../../../../../components/shared/Button";
 import Loading from "../../../../../loading";
 import { calculateTransactionFee, formatCurrency } from "../../../../../../utils/seperateText";
-import { useModal } from "../../../../../common/hooks/useModal";
+import { useModal } from "../../../../../../hooks/useModal";
 import { Mixpanel } from "../../../../../../utils/mixpanel";
-import PhoneNumberInput from "../../../../../common/components/PhoneNumberInput";
+import PhoneNumberInput from "../../../../../../components/shared/PhoneNumberInput";
 import NotFound from "../../../../../not-found";
 
 const activeTabStyle = "text-[#00B964]  border-b-2 border-[#00B964]";

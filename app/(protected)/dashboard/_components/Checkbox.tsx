@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { RFC } from "../../../common/types";
+import { RFC } from "@/types";
 import { ChangeEvent } from "react";
 import { ReactNode } from "react";
 

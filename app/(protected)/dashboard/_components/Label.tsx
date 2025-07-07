@@ -1,5 +1,5 @@
-import { CampaignStatus } from "../../../common/types/Campaign";
-import { RFC } from "../../../common/types";
+import { CampaignStatus } from "@/types/Campaign";
+import { RFC } from "@/types";
 
 const Label: RFC<LabelProps> = ({
   text,

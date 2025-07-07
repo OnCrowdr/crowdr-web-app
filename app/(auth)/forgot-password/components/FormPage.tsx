@@ -1,8 +1,8 @@
 import { useFormContext } from "react-hook-form"
 import _ from "lodash"
-import LoginFormContext, { FormFields } from "../../../common/hooks/useLoginForm"
+import LoginFormContext, { FormFields } from "../../_hooks/useLoginForm"
 import ForgotPassword from "./ForgotPassword"
-import { useToast } from "../../../common/hooks/useToast"
+import { useToast } from "../../../../hooks/useToast"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import makeRequest from "../../../../utils/makeRequest"
 

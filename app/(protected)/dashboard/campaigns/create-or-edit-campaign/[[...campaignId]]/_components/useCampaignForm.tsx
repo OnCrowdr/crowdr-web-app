@@ -1,13 +1,13 @@
 import { useForm, FormProvider } from "react-hook-form"
 import { UseFormReturn } from "react-hook-form/dist/types"
 
-import { RFC } from "../../../../../../common/types"
+import { RFC } from "@/types"
 import { CampaignCategory } from "../../../../../../../utils/campaignCategory"
 import {
   // CampaignType,
   ICampaign,
   IFundraiseVolunteerCampaign,
-} from "../../../../../../common/types/Campaign"
+} from "@/types/Campaign"
 import {
   createContext,
   Dispatch,
@@ -19,14 +19,14 @@ import { useQuery } from "react-query"
 import { mapResponseToForm } from "../../../../_components/CampaignForm"
 import { extractErrorMessage } from "../../../../../../../utils/extractErrorMessage"
 import makeRequest from "../../../../../../../utils/makeRequest"
-import { useUser } from "../../../../_common/hooks/useUser"
+import { useUser } from "../../../../../../../contexts/UserProvider"
 import { useRouter } from "next/navigation"
-import { useToast } from "../../../../../../common/hooks/useToast"
+import { useToast } from "../../../../../../../hooks/useToast"
 import { Mixpanel } from "../../../../../../../utils/mixpanel"
 import objectToFormData from "../../../../../../../utils/objectToFormData"
 import kycService from "../../../../_common/services/kycService"
 import CompletionCard from "../../../../_components/CompletionCard"
-import { useModal } from "../../../../../../common/hooks/useModal"
+import { useModal } from "../../../../../../../hooks/useModal"
 import { shareCampaignModalAtom } from "../../../../_utils/atoms"
 import { useSetAtom } from "jotai"
 import CampaignPreview from "./CampaignPreview"

@@ -1,8 +1,8 @@
 "use client"
-import { useModal } from "../../../common/hooks/useModal"
-import { Button, WhiteButton } from "../../../common/components/Button"
+import { useModal } from "../../../../hooks/useModal"
+import { Button, WhiteButton } from "../../../../components/shared/Button"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import { ReactElement } from "react"
 
 const CompletionCard: RFC<CompletionCardProps> = ({

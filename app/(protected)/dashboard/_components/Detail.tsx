@@ -1,5 +1,5 @@
 import Label from "./Label"
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import { ReactElement } from "react"
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6"
 import { regex } from "regex"

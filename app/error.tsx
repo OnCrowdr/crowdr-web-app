@@ -1,7 +1,7 @@
 "use client"; // Error components must be Client Components
 
 import { useEffect } from "react";
-import { Button } from "./common/components/Button";
+import { Button } from "../components/shared/Button";
 import { useRouter } from "next/navigation";
 
 export default function Error({

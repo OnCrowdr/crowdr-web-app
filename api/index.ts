@@ -1,7 +1,7 @@
 import axios from "axios"
 import { API_BASE_URL } from "../config"
-import { IUser } from "../app/api/user/getUser"
-import deleteCookie from "../app/api/deleteCookie"
+import { IUser } from "../utils/api/user/getUser"
+import deleteCookie from "@/utils/api/deleteCookie"
 import toast from "react-hot-toast"
 
 const api = axios.create({

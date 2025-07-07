@@ -2,7 +2,7 @@ import Image from 'next/image';
 import {FaArrowUp, FaArrowDown} from 'react-icons/fa6'
 import BgPattern from "@/public/assets/stat-card-pattern.png"
 
-import { RFC } from "../../../common/types";
+import { RFC } from "@/types";
 
 const StatCard: RFC<StatCardProps> = ({title, text, percentage, changeType = 'rise', time, pattern, colorScheme = 'dark', iconUrl, detail}) => {
   const backgroundColor = colorScheme == 'dark' ? '#00B964' : '#F8F8F8'

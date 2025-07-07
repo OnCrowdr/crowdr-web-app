@@ -1,18 +1,18 @@
 "use client"
 import Image from "next/image"
 import { atom, useAtom } from "jotai"
-import { Button, GrayButton } from "../../../common/components/Button"
-import TextInput from "../../../common/components/TextInput"
+import { Button, GrayButton } from "../../../../components/shared/Button"
+import TextInput from "../../../../components/shared/TextInput"
 import ModalTrigger, {
   modalStoreAtom,
-} from "../../../common/components/ModalTrigger"
+} from "../../../../components/shared/ModalTrigger"
 
 import { CgSpinner } from "react-icons/cg"
 import XMark from "@/public/svg/x-mark.svg"
 import { useEffect, useState } from "react"
 import withdrawalService from "../common/services/withdrawal"
-import { useUser } from "../../dashboard/_common/hooks/useUser"
-import { useToast } from "../../../common/hooks/useToast"
+import { useUser } from "../../../../contexts/UserProvider"
+import { useToast } from "../../../../hooks/useToast"
 import otpService from "../common/services/otp"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import Text from "../../dashboard/_components/Text"

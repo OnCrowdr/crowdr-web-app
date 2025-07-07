@@ -1,11 +1,11 @@
 "use client";
 import { useState, useRef, useEffect, type JSX } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "../../../common/components/Button";
+import { Button } from "../../../../components/shared/Button";
 import { IconType } from "react-icons/lib";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { FiCheck } from "react-icons/fi";
-import { useUser } from "../_common/hooks/useUser";
+import { useUser } from "../../../../contexts/UserProvider";
 
 interface CampaignOption {
   id: string;

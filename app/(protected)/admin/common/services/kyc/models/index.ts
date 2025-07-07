@@ -1,4 +1,4 @@
-import { KycStatus } from "../../../../../../common/types/Kyc"
+import { KycStatus } from "@/types/Kyc"
 
 export interface IGetKyc {
   kycId: string

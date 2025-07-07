@@ -5,7 +5,7 @@ import {
   IFundraiseCampaign,
   IFundraiseVolunteerCampaign,
   IVolunteerCampaign,
-} from "../../../../common/types/Campaign"
+} from "@/types/Campaign"
 
 export const mapCampaignResponseToView = (
   campaign: IFundraiseVolunteerCampaign

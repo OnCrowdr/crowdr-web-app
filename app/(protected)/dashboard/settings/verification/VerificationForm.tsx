@@ -1,12 +1,12 @@
 import { useQuery } from "react-query"
 import { useFormContext } from "react-hook-form"
-import { useUser } from "../../_common/hooks/useUser"
-import { useToast } from "../../../../common/hooks/useToast"
-import TextInput from "../../../../common/components/TextInput"
-import SelectInput from "../../../../common/components/SelectInput"
-import FileInput from "../../../../common/components/FileInput"
-import { FileInputContent } from "../../../../common/components/FileInput"
-import { Button } from "../../../../common/components/Button"
+import { useUser } from "../../../../../contexts/UserProvider"
+import { useToast } from "../../../../../hooks/useToast"
+import TextInput from "../../../../../components/shared/TextInput"
+import SelectInput from "../../../../../components/shared/SelectInput"
+import FileInput from "../../../../../components/shared/FileInput"
+import { FileInputContent } from "../../../../../components/shared/FileInput"
+import { Button } from "../../../../../components/shared/Button"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import objectToFormData from "../../../../../utils/objectToFormData"
 import makeRequest from "../../../../../utils/makeRequest"
@@ -16,7 +16,7 @@ import VerificationFormContext, {
   FormFields,
 } from "../utils/useVerificationForm"
 
-import { QF } from "../../../../common/types"
+import { QF } from "@/types"
 
 const VerificationForm = () => {
   const {

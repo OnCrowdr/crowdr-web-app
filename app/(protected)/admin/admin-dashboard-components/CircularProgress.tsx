@@ -1,4 +1,4 @@
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 import React from 'react';
 

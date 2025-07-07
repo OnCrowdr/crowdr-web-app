@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { ICampaign } from "../../../common/types/Campaign";
+import { ICampaign } from "@/types/Campaign";
 
 export const shareCampaignModalAtom = atom<IShareCampaignModal>({
   isOpen: false,

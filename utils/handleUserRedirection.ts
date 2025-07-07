@@ -1,4 +1,4 @@
-import { IUser } from "../app/api/user/getUser"
+import { IUser } from "./api/user/getUser"
 import { redirect } from "next/navigation"
 
 export const handleUserRedirection = (
