@@ -57,40 +57,38 @@ export default function Navigation({ openModal }: Props) {
         </li>
       </ul>
 
-      <div className="flex items-center gap-4 flex-1 max-w-[316px]">
-        {user ? (
+      {user ? (
+        <button
+          className="btn-primary hide-sm flex-1 max-w-[160px]"
+          onClick={() => {
+            router.push("/dashboard")
+            Mixpanel.track("'Go To Dashboard' clicked")
+          }}
+        >
+          Go To Dashboard
+        </button>
+      ) : (
+        <div className="flex items-center gap-4 flex-1 max-w-[316px]">
+          <button
+            className="btn-outline hide-sm flex-1"
+            onClick={() => {
+              router.push("login")
+              Mixpanel.track("Log In Clicked")
+            }}
+          >
+            Log In
+          </button>
           <button
             className="btn-primary hide-sm flex-1"
             onClick={() => {
-              router.push("/dashbaord")
-              Mixpanel.track("'Go To Dashboard' clicked")
+              router.push("signup")
+              Mixpanel.track("Sign Up Clicked")
             }}
           >
-            Go To Dashboard
+            Sign Up
           </button>
-        ) : (
-          <>
-            <button
-              className="btn-outline hide-sm flex-1"
-              onClick={() => {
-                router.push("login")
-                Mixpanel.track("Log In Clicked")
-              }}
-            >
-              Log In
-            </button>
-            <button
-              className="btn-primary hide-sm flex-1"
-              onClick={() => {
-                router.push("signup")
-                Mixpanel.track("Sign Up Clicked")
-              }}
-            >
-              Sign Up
-            </button>
-          </>
-        )}
-      </div>
+        </div>
+      )}
       <MobileMenu openModal={openModal} />
     </nav>
   )

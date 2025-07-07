@@ -43,11 +43,11 @@ const FormPages = () => {
         payload
       });
 
-      const { token } = user;
-      if (token) {
-        await setUserCookie(token);
-        setClientSideCookie("token", token, 7);
-      }
+      // const { token } = user;
+      // if (token) {
+      //   await setUserCookie(token);
+      //   setClientSideCookie("token", token, 7);
+      // }
       router.push("/confirmation");
     } catch (error: any) {
       const message = extractErrorMessage(error);
