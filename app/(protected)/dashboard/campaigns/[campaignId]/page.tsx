@@ -21,10 +21,7 @@ import Text from "../../_components/Text"
 import { pill } from "../../_components/Pill"
 
 import { Nullable, QF, Route } from "@/types"
-import {
-  ICampaign,
-  IFundraiseVolunteerCampaign,
-} from "@/types/Campaign"
+import { ICampaign, IFundraiseVolunteerCampaign } from "@/types/Campaign"
 import {
   IDonationResponse,
   IVolunteeringResponse,
@@ -390,7 +387,7 @@ const Campaign = () => {
 
                     <div className="flex flex-col md:hidden">
                       {volunteers.volunteers.map((volunteer, index) => (
-                        <Detail key={index} {...volunteer} />
+                        <Detail key={index} {...volunteer} status={undefined} />
                       ))}
                     </div>
                   </>

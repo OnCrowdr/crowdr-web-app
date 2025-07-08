@@ -5,15 +5,18 @@ import { Toaster } from "react-hot-toast"
 import ModalProvider from "@/hooks/useModal"
 import { RFC } from "@/types"
 import UserProvider from "@/contexts/UserProvider"
+import AppProvider from "@/contexts/AppProvider"
 
 const App: RFC = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <PostHogPageView />
-        <Toaster position="top-right" reverseOrder={false} />
-        <ModalProvider>{children}</ModalProvider>
-      </UserProvider>
+      <AppProvider>
+        <UserProvider>
+          <PostHogPageView />
+          <Toaster position="top-right" reverseOrder={false} />
+          <ModalProvider>{children}</ModalProvider>
+        </UserProvider>
+      </AppProvider>
     </QueryClientProvider>
   )
 }

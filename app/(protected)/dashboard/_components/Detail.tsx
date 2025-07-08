@@ -37,7 +37,7 @@ const Detail: RFC<DetailProps> = ({
 
           {status &&
             !button &&
-            (status.match(regex("i")`success`) ? (
+            (status.match(/success/i) ? (
               <Label text={status} />
             ) : (
               <Label text={status} textColor="#B42318" bgColor="#FEF3F2" />
