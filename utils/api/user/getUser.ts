@@ -39,3 +39,9 @@ export const getUser = async () => {
   });
   return user;
 };
+
+export const getToken = async () => {
+  const cookie = await cookies();
+  const token = cookie.get("token")?.value;
+  return token
+};

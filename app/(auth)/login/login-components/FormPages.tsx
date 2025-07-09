@@ -11,29 +11,20 @@ import makeRequest from "../../../../utils/makeRequest"
 import { IUser } from "../../../../utils/api/user/getUser"
 import { Mixpanel } from "../../../../utils/mixpanel"
 import { setClientSideCookie } from "../../../../utils/cookie-setup"
+import { useAuth } from "@/contexts/AppProvider"
 
 const FormPages = () => {
   const { handleSubmit } = useFormContext() as LoginFormContext
   const router = useRouter()
   const toast = useToast()
+  const { login } = useAuth()
 
   const submit = async (formFields: FormFields) => {
     Mixpanel.track("Login clicked")
-    const endpoint = "/users/signin"
-    let payload = JSON.stringify(_.pick(formFields, ["email", "password"]))
+    const credentials = _.pick(formFields, ["email", "password"])
 
     try {
-      const { data: user } = await makeRequest<IUser>(endpoint, {
-        method: "POST",
-        payload,
-      })
-
-      const { token } = user
-      if (token) {
-        // Set server-side cookie
-        await setUserCookie(token);
-        setClientSideCookie("token", token, 7); 
-      }
+      const user = await login(credentials) as any
       handleUserRedirection(user, router.push)
     } catch (error) {
       Mixpanel.track("Login failed")

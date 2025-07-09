@@ -5,6 +5,8 @@ import { API_BASE_URL } from "../config"
 
 import { RFC } from "@/types"
 import { IUser, getUser } from "../utils/api/user/getUser"
+import local from "@/utils/local"
+import { setAuthToken } from "@/api"
 
 const UserContext = createContext<IUser | null>(null)
 export const userAtom = atom<IUser | null>(null)
@@ -15,8 +17,9 @@ const UserProvider: RFC<UserProviderProps> = ({ children }) => {
   useEffect(() => {
     getUser().then((user) => {
       if (user) {
-        axios.defaults.headers.common["x-auth-token"] = user.token
-        localStorage.setItem("USER", JSON.stringify(user))
+        // axios.defaults.headers.common["x-auth-token"] = user.token
+        setAuthToken(user.token ?? "")
+        local.setItem(local.keys.USER, user)
       }
 
       setUser(user)

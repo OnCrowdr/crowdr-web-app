@@ -31,12 +31,14 @@ import FilterIcon from "@/public/svg/filter.svg"
 import { ICampaignStats } from "@/types/UserStats"
 import { ICampaignResponse } from "@/types/Campaign"
 import { Mixpanel } from "../../../../utils/mixpanel"
+import { useAuth } from "@/contexts/AppProvider"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
 
 const Campaigns = () => {
   const [dateRange, setDateRange] = useState<IDateRange>()
   const [page, setPage] = useState(1)
   const [input, setInput] = useState("")
-  const user = useUser()
+  const { user } = useAuth()
 
   const { data: stats } = useQuery(
     [keys.myCampaigns.stats, user?.token, dateRange],
@@ -48,7 +50,15 @@ const Campaigns = () => {
     }
   )
 
-  const { isPreviousData, data, refetch: refetchCampaigns } = useQuery(
+  // const statsQuery = useAuthQuery({
+  //   queryFn: _my_campaigns.
+  // })
+
+  const {
+    isPreviousData,
+    data,
+    refetch: refetchCampaigns,
+  } = useQuery(
     [keys.myCampaigns.campaigns, user?.token, page],
     fetchCampaigns,
     {
@@ -156,7 +166,11 @@ const Campaigns = () => {
       <div className="grid md:grid-cols-[repeat(2,_minmax(0,_550px))] 2xl:grid-cols-3 gap-x-[10px] gap-y-3 md:gap-y-[40px] mb-[30px] md:mb-10">
         {data
           ? data.campaigns.map((campaign) => (
-              <CampaignCard key={campaign._id} campaign={campaign} onDelete={refetchCampaigns} />
+              <CampaignCard
+                key={campaign._id}
+                campaign={campaign}
+                onDelete={refetchCampaigns}
+              />
             ))
           : Array.from({ length: 4 }).map((_, index) => (
               <CampaignCardSkeleton key={index} />

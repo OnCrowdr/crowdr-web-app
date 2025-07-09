@@ -6,15 +6,12 @@ import deleteCookie from "@/utils/api/deleteCookie"
 import { modalStoreAtom } from "../../../../components/shared/ModalTrigger"
 
 import { RFC } from "@/types"
+import local from "@/utils/local"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Page: RFC = ({ children }) => {
   const modalStore = useAtomValue(modalStoreAtom)
-
-  const logout = async () => {
-    await deleteCookie("token")
-    location.replace("/login")
-    localStorage.removeItem("USER")
-  }
+  const { logout } = useAuth()
 
   const hideLogoutModal = () => {
     const modal = modalStore.get("logout-modal")
