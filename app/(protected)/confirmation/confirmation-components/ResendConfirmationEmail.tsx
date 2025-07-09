@@ -24,10 +24,10 @@ export default function ResendConfirmationEmail() {
 
       const data = await makeRequest<{ message: string }>(endpoint, {
         headers,
-        method: "GET",
+        method: "POST",
         cache: "no-store",
       });
-      revalidate(userTag);
+      await revalidate(userTag);
       toast({ title: "Success!", body: data.message, type: "success" });
     } catch (error: any) {
       const message = extractErrorMessage(error);

@@ -38,9 +38,9 @@ const FormPage = () => {
         payload: objectToFormData(payload),
       })
 
-      revalidate(userTag) // revalidate user data after organization gets attached to user
+      await revalidate(userTag) // revalidate user data after organization gets attached to user
       toast({ title: "Success!", body: message, type: "success" })
-      if (success) router.replace("/explore")
+      if (success) router.replace("/dashboard")
     } catch (error) {
       const message = extractErrorMessage(error)
       toast({ title: "Oops!", body: message, type: "error" })

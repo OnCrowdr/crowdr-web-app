@@ -20,8 +20,7 @@ export default async function VerifyEmail(
 
     try {
       await makeRequest(endpoint, { headers, cache: "no-cache" });
-    
-      revalidate(userTag); // revalidate after user isEmailVerified property changes
+      await revalidate(userTag); // revalidate after user isEmailVerified property changes
     } catch (error) {
       return (
         <div className="flex items-center justify-center h-screen w-screen">
