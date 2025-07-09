@@ -32,11 +32,9 @@ declare global {
   }
 }
 
-export default function DonateOrVolunteer(
-  props: {
-    params: Promise<{ campaignId: string }>;
-  }
-) {
+export default function DonateOrVolunteer(props: {
+  params: Promise<{ campaignId: string }>;
+}) {
   const params = use(props.params);
   const toast = useToast();
   const [loadingCampaign, setLoadingCampaign] = useState(true);
@@ -104,7 +102,9 @@ export default function DonateOrVolunteer(
           "There was a problem loading this campaign. Please try again later.",
         type: "error"
       });
-      Mixpanel.track("Error loading campaign", { campaignId: params.campaignId });
+      Mixpanel.track("Error loading campaign", {
+        campaignId: params.campaignId
+      });
       console.error("Error fetching campaign:", error);
     } finally {
       setLoadingCampaign(false);
@@ -191,6 +191,8 @@ export default function DonateOrVolunteer(
   };
 
   useEffect(() => {
+    const supported = checkApplePaySupport();
+    setApplePaySupported(supported);
     fetchSingleCampaign();
     setTab(
       campaign?.campaignType === "fundraiseAndVolunteer"
@@ -248,25 +250,6 @@ export default function DonateOrVolunteer(
     }
   }, []);
 
-  // Effect to load Paystack script
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://js.paystack.co/v2/inline.js";
-    script.async = true;
-    script.onload = () => {
-      setPaystackLoaded(true);
-      const supported = checkApplePaySupport();
-      setApplePaySupported(supported);
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
-
   const totalDonationAmount =
     campaign?.fundraise?.fundingGoalDetails?.reduce(
       (accumulator: number, current: { amount: number }) => {
@@ -306,7 +289,22 @@ export default function DonateOrVolunteer(
       Mixpanel.track("Routes to Paystack Gateway");
 
       // Redirect in the same tab
-      window.location.href = data.authorization_url;
+      // window.location.href = data.authorization_url;
+      const paymentWindow = window.open(data.authorization_url, "_blank");
+
+      // Check if popup was blocked
+      if (
+        !paymentWindow ||
+        paymentWindow.closed ||
+        typeof paymentWindow.closed == "undefined"
+      ) {
+        // Fallback to same tab if popup blocked
+        window.location.href = data.authorization_url;
+        return;
+      }
+
+      // Optional: Focus the new tab
+      paymentWindow.focus();
     } catch (error) {
       Mixpanel.track("Error completing donation");
       setLoading(false);
@@ -686,8 +684,7 @@ export default function DonateOrVolunteer(
                     <button
                       onClick={donate}
                       className="apple-pay-button"
-                      disabled={!areAllInputsFilled(donationInputs) || loading}
-                      >
+                      disabled={!areAllInputsFilled(donationInputs) || loading}>
                       <span className="apple-pay-text">Donate with</span>
                       <FaApplePay
                         className="mt-1"
