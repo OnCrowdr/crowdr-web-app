@@ -191,8 +191,6 @@ export default function DonateOrVolunteer(props: {
   };
 
   useEffect(() => {
-    const supported = checkApplePaySupport();
-    setApplePaySupported(supported);
     fetchSingleCampaign();
     setTab(
       campaign?.campaignType === "fundraiseAndVolunteer"
@@ -250,6 +248,25 @@ export default function DonateOrVolunteer(props: {
     }
   }, []);
 
+  // Effect to load Paystack script
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://js.paystack.co/v2/inline.js";
+    script.async = true;
+    script.onload = () => {
+      setPaystackLoaded(true);
+      const supported = checkApplePaySupport();
+      setApplePaySupported(supported);
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
+
   const totalDonationAmount =
     campaign?.fundraise?.fundingGoalDetails?.reduce(
       (accumulator: number, current: { amount: number }) => {
@@ -290,6 +307,7 @@ export default function DonateOrVolunteer(props: {
 
       // Redirect in the same tab
       // window.location.href = data.authorization_url;
+
       const paymentWindow = window.open(data.authorization_url, "_blank");
 
       // Check if popup was blocked
