@@ -24,7 +24,7 @@ export default function ResendConfirmationEmail() {
 
       const data = await makeRequest<{ message: string }>(endpoint, {
         headers,
-        method: "GET",
+        method: "POST",
         cache: "no-store",
       });
       revalidate(userTag);
