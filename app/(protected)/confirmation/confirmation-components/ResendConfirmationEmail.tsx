@@ -27,7 +27,7 @@ export default function ResendConfirmationEmail() {
         method: "POST",
         cache: "no-store",
       });
-      revalidate(userTag);
+      await revalidate(userTag);
       toast({ title: "Success!", body: data.message, type: "success" });
     } catch (error: any) {
       const message = extractErrorMessage(error);
