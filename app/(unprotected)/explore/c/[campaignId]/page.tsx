@@ -435,26 +435,26 @@ export default function DonateOrVolunteer(props: {
     }
   }, [toast, refetchCampaign]);
 
-  // Handle payment verification success
-  useEffect(() => {
-    if (paymentVerification && !verifyingPayment && !paymentVerificationError) {
-      Mixpanel.track("Payment Verified Successfully");
-      toast({
-        title: "Payment Verified",
-        body: "Your donation has been verified successfully!",
-        type: "success"
-      });
-      refetchCampaign();
-    }
+  // // Handle payment verification success
+  // useEffect(() => {
+  //   if (paymentVerification && !verifyingPayment && !paymentVerificationError) {
+  //     Mixpanel.track("Payment Verified Successfully");
+  //     toast({
+  //       title: "Payment Verified",
+  //       body: "Your donation has been verified successfully!",
+  //       type: "success"
+  //     });
+  //     refetchCampaign();
+  //   }
 
-    if (paymentVerificationError) {
-      toast({
-        title: "Payment Verification Failed",
-        body: "Could not verify your payment. Please contact support.",
-        type: "error"
-      });
-    }
-  }, [paymentVerification, verifyingPayment, paymentVerificationError, toast, refetchCampaign]);
+  //   if (paymentVerificationError) {
+  //     toast({
+  //       title: "Payment Verification Failed",
+  //       body: "Could not verify your payment. Please contact support.",
+  //       type: "error"
+  //     });
+  //   }
+  // }, [paymentVerification, verifyingPayment, paymentVerificationError, toast, refetchCampaign]);
 
   // Load Paystack script
   useEffect(() => {
