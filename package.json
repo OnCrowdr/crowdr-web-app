@@ -32,6 +32,7 @@
     "axios": "^1.7.2",
     "browser-image-compression": "^2.0.2",
     "color": "^4.2.3",
+    "date-fns": "^4.1.0",
     "eslint": "8.43.0",
     "eslint-config-next": "15.3.3",
     "flatpickr": "^4.6.13",
