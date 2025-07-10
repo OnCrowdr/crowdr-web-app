@@ -46,14 +46,14 @@ const ShareCampaign = (props: ShareCampaignProps) => {
 
   const getSuccessTitle = () => {
     if (isVolunteerCampaign) return "Application Submitted!";
-    return "Donation Successful!";
+    return "Donation Successful 💚";
   };
 
   const getSuccessMessage = () => {
     if (isVolunteerCampaign) {
       return <>Thank you for your interest in volunteering for <span className="font-semibold">{title}</span>! Help us find more volunteers by sharing this campaign.</>;
     }
-    return <>Thank you for your donation to <span className="font-semibold">{title}</span>! Help us reach our goal by sharing this campaign with your friends and family.</>;
+    return <>Thank you for your donation to <span className="font-semibold">{title}.</span> Help us reach our goal by sharing this campaign with your friends and family.</>;
   };
 
   const getButtonText = () => {
@@ -146,7 +146,7 @@ const ShareCampaign = (props: ShareCampaignProps) => {
   return (
     <div
       style={{ boxShadow }}
-      className="max-w-[342px] md:max-w-[600px] bg-white rounded-lg overflow-hidden p-4 md:p-6 font-satoshi"
+      className="min-w-[400px] max-w-[420px] md:max-w-[600px] bg-white rounded-lg overflow-hidden p-4 md:p-6 font-satoshi"
     >
       {/* Header Section */}
       <div className="flex justify-between md:gap-4 mb-3 md:mb-6">
@@ -196,7 +196,7 @@ const ShareCampaign = (props: ShareCampaignProps) => {
           </>
         ) : (
           <>
-            <p className="text-lg font-semibold">Share {title}</p>
+            <p className="text-lg font-semibold">Share {title}.</p>
             <p className="text-sm text-[#475467]">
               {getSharePrompt()}
             </p>
