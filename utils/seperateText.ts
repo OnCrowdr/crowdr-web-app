@@ -19,7 +19,7 @@ export const calculateTransactionFee = (amount: number) => {
   const percentageFeeRate = 0.039; // 3.9%
   const fixedFee = 100; // NGN 100
   const feeWaiverThreshold = 2500; // NGN 2500
-  const feeCap = 2000000; // NGN 2000
+  const feeCap = 1000000; // NGN 1,000,000
   let totalTransactionFee = amount * percentageFeeRate;
   // only apply fixedFee for amounts >= feeWaiverThreshold (2500)
   if (amount >= feeWaiverThreshold) {
