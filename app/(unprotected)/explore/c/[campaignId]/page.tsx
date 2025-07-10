@@ -32,10 +32,8 @@ import { Mixpanel } from "../../../../../utils/mixpanel";
 import HeartHand from "@/public/svg/hand-holding-heart.svg";
 import ShareCampaign from "@/app/common/components/share-campaign";
 import OldModal from "@/app/common/components/OldModal";
-import {
-  useFetchSingleCampaign,
-  useVerifyPaymentReference
-} from "@/app/_hooks/useFetchCampaignById";
+import { useFetchSingleCampaign, useVerifyPaymentReference } from "@/app/_hooks/useFetchCampaignById";
+import { CheckboxValues, DonationInputs, VolunteerInputs } from "@/app/types/campaign-types";
 
 declare global {
   interface Window {
@@ -43,43 +41,22 @@ declare global {
   }
 }
 
-interface DonationInputs {
-  amount: string;
-  fullName: string;
-  email: string;
-}
-
-interface VolunteerInputs {
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  gender: string;
-  ageRange: string;
-  address: string;
-  about: string;
-}
-
-interface CheckboxValues {
-  isAnonymous: boolean;
-  shouldShareDetails: boolean;
-  isSubscribedToPromo: boolean;
-}
-
 export default function DonateOrVolunteer(props: {
   params: Promise<{ campaignId: string }>;
 }) {
   const params = use(props.params);
   const toast = useToast();
-
+  
   // Check for payment reference in URL
   const [trxRef, setTrxRef] = useState<string | null>(null);
-
+  const [volunteerSuccess, setVolunteerSuccess] = useState<boolean>(false);
+  
   // React Query for campaign data
-  const {
-    data: campaign,
-    isLoading: loadingCampaign,
+  const { 
+    data: campaign, 
+    isLoading: loadingCampaign, 
     error: campaignError,
-    refetch: refetchCampaign
+    refetch: refetchCampaign 
   } = useFetchSingleCampaign(params.campaignId, true);
 
   // React Query for payment verification
@@ -121,22 +98,18 @@ export default function DonateOrVolunteer(props: {
 
   // Memoized values
   const campaignImages = useMemo(() => {
-    return (
-      campaign?.campaignAdditionalImages?.map(
-        (item: { url: string }) => item.url
-      ) || []
-    );
+    return campaign?.campaignAdditionalImages?.map(
+      (item: { url: string }) => item.url
+    ) || [];
   }, [campaign?.campaignAdditionalImages]);
 
   const totalDonationAmount = useMemo(() => {
-    return (
-      campaign?.fundraise?.fundingGoalDetails?.reduce(
-        (accumulator: number, current: { amount: number }) => {
-          return accumulator + current.amount;
-        },
-        0
-      ) || 0
-    );
+    return campaign?.fundraise?.fundingGoalDetails?.reduce(
+      (accumulator: number, current: { amount: number }) => {
+        return accumulator + current.amount;
+      },
+      0
+    ) || 0;
   }, [campaign?.fundraise?.fundingGoalDetails]);
 
   const donatedAmount = useMemo(() => {
@@ -152,9 +125,7 @@ export default function DonateOrVolunteer(props: {
   }, [campaign?.user]);
 
   const donationProgressPercent = useMemo(() => {
-    return totalDonationAmount > 0
-      ? (donatedAmount / totalDonationAmount) * 100
-      : 0;
+    return totalDonationAmount > 0 ? (donatedAmount / totalDonationAmount) * 100 : 0;
   }, [donatedAmount, totalDonationAmount]);
 
   const campaignVolunteersNeeded = useMemo(() => {
@@ -172,67 +143,102 @@ export default function DonateOrVolunteer(props: {
   }, [campaignTotalVolunteers, campaignVolunteersNeeded]);
 
   // Memoized functions
-  const updateDonationInputs = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = event.target;
+  const updateDonationInputs = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    
+    if (name === "amount") {
+      setSelectedAmount(value);
+    }
+    
+    setDonationInputs(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
 
-      if (name === "amount") {
-        setSelectedAmount(value);
-      }
+  const updateVolunteerInputs = useCallback((
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+    setVolunteerInputs(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  }, []);
 
-      setDonationInputs((prev) => ({
-        ...prev,
-        [name]: value
-      }));
-    },
-    []
-  );
-
-  const updateVolunteerInputs = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = event.target;
-      setVolunteerInputs((prev) => ({
-        ...prev,
-        [name]: value
-      }));
-    },
-    []
-  );
-
-  const updateCheckbox = useCallback(
-    (key: keyof CheckboxValues, value: boolean) => {
-      setCheckboxValues((prev) => ({
-        ...prev,
-        [key]: value
-      }));
-    },
-    []
-  );
+  const updateCheckbox = useCallback((key: keyof CheckboxValues, value: boolean) => {
+    setCheckboxValues(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  }, []);
 
   const onAmountSelect = useCallback((amount: string) => {
     setSelectedAmount(amount);
-    setDonationInputs((prev) => ({
+    setDonationInputs(prev => ({
       ...prev,
       amount: amount
     }));
   }, []);
 
   const areAllInputsFilled = useCallback((inputs: Record<string, any>) => {
-    return Object.values(inputs).every((value) => value !== "");
+    return Object.values(inputs).every(value => value !== "");
   }, []);
 
   // Share modal handlers
   const closeShareModal = useCallback(() => {
     setShareModal(false);
-
-    // Clean up trxref from URL when modal is closed
+    
+    // Clean up URL parameters when modal is closed
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.delete("trxref");
+      url.searchParams.delete("volref");
       window.history.replaceState({}, document.title, url.toString());
       setTrxRef(null);
+      setVolunteerSuccess(false);
     }
   }, []);
+
+  const handleDonateAgain = useCallback(() => {
+    // Close the modal and clean up URL
+    setShareModal(false);
+    
+    // Clean up URL parameters
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("trxref");
+      url.searchParams.delete("volref");
+      window.history.replaceState({}, document.title, url.toString());
+      setTrxRef(null);
+      setVolunteerSuccess(false);
+    }
+    
+    if (campaign?.campaignType === "volunteer" || volunteerSuccess) {
+      // Reset volunteer form to allow new application
+      setVolunteerInputs({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        gender: "",
+        ageRange: "",
+        address: "",
+        about: ""
+      });
+      setTab("volunteer");
+      Mixpanel.track("User wants to apply again after successful volunteer application");
+    } else {
+      // Reset donation form to allow new donation
+      setDonationInputs({
+        amount: "",
+        fullName: "",
+        email: ""
+      });
+      setSelectedAmount("");
+      setTab("donate");
+      Mixpanel.track("User wants to donate again after successful donation");
+    }
+  }, [campaign?.campaignType, volunteerSuccess]);
 
   // Apple Pay detection
   const checkApplePaySupport = useCallback(() => {
@@ -284,7 +290,7 @@ export default function DonateOrVolunteer(props: {
         method: "POST",
         payload: JSON.stringify(payload)
       });
-
+      
       Mixpanel.track("Routes to Paystack Gateway");
 
       const paymentWindow = window.open(data.authorization_url, "_blank");
@@ -317,9 +323,21 @@ export default function DonateOrVolunteer(props: {
         method: "POST",
         payload: JSON.stringify(volunteerInputs)
       });
-
+      
       toast({ title: "Success!", body: data.message, type: "success" });
       refetchCampaign();
+      
+      // Set volunteer success and show share modal
+      setVolunteerSuccess(true);
+      setShareModal(true);
+      
+      // Add volref to URL for tracking
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        url.searchParams.set("volref", "success");
+        window.history.replaceState({}, document.title, url.toString());
+      }
+      
       setVolunteerInputs({
         fullName: "",
         email: "",
@@ -336,56 +354,28 @@ export default function DonateOrVolunteer(props: {
     } finally {
       setLoading(false);
     }
-  }, [volunteerInputs, params.campaignId, toast]);
-
-  const handleDonateAgain = useCallback(() => {
-    // Close the modal and clean up URL
-    setShareModal(false);
-
-    // Clean up trxref from URL
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("trxref");
-      window.history.replaceState({}, document.title, url.toString());
-      setTrxRef(null);
-    }
-
-    // Reset form to allow new donation
-    setDonationInputs({
-      amount: "",
-      fullName: "",
-      email: ""
-    });
-    setSelectedAmount("");
-
-    // Switch to donate tab if not already there
-    setTab("donate");
-
-    Mixpanel.track("User wants to donate again after successful donation");
-  }, []);
+  }, [volunteerInputs, params.campaignId, toast, refetchCampaign]);
 
   // Effects
   useEffect(() => {
     if (campaign?.campaignType) {
-      const newTab =
-        campaign.campaignType === "fundraiseAndVolunteer"
-          ? "donate"
-          : campaign.campaignType === "fundraise"
-          ? "donate"
-          : "volunteer";
-
+      const newTab = campaign.campaignType === "fundraiseAndVolunteer" 
+        ? "donate" 
+        : campaign.campaignType === "fundraise" 
+        ? "donate" 
+        : "volunteer";
+      
       setTab(newTab);
-
-      const eventName =
-        campaign.campaignType === "fundraiseAndVolunteer"
-          ? "Donation campaign viewed"
-          : "Volunteer campaign viewed";
-
+      
+      const eventName = campaign.campaignType === "fundraiseAndVolunteer"
+        ? "Donation campaign viewed"
+        : "Volunteer campaign viewed";
+      
       Mixpanel.track(eventName);
     }
   }, [campaign?.campaignType]);
 
-  // Handle URL parameters for payment completion and trxref
+  // Handle URL parameters for payment completion and volunteer success
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -393,6 +383,7 @@ export default function DonateOrVolunteer(props: {
     const reference = urlParams.get("reference");
     const cancelled = urlParams.get("cancelled");
     const trxReference = urlParams.get("trxref");
+    const volReference = urlParams.get("volref");
 
     // Handle successful payment with reference
     if (reference || trxReference) {
@@ -404,9 +395,24 @@ export default function DonateOrVolunteer(props: {
       });
       refetchCampaign();
 
-      // const url = new URL(window.location.href);
-      // url.searchParams.delete("reference");
-      // window.history.replaceState({}, document.title, url.toString());
+      if (reference) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("reference");
+        window.history.replaceState({}, document.title, url.toString());
+      }
+    }
+
+    // Handle successful volunteer application
+    if (volReference) {
+      Mixpanel.track("Successful Volunteer Application");
+      toast({
+        title: "Success",
+        body: "Volunteer application submitted successfully",
+        type: "success"
+      });
+      setVolunteerSuccess(true);
+      setShareModal(true);
+      refetchCampaign();
     }
 
     // Handle cancelled payment
@@ -414,7 +420,7 @@ export default function DonateOrVolunteer(props: {
       toast({
         title: "Payment Cancelled",
         body: "Your donation was not completed",
-        type: "error"
+        type: "info"
       });
 
       const url = new URL(window.location.href);
@@ -422,12 +428,33 @@ export default function DonateOrVolunteer(props: {
       window.history.replaceState({}, document.title, url.toString());
     }
 
-    // Handle trxref - show share modal
+    // Handle trxref - show share modal for donation success
     if (trxReference) {
       setTrxRef(trxReference);
       setShareModal(true);
     }
   }, [toast, refetchCampaign]);
+
+  // Handle payment verification success
+  useEffect(() => {
+    if (paymentVerification && !verifyingPayment && !paymentVerificationError) {
+      Mixpanel.track("Payment Verified Successfully");
+      toast({
+        title: "Payment Verified",
+        body: "Your donation has been verified successfully!",
+        type: "success"
+      });
+      refetchCampaign();
+    }
+
+    if (paymentVerificationError) {
+      toast({
+        title: "Payment Verification Failed",
+        body: "Could not verify your payment. Please contact support.",
+        type: "error"
+      });
+    }
+  }, [paymentVerification, verifyingPayment, paymentVerificationError, toast, refetchCampaign]);
 
   // Load Paystack script
   useEffect(() => {
@@ -487,7 +514,7 @@ export default function DonateOrVolunteer(props: {
             </h3>
           </div>
         </div>
-
+        
         <div className="grid grid-cols-1 gap-12 min-w-full md:grid-cols-2">
           <ExploreCard
             id={campaign._id}
@@ -513,7 +540,7 @@ export default function DonateOrVolunteer(props: {
             category={campaign.category}
             campaignType={campaign.campaignType}
           />
-
+          
           <div>
             {/* Tab Navigation */}
             <div>
@@ -598,7 +625,7 @@ export default function DonateOrVolunteer(props: {
                     id="phoneNumber"
                     value={volunteerInputs.phoneNumber}
                     onChange={(value) => {
-                      setVolunteerInputs((prev) => ({
+                      setVolunteerInputs(prev => ({
                         ...prev,
                         phoneNumber: value
                       }));
@@ -606,7 +633,7 @@ export default function DonateOrVolunteer(props: {
                     required={true}
                     error=""
                   />
-
+                  
                   <Select
                     label="Gender"
                     name="gender"
@@ -633,7 +660,7 @@ export default function DonateOrVolunteer(props: {
                     value={volunteerInputs.address}
                     onChange={updateVolunteerInputs}
                   />
-
+                  
                   <div className="flex flex-col items-start w-full">
                     <label
                       htmlFor="about"
@@ -755,7 +782,7 @@ export default function DonateOrVolunteer(props: {
                     onChange={updateDonationInputs}
                     value={donationInputs.email}
                   />
-
+                  
                   <div className="flex flex-col mt-[30px]">
                     <Checkbox
                       id="1"
@@ -822,11 +849,10 @@ export default function DonateOrVolunteer(props: {
                       <Filter query="Top Donors" />
                     </div>
                   )}
-
+                  
                   <div className="flex items-start flex-col gap-5 mb-8">
-                    {campaign.campaignDonors
-                      ?.slice(0, 5)
-                      .map((donor, index) => (
+                    {campaign.campaignDonors?.slice(0, 5).map(
+                      (donor, index) => (
                         <div
                           className="flex items-center flex-row justify-start"
                           key={index}>
@@ -843,14 +869,15 @@ export default function DonateOrVolunteer(props: {
                             </p>
                             <span className="text-[13px] text-[#667085]">
                               Donated{" "}
-                              {formatAmount(parseInt(donor.amount), "naira")} to
-                              this campaign
+                              {formatAmount(parseInt(donor.amount), "naira")}{" "}
+                              to this campaign
                             </span>
                           </div>
                         </div>
-                      ))}
+                      )
+                    )}
                   </div>
-
+                  
                   {campaign.totalNoOfCampaignDonors > 0 && (
                     <Link
                       className="cursor-pointer p-4 bg-[#F8F8F8] text-[#344054] w-fit mt-8 rounded-lg"
@@ -864,26 +891,28 @@ export default function DonateOrVolunteer(props: {
           </div>
         </div>
       </div>
-
+      
       {/* Share Campaign Modal */}
       <OldModal isOpen={shareModal} onClose={closeShareModal}>
         <div
           className="relative p-12"
           style={{
-            background: "rgba(76, 76, 76, 0)"
-          }}>
+            background: "rgba(76, 76, 76, 0)",
+          }}
+        >
           <ShareCampaign
             onClose={closeShareModal}
             campaignId={campaign._id}
             title={campaign.title}
             story={campaign.story}
             campaignCoverImage={campaign.campaignCoverImage?.url}
-            donationSuccess={!!trxRef}
+            donationSuccess={!!trxRef || volunteerSuccess}
             onDonateAgain={handleDonateAgain}
+            campaignType={campaign.campaignType}
           />
         </div>
       </OldModal>
-
+      
       <Footer />
     </div>
   );
