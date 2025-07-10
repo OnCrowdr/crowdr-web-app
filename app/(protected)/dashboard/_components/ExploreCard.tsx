@@ -37,6 +37,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     totalAmount,
     slideImages,
     currentAmount,
+    totalVolunteers = 0,
     donateImage,
     routeTo,
     timePosted,
@@ -48,6 +49,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
   } = props
 
   const router = useRouter()
+
+  console.log("totalVolunteers", totalVolunteers)
 
   const { copied, copy } = useClipboard()
 
@@ -136,6 +139,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
   }
 
   const progress = totalAmount ? currentAmount / totalAmount : 0
+
+  const volunteerProgress = volunteer?.volunteersNeeded ? totalVolunteers / volunteer?.volunteersNeeded : 0
 
   const settings = (images: string[]) => {
     return {
@@ -353,6 +358,18 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
             <ProgressBar bgColor="#00B964" percent={progress * 100} showValue />
           </div>
         )}
+
+        {!!routeTo && campaignType === "volunteer" && (
+          <div className="bg-[#F9F9F9] p-4 rounded-[8px]">
+            <p className="text-sm text-[#667085] mb-[4px]">
+              {" "}
+              <span className="text-[#000] text-sm">Goal</span>{" "}
+              {totalVolunteers}/
+              {volunteer?.volunteersNeeded} volunteers
+            </p>
+            <ProgressBar bgColor="#F7CE50" percent={volunteerProgress * 100} showValue />
+          </div>
+        )}
       </div>
 
       <OldModal isOpen={shareModal} onClose={closeShareModal}>
@@ -433,24 +450,26 @@ type VolunteerDetails = {
   commitementEndDate: string
   requiredCommitment: string
   additonalNotes: string
+  volunteersNeeded: number
 }
 type ExploreCardProps = {
   id: string
-  name: string
+  name?: string
   userId: string
-  tier: string
+  tier?: string
   header?: string
   subheader?: string
   totalAmount?: number
   currentAmount: number
   donateImage: any
   slideImages?: string[]
+  totalVolunteers?: number
   routeTo?: string
   avatar: any
   timePosted?: string
   campaignType?: string
   category?: string
-  volunteer?: VolunteerDetails
+  volunteer?: VolunteerDetails | any
   currency?: string
   user?: User
 }

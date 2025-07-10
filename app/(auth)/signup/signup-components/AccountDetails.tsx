@@ -6,6 +6,7 @@ import { RegisterFormContext } from "../utils/useRegisterForm";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { CgSpinner } from "react-icons/cg";
 import PhoneNumberInput from "../../../common/components/PhoneNumberInput";
+import { isProd } from "@/config";
 
 const AccountDetails = () => {
   const {
@@ -18,7 +19,7 @@ const AccountDetails = () => {
   const [userType] = useWatch({ control, name: ["userType"] });
   const [passIsVisible, setPassIsVisible] = useState(false);
   const [confirmPassIsVisible, setConfirmPassIsVisible] = useState(false);
-  const emailRegex = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
+  const emailRegex = isProd ? /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/ : /^[\w\.\-+]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;;
 
   const prevPage = () => {
     window.scroll({ top: 0, left: 0, behavior: "smooth" });

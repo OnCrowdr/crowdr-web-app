@@ -16,7 +16,7 @@ export type { RegisterFormContext, FormFields }
 
 const config: UseFormConfig = {
   defaultValues: {
-    userType: "non-profit",
+    userType: "individual",
     interests: [],
     fullName: "",
     organizationName: "",

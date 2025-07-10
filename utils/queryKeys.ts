@@ -1,3 +1,4 @@
-export default {
-  
-} as const
+export enum QUERYKEYS {
+  SINGLE_CAMPAIGN = "SINGLE_CAMPAIGN",
+  PAYMENT_VERIFICATION = "PAYMENT_VERIFICATION"
+}
