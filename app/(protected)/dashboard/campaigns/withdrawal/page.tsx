@@ -1,45 +1,46 @@
-"use client"
-import Image from "next/image"
-import { useState } from "react"
-import { useQuery } from "react-query"
-import { useUser } from "../../_common/hooks/useUser"
-import { useModal } from "../../../../common/hooks/useModal"
-import { useToast } from "../../../../common/hooks/useToast"
-import { Button } from "../../../../common/components/Button"
-import Table from "../../_components/Table"
-import Detail from "../../_components/Detail"
-import Pagination from "../../_components/Pagination"
-import StatCard from "../../_components/StatCard"
-import StatCardSkeleton from "../../_components/skeletons/StatCardSkeleton"
-import CompletionCard from "../../_components/CompletionCard"
-import makeRequest from "../../../../../utils/makeRequest"
-import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
-import { formatAmount } from "../../_common/utils/currency"
+"use client";
+import Image from "next/image";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import { useUser } from "../../_common/hooks/useUser";
+import { useModal } from "../../../../common/hooks/useModal";
+import { useToast } from "../../../../common/hooks/useToast";
+import { Button } from "../../../../common/components/Button";
+import Table from "../../_components/Table";
+import Detail from "../../_components/Detail";
+import Pagination from "../../_components/Pagination";
+import StatCard from "../../_components/StatCard";
+import StatCardSkeleton from "../../_components/skeletons/StatCardSkeleton";
+import CompletionCard from "../../_components/CompletionCard";
+import makeRequest from "../../../../../utils/makeRequest";
+import { extractErrorMessage } from "../../../../../utils/extractErrorMessage";
+import { formatAmount } from "../../_common/utils/currency";
 import {
   ICampaignView,
-  mapCampaignResponseToView,
-} from "../../_common/utils/campaign"
-import { keys } from "../../_utils/queryKeys"
+  mapCampaignResponseToView
+} from "../../_common/utils/campaign";
+import { keys } from "../../_utils/queryKeys";
 
-import { Nullable, IPagination, QF } from "../../../../common/types"
-import { ICampaignStats } from "../../../../common/types/UserStats"
-import { ICampaignResponse } from "../../../../common/types/Campaign"
-import DollarIcon from "@/public/svg/dollar.svg"
+import { Nullable, IPagination, QF } from "../../../../common/types";
+import { ICampaignStats } from "../../../../common/types/UserStats";
+import { ICampaignResponse } from "../../../../common/types/Campaign";
+import DollarIcon from "@/public/svg/dollar.svg";
+import { parseISO, format } from "date-fns";
 
 const Withdrawal = () => {
-  const [page, setPage] = useState(1)
-  const user = useUser()
-  const modal = useModal()
-  const toast = useToast()
+  const [page, setPage] = useState(1);
+  const user = useUser();
+  const modal = useModal();
+  const toast = useToast();
 
   const { data: stats } = useQuery(
     [keys.myCampaigns.stats, user?.token],
     fetchStats,
     {
       enabled: Boolean(user?.token),
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false
     }
-  )
+  );
 
   const { data: campaigns } = useQuery(
     [keys.myCampaigns.campaigns, user?.token, page],
@@ -47,39 +48,39 @@ const Withdrawal = () => {
     {
       enabled: Boolean(user?.token),
       keepPreviousData: true,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false
     }
-  )
+  );
 
   const withdraw = async (campaignId: string) => {
     if (user) {
-      const endpoint = `/withdrawals/request`
+      const endpoint = `/withdrawals/request`;
       const headers = {
-        "x-auth-token": user.token,
-      }
-      const payload = { campaignId }
+        "x-auth-token": user.token
+      };
+      const payload = { campaignId };
 
       try {
         const { success, message } = await makeRequest(endpoint, {
           headers,
           method: "POST",
-          payload: JSON.stringify(payload),
-        })
+          payload: JSON.stringify(payload)
+        });
 
         if (success) {
-          activateWithdrawalCompletionModal()
+          activateWithdrawalCompletionModal();
         }
       } catch (error) {
-        const message = extractErrorMessage(error)
-        toast({ title: "Oops!", body: message, type: "error" })
+        const message = extractErrorMessage(error);
+        toast({ title: "Oops!", body: message, type: "error" });
       }
     }
-  }
+  };
 
   // TODO: CREATE WITHDRAWAL CARD
   const activateWithdrawalModal = (campaign: ICampaignView) => {
     const { payableAmount, serviceFee, amount, currency } =
-      campaign.amountDonated!
+      campaign.amountDonated!;
 
     modal.show(
       <CompletionCard
@@ -119,7 +120,7 @@ const Withdrawal = () => {
                 <p>Amount to be received</p>
                 <p>
                   {formatAmount(payableAmount, currency, {
-                    prefixSymbol: false,
+                    prefixSymbol: false
                   })}
                 </p>
               </div>
@@ -129,23 +130,22 @@ const Withdrawal = () => {
         primaryButton={{
           label: "Withdraw Funds",
           onClick: () => {
-            modal.hide()
-            withdraw(campaign._id)
-          },
+            modal.hide();
+            withdraw(campaign._id);
+          }
         }}
         secondaryButton={{ label: "Cancel", onClick: modal.hide }}
         clearModal={modal.hide}
         icon={
           <div
             style={{ boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)" }}
-            className="grid place-items-center rounded-[10px] border border-[#EAECF0] p-4"
-          >
+            className="grid place-items-center rounded-[10px] border border-[#EAECF0] p-4">
             <Image src={DollarIcon} alt="" />
           </div>
         }
       />
-    )
-  }
+    );
+  };
 
   const activateWithdrawalCompletionModal = () => {
     modal.show(
@@ -154,12 +154,12 @@ const Withdrawal = () => {
         text={`Your money is on its way to your bank account. Thank you for choosing Crowdr.`}
         primaryButton={{
           label: "Back to Dashboard",
-          onClick: modal.hide,
+          onClick: modal.hide
         }}
         clearModal={modal.hide}
       />
-    )
-  }
+    );
+  };
 
   const mapCampaignToView = (campaign: ICampaignView) => {
     return {
@@ -173,9 +173,9 @@ const Withdrawal = () => {
           disabled={!campaign.isCompleted}
           onClick={() => activateWithdrawalModal(campaign)}
         />
-      ),
-    }
-  }
+      )
+    };
+  };
 
   return (
     <div>
@@ -229,33 +229,48 @@ const Withdrawal = () => {
               <Table.HeadCell></Table.HeadCell>
             </Table.Head>
             <Table.Body>
-              {campaigns.campaigns.map((campaign, index) => (
-                <Table.Row key={index}>
-                  <Table.Cell>{campaign.title}</Table.Cell>
-                  <Table.Cell>{campaign.fundingGoal}</Table.Cell>
-                  <Table.Cell>{campaign.fundsGotten}</Table.Cell>
-                  <Table.Cell>{campaign.endDate}</Table.Cell>
-                  <Table.Cell>
-                    {campaign.campaignType !== "volunteer" && (
-                      <Button
-                        text="Withdraw"
-                        onClick={() => activateWithdrawalModal(campaign)}
-                        disabled={
-                          (campaign.amountDonated?.amount ?? 0) <= 0 ||
-                          !campaign.isCompleted
-                        }
-                      />
-                    )}
-                  </Table.Cell>
-                </Table.Row>
-              ))}
+              {campaigns.campaigns
+                .filter(
+                  (campaign) =>
+                    campaign.campaignType === "fundraise" ||
+                    campaign.campaignType === "fundraiseAndVolunteer"
+                )
+                .map((campaign, index) => (
+                  <Table.Row key={index}>
+                    <Table.Cell>{campaign.title}</Table.Cell>
+                    <Table.Cell>{campaign.fundingGoal}</Table.Cell>
+                    <Table.Cell>{campaign.fundsGotten}</Table.Cell>
+                    <Table.Cell>
+                      {campaign?.endDate &&
+                        format(parseISO(campaign?.endDate), "PPP 'at' p")}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {campaign.campaignType !== "volunteer" && (
+                        <Button
+                          text="Withdraw"
+                          onClick={() => activateWithdrawalModal(campaign)}
+                          disabled={
+                            (campaign.amountDonated?.amount ?? 0) <= 0 ||
+                            !campaign.isCompleted
+                          }
+                        />
+                      )}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
             </Table.Body>
           </Table>
 
           <div className="flex flex-col md:hidden">
-            {campaigns.campaigns.map((campaign) => (
-              <Detail key={campaign._id} {...mapCampaignToView(campaign)} />
-            ))}
+            {campaigns.campaigns
+              .filter(
+                (campaign) =>
+                  campaign.campaignType === "fundraise" ||
+                  campaign.campaignType === "fundraiseAndVolunteer"
+              )
+              .map((campaign) => (
+                <Detail key={campaign._id} {...mapCampaignToView(campaign)} />
+              ))}
           </div>
 
           {/* pagination */}
@@ -277,67 +292,67 @@ const Withdrawal = () => {
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Withdrawal
+export default Withdrawal;
 
 type ICampaign = {
-  campaigns: ICampaignView[]
-  pagination: IPagination
-}
+  campaigns: ICampaignView[];
+  pagination: IPagination;
+};
 
 const fetchStats: QF<Nullable<ICampaignStats>, [Nullable<string>]> = async ({
-  queryKey,
+  queryKey
 }) => {
-  const [_, token] = queryKey
+  const [_, token] = queryKey;
 
   if (token) {
-    const endpoint = `/my-campaigns/summary`
+    const endpoint = `/my-campaigns/summary`;
     const headers = {
-      "x-auth-token": token,
-    }
+      "x-auth-token": token
+    };
 
     try {
       const { data } = await makeRequest<ICampaignStats>(endpoint, {
         headers,
-        method: "GET",
-      })
+        method: "GET"
+      });
 
-      return data
+      return data;
     } catch (error) {
-      const message = extractErrorMessage(error)
-      throw new Error(message)
+      const message = extractErrorMessage(error);
+      throw new Error(message);
     }
   }
-}
+};
 
-type Data = Nullable<ICampaign>
-type Token = Nullable<string>
-type Page = number
+type Data = Nullable<ICampaign>;
+type Token = Nullable<string>;
+type Page = number;
 const fetchCampaigns: QF<Data, [Token, Page]> = async ({ queryKey }) => {
-  const [_, token, page] = queryKey
+  const [_, token, page] = queryKey;
 
   if (token) {
-    const query = new URLSearchParams({ page: `${page}`, perPage: "6" })
-    const endpoint = `/my-campaigns?${query}`
+    const query = new URLSearchParams({ page: `${page}`, perPage: "6" });
+    const endpoint = `/my-campaigns?${query}`;
     const headers = {
-      "x-auth-token": token,
-    }
+      "x-auth-token": token
+    };
 
     try {
       const { data } = await makeRequest<ICampaignResponse>(endpoint, {
         headers,
-        method: "GET",
-      })
+        method: "GET"
+      });
 
       return {
         campaigns: data.campaigns.map(mapCampaignResponseToView),
-        pagination: data.pagination,
-      }
+        pagination: data.pagination
+      };
     } catch (error) {
-      const message = extractErrorMessage(error)
-      throw new Error(message)
+      const message = extractErrorMessage(error);
+      throw new Error(message);
     }
   }
-}
+};

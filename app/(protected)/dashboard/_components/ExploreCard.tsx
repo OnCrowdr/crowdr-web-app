@@ -50,7 +50,6 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
 
   const router = useRouter()
 
-  console.log("totalVolunteers", totalVolunteers)
 
   const { copied, copy } = useClipboard()
 

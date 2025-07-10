@@ -28,7 +28,7 @@ Table.Body = ({ children }) => {
 
 Table.HeadCell = ({ children }) => {
   return (
-    <th scope="col" className="text-xs text-[#667085] font-normal px-6 py-3">
+    <th scope="col" className="text-md text-[#000] font-normal px-6 py-3">
       {children}
     </th>
   );

@@ -27,6 +27,7 @@ import ModalTrigger, {
 import { useAtomValue } from "jotai"
 import { LuEye, LuTrash2 } from "react-icons/lu"
 import { MdBlock } from "react-icons/md"
+import { isAfter, parseISO } from "date-fns"
 
 const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
   const {
@@ -46,6 +47,11 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
   const router = useRouter()
   const isVolunteerCampaign = campaignType === "volunteer"
   const modalStore = useAtomValue(modalStoreAtom)
+
+  // Check if campaign has ended
+  const currentDate = new Date()
+  const campaignEndDate = campaign.campaignEndDate ? parseISO(campaign.campaignEndDate) : null
+  const hasEnded = campaignEndDate ? isAfter(currentDate, campaignEndDate) : false
 
   const deleteMutation = useMutation({
     mutationFn: () => _my_campaign.deleteCampaign({ id: _id }),
@@ -142,11 +148,13 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
               <span className="text-black font-medium">
                 {!isVolunteerCampaign ? "Donors:" : "Volunteers:"}
               </span>{" "}
-              <span>{!isVolunteerCampaign ? donors : volunteers}</span>
+              <span>{!isVolunteerCampaign ? campaign?.campaignDonors?.length : volunteers}</span>
             </p>
             <p>
               <span className="text-black font-medium">Duration:</span>{" "}
-              <span>{duration}</span>
+              <span className={hasEnded ? "text-red-600 font-medium" : ""}>
+                {hasEnded ? "Ended" : duration}
+              </span>
             </p>
           </div>
           <GrayButton
@@ -171,14 +179,16 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
             View
           </button>
         </Link>
-        <ModalTrigger id={`end_campaign_modal-${_id}`}>
-          <button className="relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 hover:bg-gray-100 text-[#61656B]">
-            <MdBlock size={16} />
-            End campaign
-          </button>
-        </ModalTrigger>
+        {!hasEnded && (
+          <ModalTrigger id={`end_campaign_modal-${_id}`}>
+            <button className="relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 hover:bg-gray-100 text-[#61656B]">
+              <MdBlock size={16} />
+              End campaign
+            </button>
+          </ModalTrigger>
+        )}
         <ModalTrigger id={`delete_campaign_modal-${_id}`}>
-          <button className="relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 rounded-b-lg hover:bg-gray-100 text-[#FE0A2D]">
+          <button className={`relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 hover:bg-gray-100 text-[#FE0A2D] ${hasEnded ? 'rounded-b-lg' : ''}`}>
             <LuTrash2 stroke="#FE0A2D" size={16} />
             Delete
           </button>
@@ -211,28 +221,30 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
         />
       </SidebarModal>
 
-      <SidebarModal id={`end_campaign_modal-${_id}`}>
-        <CompletionCard
-          title="End campaign"
-          text="Are you sure you want to end this campaign?"
-          primaryButton={{
-            label: "End campaign",
-            bgColor: "#D92D20",
-            loading: endMutation.isLoading,
-            onClick: () => endMutation.mutate(),
-          }}
-          secondaryButton={{
-            label: "Cancel",
-            onClick: () => hideConfirmationModal(`end_campaign_modal-${_id}`),
-          }}
-          clearModal={() => hideConfirmationModal(`end_campaign_modal-${_id}`)}
-          icon={
-            <div className="grid place-items-center rounded-full bg-[#FEE4E2] p-3">
-              <RiDeleteBinLine fill="#D92D20" size={20} />
-            </div>
-          }
-        />
-      </SidebarModal>
+      {!hasEnded && (
+        <SidebarModal id={`end_campaign_modal-${_id}`}>
+          <CompletionCard
+            title="End campaign"
+            text="Are you sure you want to end this campaign?"
+            primaryButton={{
+              label: "End campaign",
+              bgColor: "#D92D20",
+              loading: endMutation.isLoading,
+              onClick: () => endMutation.mutate(),
+            }}
+            secondaryButton={{
+              label: "Cancel",
+              onClick: () => hideConfirmationModal(`end_campaign_modal-${_id}`),
+            }}
+            clearModal={() => hideConfirmationModal(`end_campaign_modal-${_id}`)}
+            icon={
+              <div className="grid place-items-center rounded-full bg-[#FEE4E2] p-3">
+                <RiDeleteBinLine fill="#D92D20" size={20} />
+              </div>
+            }
+          />
+        </SidebarModal>
+      )}
     </>
   )
 }

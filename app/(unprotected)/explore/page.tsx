@@ -1,94 +1,94 @@
-"use client"
-import ExploreCard from "../../(protected)/dashboard/_components/ExploreCard"
-import { useState, useEffect, useCallback, useMemo } from "react"
-import Footer from "../../common/components/Footer"
-import OldModal from "../../common/components/OldModal"
-import WaitlistForm from "../../_components/home/home-components/WaitlistForm"
-import Head from "next/head"
-import NavBar from "./components/NavBar"
-import { Mixpanel } from "../../../utils/mixpanel"
-import { Search } from "lucide-react"
-import debounce from "lodash/debounce"
-import Image from "next/image"
-import { campaignCategories } from "../../../utils/campaignCategory"
-import Pagination from "@/app/(protected)/dashboard/_components/Pagination"
-import { RFC } from "@/app/common/types"
-import { useQuery } from "react-query"
-import _campaigns from "@/api/_campaigns"
-import { IGetCampaignsParams } from "@/api/_campaigns/models/GetCampaigns"
-import { useRouter, useSearchParams } from "next/navigation"
-import useQueryKey from "@/app/_hooks/useQueryKey"
-import query from "@/api/query"
-import { mapParamsToObject, sanitizeParams, useParamKey } from "@/utils/params"
-import CampaignCardSkeleton from "@/app/(protected)/dashboard/_components/skeletons/CampaignCardSkeleton"
+"use client";
+import ExploreCard from "../../(protected)/dashboard/_components/ExploreCard";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import Footer from "../../common/components/Footer";
+import OldModal from "../../common/components/OldModal";
+import WaitlistForm from "../../_components/home/home-components/WaitlistForm";
+import Head from "next/head";
+import NavBar from "./components/NavBar";
+import { Mixpanel } from "../../../utils/mixpanel";
+import { Search } from "lucide-react";
+import debounce from "lodash/debounce";
+import Image from "next/image";
+import { campaignCategories } from "../../../utils/campaignCategory";
+import Pagination from "@/app/(protected)/dashboard/_components/Pagination";
+import { RFC } from "@/app/common/types";
+import { useQuery } from "react-query";
+import _campaigns from "@/api/_campaigns";
+import { IGetCampaignsParams } from "@/api/_campaigns/models/GetCampaigns";
+import { useRouter, useSearchParams } from "next/navigation";
+import useQueryKey from "@/app/_hooks/useQueryKey";
+import query from "@/api/query";
+import { mapParamsToObject, sanitizeParams, useParamKey } from "@/utils/params";
+import CampaignCardSkeleton from "@/app/(protected)/dashboard/_components/skeletons/CampaignCardSkeleton";
 
 const Explore = () => {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const params = mapParamsToObject<IGetCampaignsParams>(searchParams)
-  const [currentUrl, setCurrentUrl] = useState("https://oncrowdr.com/explore")
-  const [searchTerm, setSearchTerm] = useState(params.title)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const queryKey = useQueryKey()
-  const paramKey = useParamKey<IGetCampaignsParams>()
-  const url = useMemo(() => new URL(currentUrl), [currentUrl])
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = mapParamsToObject<IGetCampaignsParams>(searchParams);
+  const [currentUrl, setCurrentUrl] = useState("https://oncrowdr.com/explore");
+  const [searchTerm, setSearchTerm] = useState(params.title);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const queryKey = useQueryKey();
+  const paramKey = useParamKey<IGetCampaignsParams>();
+  const url = useMemo(() => new URL(currentUrl), [currentUrl]);
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.GET_CAMPAIGNS, params),
-    queryFn: () => _campaigns.getCampaigns(params),
-  })
-  const campaigns = campaignsQuery.data
-  const selectedInterest = params.category ?? ALL_CATEGORY.value
+    queryFn: () => _campaigns.getCampaigns(params)
+  });
+  const campaigns = campaignsQuery.data;
+  const selectedInterest = params.category ?? ALL_CATEGORY.value;
 
   useEffect(() => {
-    setCurrentUrl(window.location.href)
-    Mixpanel.track("Explore Page viewed")
-  }, [])
+    setCurrentUrl(window.location.href);
+    Mixpanel.track("Explore Page viewed");
+  }, []);
 
   const debouncedSearch = useCallback(
     debounce((search: string) => {
-      url.searchParams.set(paramKey("page"), "1")
-      url.searchParams.set(paramKey("title"), search)
-      updatePageParams()
+      url.searchParams.set(paramKey("page"), "1");
+      url.searchParams.set(paramKey("title"), search);
+      updatePageParams();
     }, 500),
     [url, currentUrl]
-  )
+  );
 
   const updatePageParams = () => {
-    const pageKey = paramKey("page")
-    const categoryKey = paramKey("category")
+    const pageKey = paramKey("page");
+    const categoryKey = paramKey("category");
     if (url.searchParams.get(pageKey) === "1") {
-      url.searchParams.delete(pageKey)
+      url.searchParams.delete(pageKey);
     }
     if (url.searchParams.get(categoryKey) === ALL_CATEGORY.value) {
-      url.searchParams.delete(categoryKey)
+      url.searchParams.delete(categoryKey);
     }
 
-    const urlWithSanitizedParams = sanitizeParams(url)
-    router.replace(urlWithSanitizedParams.toString())
-  }
+    const urlWithSanitizedParams = sanitizeParams(url);
+    router.replace(urlWithSanitizedParams.toString());
+  };
 
   const handlePageChange = (page: number) => {
-    url.searchParams.set(paramKey("page"), page.toString())
-    updatePageParams()
-  }
+    url.searchParams.set(paramKey("page"), page.toString());
+    updatePageParams();
+  };
 
   const handleInterestToggle = (interest: string) => {
-    url.searchParams.set(paramKey("page"), "1")
-    url.searchParams.set(paramKey("category"), interest)
-    console.log(url.search)
-    updatePageParams()
-  }
+    url.searchParams.set(paramKey("page"), "1");
+    url.searchParams.set(paramKey("category"), interest);
+    console.log(url.search);
+    updatePageParams();
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchTerm(value)
-    debouncedSearch(value)
-  }
+    const value = e.target.value;
+    setSearchTerm(value);
+    debouncedSearch(value);
+  };
 
   const openModal = (open: boolean) => {
-    return () => setModalIsOpen(open)
-  }
+    return () => setModalIsOpen(open);
+  };
 
   return (
     <div className="font-satoshi">
@@ -131,18 +131,16 @@ const Explore = () => {
           {/* categories */}
           <div
             id="interests"
-            className="flex flex-row scrollbar-thin overflow-x-scroll gap-5 mt-2"
-          >
+            className="flex flex-row scrollbar-thin overflow-x-scroll gap-5 mt-2">
             {categories.map(({ value, label, icon, bgColor }) => (
               <label
                 key={value}
                 style={{
                   backgroundColor:
-                    selectedInterest === value ? "#00B964" : bgColor,
+                    selectedInterest === value ? "#00B964" : bgColor
                 }}
                 className={`flex justify-center items-center gap-x-[5px] rounded-full cursor-pointer py-[8px] px-[21px] mr-[5.5px] ${bgColor}`}
-                onClick={() => handleInterestToggle(value)}
-              >
+                onClick={() => handleInterestToggle(value)}>
                 {icon && (
                   <Image
                     src={`svg/emoji/${icon}.svg`}
@@ -156,8 +154,7 @@ const Explore = () => {
                     selectedInterest === value
                       ? "text-[#F8F8F8]"
                       : "text-[#0B5351]"
-                  } text-[12px] md:text-base w-max`}
-                >
+                  } text-[12px] md:text-base w-max`}>
                   {label}
                 </span>
               </label>
@@ -171,10 +168,10 @@ const Explore = () => {
               {campaigns.campaigns.map((campaign) => {
                 const urlsOnly = campaign.campaignAdditionalImages.map(
                   (item) => item.url
-                )
+                );
 
-                const userDetails = campaign?.user
-                const donatedAmount = campaign?.totalAmountDonated?.[0]?.amount
+                const userDetails = campaign?.user;
+                const donatedAmount = campaign?.totalAmountDonated?.[0]?.amount;
 
                 return (
                   <ExploreCard
@@ -199,10 +196,10 @@ const Explore = () => {
                     currentAmount={donatedAmount}
                     timePosted={campaign?.campaignEndDate}
                     volunteer={campaign?.volunteer}
-            totalVolunteers={campaign.totalNoOfCampaignVolunteers}
+                    totalVolunteers={campaign.totalNoOfCampaignVolunteers}
                     slideImages={[
                       campaign?.campaignCoverImage?.url,
-                      ...(urlsOnly || []),
+                      ...(urlsOnly || [])
                     ]}
                     donateImage=""
                     routeTo={`/explore/c/${campaign._id}`}
@@ -210,7 +207,7 @@ const Explore = () => {
                     campaignType={campaign.campaignType}
                     user={userDetails}
                   />
-                )
+                );
               })}
             </CampaignsContainer>
           ) : (
@@ -245,32 +242,32 @@ const Explore = () => {
         <WaitlistForm />
       </OldModal>
     </div>
-  )
-}
+  );
+};
 
-export default Explore
+export default Explore;
 
 const ALL_CATEGORY = {
   value: "all",
   label: "All categories",
   icon: "",
-  bgColor: "#F8F8F8",
-} as const
+  bgColor: "#F8F8F8"
+} as const;
 
-const categories = [ALL_CATEGORY, ...campaignCategories]
+const categories = [ALL_CATEGORY, ...campaignCategories];
 
 const CampaignsContainer: RFC = ({ children }) => {
   return (
     <div className="grid grid-cols-1 gap-2.5 gap-y-10 min-w-full md:grid-cols-2 mt-8">
       {children}
     </div>
-  )
-}
+  );
+};
 
 const MessageContainer: RFC = ({ children }) => {
   return (
     <div className="text-center font-semibold text-[18px] md:text-[30px] mt-10">
       {children}
     </div>
-  )
-}
+  );
+};

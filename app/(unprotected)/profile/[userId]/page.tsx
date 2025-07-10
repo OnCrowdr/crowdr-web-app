@@ -52,10 +52,6 @@ const OrganizationProfilePage: React.FC = () => {
     }
   }, [activeCampaignsQuery.data])
 
-  const handleDonate = () => {
-    console.log("Donation process initiated")
-    // Implement donation logic here
-  }
 
   const fundingGoal = selectedCampaign?.fundraise
   const amountDonated = selectedCampaign?.totalAmountDonated
