@@ -16,7 +16,7 @@ export const formatCurrency = (
 
 export const calculateTransactionFee = (amount: number) => {
   // this calculation currently only applies to Local transactions in Nigeria
-  const percentageFeeRate = 0.015; // 1.5%
+  const percentageFeeRate = 0.017; // 4%
   const fixedFee = 100; // NGN 100
   const feeWaiverThreshold = 2500; // NGN 2500
   const feeCap = 2000; // NGN 2000

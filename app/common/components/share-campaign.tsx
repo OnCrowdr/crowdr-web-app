@@ -146,7 +146,7 @@ const ShareCampaign = (props: ShareCampaignProps) => {
   return (
     <div
       style={{ boxShadow }}
-      className="min-w-[400px] max-w-[420px] md:max-w-[600px] bg-white rounded-lg overflow-hidden p-4 md:p-6 font-satoshi"
+      className="min-w-[360px] max-w-[410px] md:max-w-[600px] bg-white rounded-lg overflow-hidden p-4 md:p-6 font-satoshi"
     >
       {/* Header Section */}
       <div className="flex justify-between md:gap-4 mb-3 md:mb-6">

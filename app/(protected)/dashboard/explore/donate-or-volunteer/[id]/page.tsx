@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef, use, useCallback } from "react";
 import Image from "next/image";
 import { getUser } from "../../../../../api/user/getUser";
 import ProgressBar from "../../../_components/ProgressBar";
@@ -19,11 +19,15 @@ import Link from "next/link";
 import Head from "next/head";
 import { Button } from "../../../../../common/components/Button";
 import Loading from "../../../../../loading";
-import { calculateTransactionFee, formatCurrency } from "../../../../../../utils/seperateText";
+import {
+  calculateTransactionFee,
+  formatCurrency
+} from "../../../../../../utils/seperateText";
 import { useModal } from "../../../../../common/hooks/useModal";
 import { Mixpanel } from "../../../../../../utils/mixpanel";
 import PhoneNumberInput from "../../../../../common/components/PhoneNumberInput";
 import NotFound from "../../../../../not-found";
+import { FaApplePay } from "react-icons/fa";
 
 const activeTabStyle = "text-[#00B964]  border-b-2 border-[#00B964]";
 const inActiveTabStyle = "text-[#667085]";
@@ -61,11 +65,9 @@ const ageRange = [
   }
 ];
 
-export default function DonateOrVolunteer(
-  props: {
-    params: Promise<{ id: string }>;
-  }
-) {
+export default function DonateOrVolunteer(props: {
+  params: Promise<{ id: string }>;
+}) {
   const params = use(props.params);
   const modal = useModal();
   const toast = useToast();
@@ -76,6 +78,9 @@ export default function DonateOrVolunteer(
   const [campaign, setCampaign] = useState<any>();
   const [tab, setTab] = useState("");
   const [loadingCampaign, setLoadingCampaign] = useState(true);
+
+  const [paystackLoaded, setPaystackLoaded] = useState(false);
+  const [applePaySupported, setApplePaySupported] = useState(false);
 
   const [userId, setUserId] = useState<any>("");
 
@@ -200,6 +205,46 @@ export default function DonateOrVolunteer(
     });
   };
 
+  // Apple Pay detection
+  const checkApplePaySupport = useCallback(() => {
+    if (typeof window === "undefined") return false;
+
+    try {
+      const isSafari =
+        /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
+        navigator.userAgent.includes("iPhone") ||
+        navigator.userAgent.includes("iPad") ||
+        navigator.userAgent.includes("Mac");
+
+      const mightSupportApplePay =
+        isSafari &&
+        window.PaymentRequest &&
+        !navigator.userAgent.includes("Chrome");
+
+      return mightSupportApplePay;
+    } catch (error) {
+      console.error("Error checking Apple Pay support:", error);
+      return false;
+    }
+  }, []);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://js.paystack.co/v2/inline.js";
+    script.async = true;
+    script.onload = () => {
+      setPaystackLoaded(true);
+      setApplePaySupported(checkApplePaySupport());
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, [checkApplePaySupport]);
+
   useEffect(() => {
     Mixpanel.track(
       campaign?.campaignType === "fundraiseAndVolunteer"
@@ -227,7 +272,7 @@ export default function DonateOrVolunteer(
   const donatedAmount = campaign?.totalAmountDonated?.[0].amount;
   const currency = campaign?.fundraise?.fundingGoalDetails[0].currency;
 
-  const donate = async () => {
+  const donate = async (paymentMethod: "card" | "apple_pay") => {
     setLoading(true);
     const user = await getUser();
 
@@ -246,6 +291,7 @@ export default function DonateOrVolunteer(
       amount: donationInputs.amount,
       email: donationInputs.email,
       fullName: donationInputs.fullName,
+      payment_method: paymentMethod,
       currency: currency,
       isAnonymous: checkboxValues.isAnonymous,
       shouldShareDetails: checkboxValues.shouldShareDetails,
@@ -372,12 +418,12 @@ export default function DonateOrVolunteer(
 
   if (loadingCampaign) return <Loading />;
   if (!campaign)
-      return (
-        <NotFound
-          errorTitle="Campaign not found"
-          errorMessage="The campaign you are looking for does not exist, has ended or has been removed. Please check the URL or return to the homepage."
-        />
-      );
+    return (
+      <NotFound
+        errorTitle="Campaign not found"
+        errorMessage="The campaign you are looking for does not exist, has ended or has been removed. Please check the URL or return to the homepage."
+      />
+    );
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -742,7 +788,7 @@ export default function DonateOrVolunteer(
               <Button
                 text="Donate"
                 className="w-full mt-4 !justify-center"
-                onClick={donate}
+                onClick={() => donate("card")}
                 loading={loading}
                 disabled={
                   !areAllInputsFilled(
@@ -751,6 +797,28 @@ export default function DonateOrVolunteer(
                   )
                 }
               />
+
+              {paystackLoaded && applePaySupported && (
+                <button
+                  onClick={() => {
+                    donate("apple_pay");
+                  }}
+                  className="apple-pay-button"
+                  disabled={
+                    !areAllInputsFilled(
+                      donationInputs,
+                      checkboxValues.agreeToTermsDonate
+                    ) || loading
+                  }>
+                  <span className="apple-pay-text">Donate with</span>
+                  <FaApplePay
+                    className="mt-1"
+                    size={50}
+                    color="#fff"
+                    fill="#fff"
+                  />
+                </button>
+              )}
 
               <div className="mt-10">
                 <div className="flex flex-row items-start justify-between mb-2">
