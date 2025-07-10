@@ -141,8 +141,6 @@ const OrganizationProfilePage: React.FC = () => {
                     )}
                   </div>
 
-                  {/* Previous campaigns */}
-
                   <div className="mb-10">
                     <h2 className="text-lg font-semibold mb-2">
                       Previous Campaigns
