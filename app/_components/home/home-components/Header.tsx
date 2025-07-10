@@ -19,7 +19,7 @@ export default function Header({ openModal }: Props) {
           For individuals, non-profits & businesses
         </div>
         <h1 className="content-header">
-         The easiest way for Nigerians to<br/> crowdfund online in Nigeria 
+        The easiest way to crowdfund <br/> online in Nigeria
         </h1>
         <p className="">
           Crowdr is the crowdfunding platform that makes it easy to fundraise in Nigeria and build trust with donors.
@@ -40,7 +40,6 @@ export default function Header({ openModal }: Props) {
         width={500}
         height={500}
         alt="hero-section"
-        //  -mt-[7rem] md:-mt-[16rem]
         className="w-full
          -mt-[3rem] md:-mt-[16rem] 
          z-0"

@@ -405,6 +405,7 @@ export default function DonateOrVolunteer(
           header={campaign?.title}
           subheader={campaign?.story}
           volunteer={campaign?.volunteer}
+          totalVolunteers={campaign?.totalNoOfCampaignVolunteers}
           totalAmount={campaign?.fundraise?.fundingGoalDetails[0].amount}
           currency={campaign?.fundraise?.fundingGoalDetails[0].currency}
           currentAmount={donatedAmount}

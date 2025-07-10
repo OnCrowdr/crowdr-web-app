@@ -199,6 +199,7 @@ const Explore = () => {
                     currentAmount={donatedAmount}
                     timePosted={campaign?.campaignEndDate}
                     volunteer={campaign?.volunteer}
+            totalVolunteers={campaign.totalNoOfCampaignVolunteers}
                     slideImages={[
                       campaign?.campaignCoverImage?.url,
                       ...(urlsOnly || []),
