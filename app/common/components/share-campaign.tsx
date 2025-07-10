@@ -161,7 +161,7 @@ const ShareCampaign = (props: ShareCampaignProps) => {
                 </h2>
               ) : (
                 <h2 className="text-lg text-[#101828] font-semibold mb-1">
-                  Share: {title}
+                  {title}
                 </h2>
               )}
               
