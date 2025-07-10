@@ -33,6 +33,11 @@ export default function Navigation({ openModal }: Props) {
       </Link>
 
       <ul className="relative md:left-6">
+        {/* <li>
+          <Link href="/explore" className={isActive("/explore")}>
+            Explore
+          </Link>
+        </li> */}
         <li>
           <Link href="/about" className={isActive("/about")}>
             About us

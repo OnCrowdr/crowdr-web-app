@@ -61,6 +61,11 @@ export default function MobileMenu({ openModal }: Props) {
             </a>
           </li>
           <li>
+            <Link href="/login" className={isActive("/login")}>
+              Log In
+            </Link>
+          </li>
+          <li>
             <button
               className="btn-outline w-100"
               onClick={() => router.push("signup")}>

@@ -289,55 +289,60 @@ export default function DonateOrVolunteer(props: {
   }, []);
 
   // API calls
-  const donate = useCallback(async () => {
-    setLoading(true);
-    const endpoint = "/payments/initiate";
+  const donate = useCallback(
+    async (paymentMethod: "card" | "apple_pay") => {
+      setLoading(true);
+      const endpoint = "/payments/initiate";
 
-    const payload = {
-      campaignId: params.campaignId,
-      amount: donationInputs.amount,
-      email: donationInputs.email,
-      fullName: donationInputs.fullName,
-      currency: currency,
-      isAnonymous: checkboxValues.isAnonymous,
-      shouldShareDetails: checkboxValues.shouldShareDetails,
-      isSubscribedToPromo: checkboxValues.isSubscribedToPromo,
-      callback_url: window.location.href,
-      cancel_url: `${window.location.href}?cancelled=true`
-    };
+      const payload = {
+        campaignId: params.campaignId,
+        amount: donationInputs.amount,
+        email: donationInputs.email,
+        fullName: donationInputs.fullName,
+        currency: currency,
+        isAnonymous: checkboxValues.isAnonymous,
+        shouldShareDetails: checkboxValues.shouldShareDetails,
+        isSubscribedToPromo: checkboxValues.isSubscribedToPromo,
+        payment_method: paymentMethod,
+        callback_url: window.location.href,
+        cancel_url: `${window.location.href}?cancelled=true`
+      };
 
-    if (checkboxValues.isAnonymous) {
-      Mixpanel.track("Anonymous Donation");
-    }
-
-    try {
-      const { data } = await makeRequest(endpoint, {
-        method: "POST",
-        payload: JSON.stringify(payload)
-      });
-
-      Mixpanel.track("Routes to Paystack Gateway");
-
-      const paymentWindow = window.open(data.authorization_url, "_blank");
-
-      if (
-        !paymentWindow ||
-        paymentWindow.closed ||
-        typeof paymentWindow.closed == "undefined"
-      ) {
-        window.location.href = data.authorization_url;
-        return;
+      if (checkboxValues.isAnonymous) {
+        Mixpanel.track("Anonymous Donation");
       }
 
-      paymentWindow.focus();
-    } catch (error) {
-      Mixpanel.track("Error completing donation");
-      const message = extractErrorMessage(error);
-      toast({ title: "Oops!", body: message, type: "error" });
-    } finally {
-      setLoading(false);
-    }
-  }, [donationInputs, checkboxValues, currency, params.campaignId, toast]);
+      try {
+        const { data } = await makeRequest(endpoint, {
+          method: "POST",
+          payload: JSON.stringify(payload)
+        });
+
+        Mixpanel.track("Routes to Paystack Gateway");
+
+        const paymentWindow = window.open(data.authorization_url, "_blank");
+
+        if (
+          !paymentWindow ||
+          paymentWindow.closed ||
+          typeof paymentWindow.closed == "undefined"
+        ) {
+          window.location.href = data.authorization_url;
+          return;
+        }
+
+        paymentWindow.focus();
+        setLoading(false);
+      } catch (error) {
+        Mixpanel.track("Error completing donation");
+        const message = extractErrorMessage(error);
+        toast({ title: "Oops!", body: message, type: "error" });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [donationInputs, checkboxValues, currency, params.campaignId, toast]
+  );
 
   const volunteer = useCallback(async () => {
     setLoading(true);
@@ -822,14 +827,16 @@ export default function DonateOrVolunteer(props: {
                   <Button
                     text="Donate"
                     className="w-full !justify-center"
-                    onClick={donate}
+                    onClick={() => donate("card")}
                     loading={loading}
                     disabled={!areAllInputsFilled(donationInputs)}
                   />
 
                   {paystackLoaded && applePaySupported && (
                     <button
-                      onClick={donate}
+                      onClick={() => {
+                        donate("apple_pay");
+                      }}
                       className="apple-pay-button"
                       disabled={!areAllInputsFilled(donationInputs) || loading}>
                       <span className="apple-pay-text">Donate with</span>
