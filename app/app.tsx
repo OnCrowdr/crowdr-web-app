@@ -9,15 +9,15 @@ import AppProvider from "@/contexts/AppProvider"
 
 const App: RFC = ({ children }) => {
   return (
-    <AppProvider>
-      <PostHogPageView />
-      <Toaster position="top-right" reverseOrder={false} />
-      <ModalProvider>{children}</ModalProvider>
-    </AppProvider>
-    // <QueryClientProvider client={queryClient}>
-    //   <UserProvider>
-    //   </UserProvider>
-    // </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppProvider>
+        <PostHogPageView />
+        <Toaster position="top-right" reverseOrder={false} />
+        <ModalProvider>{children}</ModalProvider>
+      </AppProvider>
+    </QueryClientProvider>
+    // <UserProvider>
+    // </UserProvider>
   )
 }
 

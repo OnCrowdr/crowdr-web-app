@@ -1,29 +1,33 @@
 "use client"
 import { setAuthToken } from "@/api"
+import _users from "@/api/_users"
+import {
+  IPostSignInError,
+  IPostSignInResponseData,
+} from "@/api/_users/models/PostSignIn"
+import { UserType } from "@/api/_users/models/PostSignUp"
+import { useToast } from "@/hooks/useToast"
+import { isAxiosError } from "@/lib/error"
 import { RFC } from "@/types"
 import deleteCookie from "@/utils/api/deleteCookie"
-import { getUser, IUser } from "@/utils/api/user/getUser"
+import { getUser } from "@/utils/api/user/getUser"
 import setUserCookie from "@/utils/api/user/setUser"
 import { setClientSideCookie } from "@/utils/cookie-setup"
+import { handleUserRedirection } from "@/utils/handleUserRedirection"
 import local from "@/utils/local"
-import makeRequest from "@/utils/makeRequest"
+import { Mixpanel } from "@/utils/mixpanel"
 import _ from "lodash"
+import { useRouter } from "next/navigation"
 import { createContext, use, useEffect, useState } from "react"
-import { QueryClient, QueryClientProvider } from "react-query"
+import { useMutation } from "react-query"
 
 const AppProvider: RFC = ({ children }) => {
   const [user, setUser] = useState<IUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            refetchOnWindowFocus: false,
-          },
-        },
-      })
-  )
+  const router = useRouter()
+  const toast = useToast()
+
+  const loginMutation = useMutation(_users.signin)
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -49,26 +53,35 @@ const AppProvider: RFC = ({ children }) => {
       }
     }
 
-    // initializeAuth()
+    initializeAuth()
   }, [])
 
   const login = async (credentials: ICredentials) => {
-    try {
-      const endpoint = "/users/signin"
-      const { data: user } = await makeRequest<IUser>(endpoint, {
-        method: "POST",
-        payload: JSON.stringify(credentials),
-      })
+    Mixpanel.track("Login clicked")
 
+    try {
+      const user = await loginMutation.mutateAsync(credentials)
       const { token, ...sanitizedUser } = user
-      // Set server-side cookie
-      await setUserCookie(token)
+      await setUserCookie(token) // Set server-side cookie
       setClientSideCookie("token", token, 7)
       setAuthToken(token)
       updateUser(sanitizedUser)
-      return sanitizedUser
-    } catch (error) {
-      throw error
+      handleUserRedirection(user, router.push)
+    } catch (error: any) {
+      Mixpanel.track("Login failed")
+
+      if (isAxiosError<IPostSignInError>(error)) {
+        const err = error.response.data
+
+        if (err.error === "EMAIL_NOT_VERIFIED") {
+          router.push(`/confirmation?email=${err.email}`)
+          toast({ title: err.message, body: err.solution, type: "error" })
+        } else {
+          toast({ title: "Something unexpected happened", type: "error" })
+        }
+      } else {
+        toast({ title: "Something unexpected happened", type: "error" })
+      }
     }
   }
 
@@ -98,11 +111,7 @@ const AppProvider: RFC = ({ children }) => {
     updateUser,
   }
 
-  return (
-    <AppContext.Provider value={value}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </AppContext.Provider>
-  )
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
 
 export default AppProvider
@@ -120,10 +129,12 @@ interface IAppContext {
   user: IUser | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: (credentials: any) => Promise<Partial<IUser>>
-  logout: () => void
+  login: (credentials: any) => Promise<void>
+  logout: () => Promise<void>
   updateUser: (partialUser: Partial<IUser>) => void
 }
+
+type IUser = Omit<IPostSignInResponseData, "token">
 
 interface ICredentials {
   email: string

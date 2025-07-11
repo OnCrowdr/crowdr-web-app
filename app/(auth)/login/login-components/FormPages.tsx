@@ -12,6 +12,7 @@ import { IUser } from "../../../../utils/api/user/getUser"
 import { Mixpanel } from "../../../../utils/mixpanel"
 import { setClientSideCookie } from "../../../../utils/cookie-setup"
 import { useAuth } from "@/contexts/AppProvider"
+import { IPostSignInError } from "@/api/_users/models/PostSignIn"
 
 const FormPages = () => {
   const { handleSubmit } = useFormContext() as LoginFormContext
@@ -20,14 +21,11 @@ const FormPages = () => {
   const { login } = useAuth()
 
   const submit = async (formFields: FormFields) => {
-    Mixpanel.track("Login clicked")
     const credentials = _.pick(formFields, ["email", "password"])
 
     try {
-      const user = await login(credentials) as any
-      handleUserRedirection(user, router.push)
-    } catch (error) {
-      Mixpanel.track("Login failed")
+      await login(credentials)
+    } catch (error: any) {
       const message = extractErrorMessage(error)
       toast({ title: "Oops!", body: message, type: "error" })
     }

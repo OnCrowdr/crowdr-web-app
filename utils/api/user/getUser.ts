@@ -2,6 +2,7 @@
 import { cookies } from "next/headers";
 import makeRequest from "../../makeRequest";
 import { userTag } from "../../tags";
+import { IPostSignInResponseData } from "@/api/_users/models/PostSignIn";
 
 export type IUser = {
   _id: string;
@@ -32,7 +33,7 @@ export const getUser = async () => {
     "x-auth-token": token
   };
 
-  const { data: user } = await makeRequest<IUser>(endpoint, {
+  const { data: user } = await makeRequest<IPostSignInResponseData>(endpoint, {
     headers,
     cache: "force-cache",
     tags: [userTag] // for cache revalidation
