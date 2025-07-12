@@ -16,7 +16,7 @@ import BurgerIcon from "@/public/svg/burger-icon.svg"
 import Avatar from "@/public/assets/avatar.png"
 import CreateCampaignDropdown from "./createCampainDropdown"
 
-export  function getInitials(name: string) {
+export  function getInitials(name?: string) {
   if (!name) return ''; 
   const nameParts = name.trim().split(' ');
   const initials = nameParts.map(part => part.charAt(0).toUpperCase()).join('');

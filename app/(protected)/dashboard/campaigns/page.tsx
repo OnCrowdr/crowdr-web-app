@@ -1,44 +1,41 @@
-"use client"
-import { useState } from "react"
-import { useQuery } from "react-query"
-import CampaignCard from "../_components/CampaignCard"
+"use client";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import CampaignCard from "../_components/CampaignCard";
 import {
   Button,
   GrayButton,
-  WhiteButton,
-} from "../../../../components/shared/Button"
-import TextInput from "../../../../components/shared/TextInput"
-import DateRange from "../_components/DateRange"
-import StatCard from "../_components/StatCard"
-import Pagination from "../_components/Pagination"
-import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton"
-import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton"
-import { useUser } from "../../../../contexts/UserProvider"
-import { formatAmount } from "../_common/utils/currency"
-import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
-import makeRequest from "../../../../utils/makeRequest"
-import { keys } from "../_utils/queryKeys"
-import { time } from "../_utils/time"
+  WhiteButton
+} from "@/components/shared/Button";
+import TextInput from "@/components/shared/TextInput";
+import DateRange from "../_components/DateRange";
+import StatCard from "../_components/StatCard";
+import Pagination from "../_components/Pagination";
+import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton";
+import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton";
+import { useUser } from "@/contexts/UserProvider";
+import { formatAmount } from "../_common/utils/currency";
+import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
+import makeRequest from "../../../../utils/makeRequest";
+import { keys } from "../_utils/queryKeys";
+import { time } from "../_utils/time";
 
-import { Nullable, QF } from "@/types"
+import { Nullable, QF } from "@/types";
 // import { CampaignResponse, ICampaignStats } from "@/app/common/types/Campaign"
-import { IDateRange } from "../_components/DateRange"
-import { IUser } from "../../../../utils/api/user/getUser"
+import { IDateRange } from "../_components/DateRange";
 
-import { BiSearch } from "react-icons/bi"
-import FileDownloadIcon from "@/public/svg/file-download.svg"
-import FilterIcon from "@/public/svg/filter.svg"
-import { ICampaignStats } from "@/types/UserStats"
-import { ICampaignResponse } from "@/types/Campaign"
-import { Mixpanel } from "../../../../utils/mixpanel"
-import { useAuth } from "@/contexts/AppProvider"
-import { useAuthQuery } from "@/hooks/useAuthQuery"
+import { BiSearch } from "react-icons/bi";
+import FileDownloadIcon from "@/public/svg/file-download.svg";
+import FilterIcon from "@/public/svg/filter.svg";
+import { ICampaignStats } from "@/types/UserStats";
+import { ICampaignResponse } from "@/types/Campaign";
+import { Mixpanel } from "../../../../utils/mixpanel";
 
 const Campaigns = () => {
-  const [dateRange, setDateRange] = useState<IDateRange>()
-  const [page, setPage] = useState(1)
-  const [input, setInput] = useState("")
-  const { user } = useAuth()
+  const [dateRange, setDateRange] = useState<IDateRange>();
+  const [page, setPage] = useState(1);
+  const [input, setInput] = useState("");
+  const user = useUser();
 
   const { data: stats } = useQuery(
     [keys.myCampaigns.stats, user?.token, dateRange],
@@ -46,18 +43,14 @@ const Campaigns = () => {
     {
       enabled: Boolean(user?.token),
       // staleTime: time.mins(2),
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false
     }
-  )
-
-  // const statsQuery = useAuthQuery({
-  //   queryFn: _my_campaigns.
-  // })
+  );
 
   const {
     isPreviousData,
     data,
-    refetch: refetchCampaigns,
+    refetch: refetchCampaigns
   } = useQuery(
     [keys.myCampaigns.campaigns, user?.token, page],
     fetchCampaigns,
@@ -65,9 +58,9 @@ const Campaigns = () => {
       enabled: Boolean(user?.token),
       // keepPreviousData: true,
       // staleTime: time.mins(10),
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: false
     }
-  )
+  );
 
   return (
     <div>
@@ -111,6 +104,18 @@ const Campaigns = () => {
               // time="yesterday"
               pattern
             />
+            {/* <StatCard
+              title="Withdrawable Amount"
+              text={formatAmount(
+                stats.totalWithdrawableAmount[0].amount,
+                stats.totalWithdrawableAmount[0].currency,
+                { minimumFractionDigits: 2 }
+              )}
+              // percentage={100}
+              // time="yesterday"
+              // colorScheme="light"
+              pattern
+            /> */}
             <StatCard
               title="Total Campaigns"
               text={stats.totalNoOfCampaigns}
@@ -150,20 +155,20 @@ const Campaigns = () => {
         <TextInput
           value={input}
           onChange={(e) => {
-            setInput(e.target.value)
+            setInput(e.target.value);
           }}
           placeholder="Search campaigns"
           icon={BiSearch}
           styles={{
             wrapper: "grow mr-[22px] block md:hidden",
-            input: "text-sm",
+            input: "text-sm"
           }}
         />
         {/* <GrayButton text="Filters" iconUrl={FilterIcon} /> */}
       </div>
 
       {/* campaigns */}
-      <div className="grid md:grid-cols-[repeat(2,_minmax(0,_550px))] 2xl:grid-cols-3 gap-x-[10px] gap-y-3 md:gap-y-[40px] mb-[30px] md:mb-10">
+      <div className="grid md:grid-cols-[repeat(2,_minmax(0,_550px))] 2xl:grid-cols-3 gap-x-[10px] gap-y-3 md:gap-y-[10px] mb-[30px] md:mb-10">
         {data
           ? data.campaigns.map((campaign) => (
               <CampaignCard
@@ -172,7 +177,7 @@ const Campaigns = () => {
                 onDelete={refetchCampaigns}
               />
             ))
-          : Array.from({ length: 4 }).map((_, index) => (
+          : Array.from({ length: 6 }).map((_, index) => (
               <CampaignCardSkeleton key={index} />
             ))}
       </div>
@@ -195,67 +200,67 @@ const Campaigns = () => {
         </p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Campaigns
+export default Campaigns;
 
 const fetchStats: QF<
   Nullable<ICampaignStats>,
   [Nullable<string>, IDateRange?]
 > = async ({ queryKey }) => {
-  const [_, token, dateRange] = queryKey
+  const [_, token, dateRange] = queryKey;
 
   if (token) {
-    const query = new URLSearchParams()
+    const query = new URLSearchParams();
     if (dateRange) {
-      query.set("startDate", dateRange[0])
-      query.set("endDate", dateRange[1])
+      query.set("startDate", dateRange[0]);
+      query.set("endDate", dateRange[1]);
     }
 
-    const endpoint = `/my-campaigns/summary?${query}`
+    const endpoint = `/my-campaigns/summary?${query}`;
     const headers = {
       "Content-Type": "multipart/form-data",
-      "x-auth-token": token,
-    }
+      "x-auth-token": token
+    };
 
     try {
       const { data } = await makeRequest<ICampaignStats>(endpoint, {
         headers,
-        method: "GET",
-      })
+        method: "GET"
+      });
 
-      return data
+      return data;
     } catch (error) {
-      const message = extractErrorMessage(error)
-      throw new Error(message)
+      const message = extractErrorMessage(error);
+      throw new Error(message);
     }
   }
-}
+};
 
 const fetchCampaigns: QF<
   Nullable<ICampaignResponse>,
   [Nullable<string>, number]
 > = async ({ queryKey }) => {
-  const [_, token, page] = queryKey
+  const [_, token, page] = queryKey;
 
   if (token) {
-    const query = new URLSearchParams({ page: `${page}`, perPage: "4" })
-    const endpoint = `/my-campaigns?${query}`
+    const query = new URLSearchParams({ page: `${page}`, perPage: "6" });
+    const endpoint = `/my-campaigns?${query}`;
     const headers = {
-      "x-auth-token": token,
-    }
+      "x-auth-token": token
+    };
 
     try {
       const { data } = await makeRequest<ICampaignResponse>(endpoint, {
         headers,
-        method: "GET",
-      })
+        method: "GET"
+      });
 
-      return data
+      return data;
     } catch (error) {
-      const message = extractErrorMessage(error)
-      throw new Error(message)
+      const message = extractErrorMessage(error);
+      throw new Error(message);
     }
   }
-}
+};

@@ -1,8 +1,7 @@
-export const email = ' info@oncrowdr.com';
+export const email = " info@oncrowdr.com";
 
 export const openEmail = () => {
-     
-       const mailtoUrl = `mailto:${email}`;
-     
-       window.open(mailtoUrl, '_blank');
-}
+  const mailtoUrl = `mailto:${email}`;
+
+  window.open(mailtoUrl, "_blank");
+};

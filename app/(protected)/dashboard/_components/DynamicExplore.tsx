@@ -68,6 +68,7 @@ export default function DynamicExplore({
                 volunteer={
                   isVolunteer(campaign) ? campaign?.volunteer : undefined
                 }
+                totalVolunteers={campaign.totalNoOfCampaignVolunteers}
                 slideImages={[
                   campaign?.campaignCoverImage?.url,
                   ...(urlsOnly || []),

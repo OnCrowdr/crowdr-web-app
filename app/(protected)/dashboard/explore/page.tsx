@@ -1,88 +1,88 @@
-"use client"
-import Image from "next/image"
-import { Search } from "lucide-react"
-import debounce from "lodash/debounce"
-import { useUser } from "../../../../contexts/UserProvider"
-import ExploreCard from "../_components/ExploreCard"
+"use client";
+import Image from "next/image";
+import { Search } from "lucide-react";
+import debounce from "lodash/debounce";
+import ExploreCard from "../_components/ExploreCard";
 
-import { RFC } from "@/types"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { Mixpanel } from "../../../../utils/mixpanel"
-import { campaignCategories } from "../../../../utils/campaignCategory"
-import Pagination from "../_components/Pagination"
-import { useRouter, useSearchParams } from "next/navigation"
-import { mapParamsToObject, sanitizeParams, useParamKey } from "@/utils/params"
-import { IGetCampaignsParams } from "@/api/_campaigns/models/GetCampaigns"
-import useQueryKey from "@/hooks/useQueryKey"
-import { useQuery } from "react-query"
-import query from "@/api/query"
-import _campaigns from "@/api/_campaigns"
-import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton"
+import { RFC } from "@/types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Mixpanel } from "../../../../utils/mixpanel";
+import { campaignCategories } from "../../../../utils/campaignCategory";
+import Pagination from "../_components/Pagination";
+import { useRouter, useSearchParams } from "next/navigation";
+import { mapParamsToObject, sanitizeParams, useParamKey } from "@/utils/params";
+import { IGetCampaignsParams } from "@/api/_campaigns/models/GetCampaigns";
+import useQueryKey from "@/hooks/useQueryKey";
+import { useQuery } from "react-query";
+import query from "@/api/query";
+import _campaigns from "@/api/_campaigns";
+import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton";
+import { useUser } from "@/contexts/UserProvider";
 
 const Explore = () => {
-  const user = useUser()
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const params = mapParamsToObject<IGetCampaignsParams>(searchParams)
+  const user = useUser();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = mapParamsToObject<IGetCampaignsParams>(searchParams);
   const [currentUrl, setCurrentUrl] = useState(
     "https://oncrowdr.com/dashboard/explore"
-  )
-  const [searchTerm, setSearchTerm] = useState(params.title)
-  const queryKey = useQueryKey()
-  const paramKey = useParamKey<IGetCampaignsParams>()
-  const url = useMemo(() => new URL(currentUrl), [currentUrl])
+  );
+  const [searchTerm, setSearchTerm] = useState(params.title);
+  const queryKey = useQueryKey();
+  const paramKey = useParamKey<IGetCampaignsParams>();
+  const url = useMemo(() => new URL(currentUrl), [currentUrl]);
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.GET_CAMPAIGNS, params),
-    queryFn: () => _campaigns.getCampaigns(params),
-  })
-  const campaigns = campaignsQuery.data
-  const selectedInterest = params.category ?? ALL_CATEGORY.value
+    queryFn: () => _campaigns.getCampaigns(params)
+  });
+  const campaigns = campaignsQuery.data;
+  const selectedInterest = params.category ?? ALL_CATEGORY.value;
 
   useEffect(() => {
-    setCurrentUrl(window.location.href)
-    Mixpanel.track("Explore Page viewed")
-  }, [])
+    setCurrentUrl(window.location.href);
+    Mixpanel.track("Explore Page viewed");
+  }, []);
 
   const debouncedSearch = useCallback(
     debounce((search: string) => {
-      url.searchParams.set(paramKey("page"), "1")
-      url.searchParams.set(paramKey("title"), search)
-      updatePageParams()
+      url.searchParams.set(paramKey("page"), "1");
+      url.searchParams.set(paramKey("title"), search);
+      updatePageParams();
     }, 500),
     [url, currentUrl]
-  )
+  );
 
   const updatePageParams = () => {
-    const pageKey = paramKey("page")
-    const categoryKey = paramKey("category")
+    const pageKey = paramKey("page");
+    const categoryKey = paramKey("category");
     if (url.searchParams.get(pageKey) === "1") {
-      url.searchParams.delete(pageKey)
+      url.searchParams.delete(pageKey);
     }
     if (url.searchParams.get(categoryKey) === ALL_CATEGORY.value) {
-      url.searchParams.delete(categoryKey)
+      url.searchParams.delete(categoryKey);
     }
 
-    const urlWithSanitizedParams = sanitizeParams(url)
-    router.replace(urlWithSanitizedParams.toString())
-  }
+    const urlWithSanitizedParams = sanitizeParams(url);
+    router.replace(urlWithSanitizedParams.toString());
+  };
 
   const handlePageChange = (page: number) => {
-    url.searchParams.set(paramKey("page"), page.toString())
-    updatePageParams()
-  }
+    url.searchParams.set(paramKey("page"), page.toString());
+    updatePageParams();
+  };
 
   const handleInterestToggle = (interest: string) => {
-    url.searchParams.set(paramKey("page"), "1")
-    url.searchParams.set(paramKey("category"), interest)
-    updatePageParams()
-  }
+    url.searchParams.set(paramKey("page"), "1");
+    url.searchParams.set(paramKey("category"), interest);
+    updatePageParams();
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setSearchTerm(value)
-    debouncedSearch(value)
-  }
+    const value = e.target.value;
+    setSearchTerm(value);
+    debouncedSearch(value);
+  };
 
   return (
     <div className="relative">
@@ -115,17 +115,15 @@ const Explore = () => {
       {/* categories */}
       <div
         id="interests"
-        className="flex flex-row scrollbar-thin overflow-x-scroll gap-5 mt-6"
-      >
+        className="flex flex-row scrollbar-thin overflow-x-scroll gap-5 mt-6">
         {categories.map(({ value, label, icon, bgColor }) => (
           <label
             key={value}
             style={{
-              backgroundColor: selectedInterest === value ? "#00B964" : bgColor,
+              backgroundColor: selectedInterest === value ? "#00B964" : bgColor
             }}
             className={`flex justify-center items-center gap-x-[5px] rounded-full cursor-pointer py-[8px] px-[21px] mr-[5.5px] ${bgColor}`}
-            onClick={() => handleInterestToggle(value)}
-          >
+            onClick={() => handleInterestToggle(value)}>
             {icon && (
               <Image
                 src={`/svg/emoji/${icon}.svg`}
@@ -137,8 +135,7 @@ const Explore = () => {
             <span
               className={`${
                 selectedInterest === value ? "text-[#F8F8F8]" : "text-[#0B5351]"
-              } text-[12px] md:text-base w-max`}
-            >
+              } text-[12px] md:text-base w-max`}>
               {label}
             </span>
           </label>
@@ -151,10 +148,10 @@ const Explore = () => {
             {campaigns.campaigns.map((campaign) => {
               const urlsOnly = campaign.campaignAdditionalImages.map(
                 (item) => item.url
-              )
+              );
 
-              const userDetails = campaign?.user
-              const donatedAmount = campaign?.totalAmountDonated?.[0]?.amount
+              const userDetails = campaign?.user;
+              const donatedAmount = campaign?.totalAmountDonated?.[0]?.amount;
               return (
                 <ExploreCard
                   key={campaign._id}
@@ -174,9 +171,10 @@ const Explore = () => {
                   currentAmount={donatedAmount}
                   timePosted={campaign?.campaignEndDate}
                   volunteer={campaign?.volunteer}
+                  totalVolunteers={campaign.totalNoOfCampaignVolunteers}
                   slideImages={[
                     campaign?.campaignCoverImage?.url,
-                    ...(urlsOnly || []),
+                    ...(urlsOnly || [])
                   ]}
                   donateImage={""}
                   routeTo={`/explore/c/${campaign._id}`}
@@ -184,7 +182,7 @@ const Explore = () => {
                   campaignType={campaign.campaignType}
                   user={campaign.user}
                 />
-              )
+              );
             })}
           </CampaignsContainer>
         ) : (
@@ -215,32 +213,32 @@ const Explore = () => {
           />
         )}
     </div>
-  )
-}
+  );
+};
 
-export default Explore
+export default Explore;
 
 const ALL_CATEGORY = {
   value: "all",
   label: "All categories",
   icon: "",
-  bgColor: "#F8F8F8",
-} as const
+  bgColor: "#F8F8F8"
+} as const;
 
-const categories = [ALL_CATEGORY, ...campaignCategories]
+const categories = [ALL_CATEGORY, ...campaignCategories];
 
 const CampaignsContainer: RFC = ({ children }) => {
   return (
     <div className="grid grid-cols-1 gap-2.5 gap-y-10 min-w-full md:grid-cols-2 mt-8">
       {children}
     </div>
-  )
-}
+  );
+};
 
 const MessageContainer: RFC = ({ children }) => {
   return (
     <div className="absolute inset-0 flex justify-center items-center text-center font-semibold text-[18px] md:text-[30px] top-64">
       {children}
     </div>
-  )
-}
+  );
+};

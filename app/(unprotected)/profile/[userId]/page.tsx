@@ -1,20 +1,12 @@
 "use client"
 import React, { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Mail, Instagram, Twitter, Copy, ExternalLink } from "lucide-react"
-import { Button } from "../../../../components/shared/Button"
 import CampaignProgress from "../../../(protected)/dashboard/_components/CampaignProgress"
 import OngoingCampaign from "../../../(protected)/dashboard/_components/OngoingCampaign"
-import RecentDonors from "../../../(protected)/dashboard/_components/RecentDonors"
 import ActiveCampaign from "../../../(protected)/dashboard/_components/ActiveCampaigns"
 import { useParams } from "next/navigation"
 import { useQuery } from "react-query"
-import queryKeys from "../../../../utils/queryKeys"
 import query from "../../../../api/query"
 import _profile from "../../../../api/_profile"
-import { useUser } from "../../../../contexts/UserProvider"
-import toast from "react-hot-toast"
 import ProfileCard from "./_components/ProfileCard"
 import useCampaignSummaryQuery from "../../../../api/query/useCampaignSummaryQuery"
 import useCampaignsQuery from "../../../../api/query/useCampaignsQuery"
@@ -60,10 +52,6 @@ const OrganizationProfilePage: React.FC = () => {
     }
   }, [activeCampaignsQuery.data])
 
-  const handleDonate = () => {
-    console.log("Donation process initiated")
-    // Implement donation logic here
-  }
 
   const fundingGoal = selectedCampaign?.fundraise
   const amountDonated = selectedCampaign?.totalAmountDonated
@@ -148,8 +136,6 @@ const OrganizationProfilePage: React.FC = () => {
                       <p className="text-gray-600 italic">Loading</p>
                     )}
                   </div>
-
-                  {/* Previous campaigns */}
 
                   <div className="mb-10">
                     <h2 className="text-lg font-semibold mb-2">
