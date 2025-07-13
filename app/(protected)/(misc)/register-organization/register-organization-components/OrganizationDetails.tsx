@@ -16,6 +16,7 @@ import { stateOptions } from "../../../dashboard/_common/utils/form"
 import UploadIcon from "@/public/svg/upload-cloud.svg"
 import { CgSpinner } from "react-icons/cg"
 import { GrayButton } from "@/components/Button"
+import { useAuth } from "@/contexts/AppProvider"
 
 const OrganisationDetails = () => {
   const {
@@ -25,6 +26,7 @@ const OrganisationDetails = () => {
     watch,
     formState: { errors, isValid, isSubmitting },
   } = useFormContext() as OrganizationFormContext
+  const { logout } = useAuth()
   const image = watch("image")
   const imageUploaded = useMemo(() => image?.length && !errors.image, [image])
 
@@ -281,8 +283,14 @@ const OrganisationDetails = () => {
               )}
             </button>
 
-            <GrayButton href="/explore" className="mb-6">
-              Explore Campaigns
+            <GrayButton
+              onClick={async () => {
+                await logout()
+                location.replace("/login")
+              }}
+              className="mb-6"
+            >
+              Logout
             </GrayButton>
           </div>
         </div>
