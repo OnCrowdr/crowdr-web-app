@@ -7,7 +7,7 @@ import MobileMenu from "./MobileMenu"
 import { email } from "../../../../utils/openEmail"
 import "./component-styles/nav.css"
 import { Mixpanel } from "../../../../utils/mixpanel"
-import { useUser } from "@/contexts/UserProvider"
+import { useAuth } from "@/contexts/AppProvider"
 
 type Props = {
   openModal?: () => void
@@ -16,7 +16,7 @@ type Props = {
 export default function Navigation({ openModal }: Props) {
   const currentPath = usePathname()
   const router = useRouter()
-  const user = useUser()
+  const {user } = useAuth()
 
   const isActive = (pathname: string) => {
     return currentPath === pathname ? "active" : ""

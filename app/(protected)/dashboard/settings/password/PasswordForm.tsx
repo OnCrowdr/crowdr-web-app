@@ -1,12 +1,13 @@
 import { useFormContext } from "react-hook-form"
 import { useUser } from "../../../../../contexts/UserProvider"
 import { useToast } from "../../../../../hooks/useToast"
-import InputTitle from "../../../../../components/shared/InputTitle"
-import { Button } from "../../../../../components/shared/Button"
+import InputTitle from "../../../../../components/InputTitle"
+import { Button } from "../../../../../components/Button"
 import PasswordFormContext, { FormFields } from "../utils/usePasswordForm"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import makeRequest from "../../../../../utils/makeRequest"
-import PasswordInput from "../../../../../components/shared/PasswordInput"
+import PasswordInput from "../../../../../components/PasswordInput"
+import { useAuth } from "@/contexts/AppProvider"
 
 const PasswordForm = () => {
   const {
@@ -14,7 +15,7 @@ const PasswordForm = () => {
     reset,
     formState: { isSubmitting },
   } = useFormContext() as PasswordFormContext
-  const user = useUser()
+  const {user } = useAuth()
   const toast = useToast()
 
   const submit = async (formFields: FormFields) => {

@@ -1,20 +1,21 @@
-import ModalTrigger from "../../../../components/shared/ModalTrigger"
+import ModalTrigger from "../../../../components/ModalTrigger"
 import { useSetAtom } from "jotai"
 import { pageDrawerAtom } from "./Sidebar"
 import { HiMiniXMark } from "react-icons/hi2"
 import { IVolunteerProfile } from "../campaigns/[campaignId]/page"
 import { RFC } from "@/types"
-import TextInput from "../../../../components/shared/TextInput"
-import TextAreaInput from "../../../../components/shared/TextAreaInput"
-import { Button, WhiteButton } from "../../../../components/shared/Button"
+import TextInput from "../../../../components/TextInput"
+import TextAreaInput from "../../../../components/TextAreaInput"
+import { Button, WhiteButton } from "../../../../components/Button"
 import { useUser } from "../../../../contexts/UserProvider"
 import makeRequest from "../../../../utils/makeRequest"
 import toast from "react-hot-toast"
+import { useAuth } from "@/contexts/AppProvider"
 
 const VolunteerProfile: RFC<Props> = ({ volunteer }) => {
   const setCurrentDrawerId = useSetAtom(pageDrawerAtom)
   const clearDrawerId = () => setCurrentDrawerId("")
-  const user = useUser()
+  const {user } = useAuth()
 
   const updateApproval = async (body: IPatchVolunteerBody) => {
     if (user && volunteer) {

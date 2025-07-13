@@ -9,7 +9,7 @@ import _ from "lodash"
 
 const useCampaignsQuery = ({ params = {}, enableQuery = true }: Props = {}) => {
   const queryClient = useQueryClient()
-  const queryKey = [keys.GET_CAMPAIGNS, { ...params }]
+  const queryKey = [keys.CAMPAIGNS, { ...params }]
   const [data, setData] = useState<typeof query.data>()
 
   const query = useQuery({

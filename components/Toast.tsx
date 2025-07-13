@@ -4,7 +4,7 @@ import Image from "next/image";
 import sanitizeHtml from 'sanitize-html'
 
 import { FaExclamation } from "react-icons/fa";
-import { Status } from "../../hooks/useToast";
+import { Status } from "../hooks/useToast";
 
 const Toast = ({ t, title, body, type, isHtml, }: ToastProps) => {
   const [content, setContent] = useState({})

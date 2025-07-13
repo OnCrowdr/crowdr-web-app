@@ -19,12 +19,13 @@ import { keys } from "../_utils/queryKeys"
 import { Nullable, QF } from "@/types"
 import { IDonationResponse, IVolunteeringResponse } from "@/types/DonationsVolunteering"
 import { IDonationStats } from "@/types/UserStats"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Donations = () => {
   const [dateRange, setDateRange] = useState<IDateRange>()
   const [donationsPage, setDonationsPage] = useState(1)
   const [volunteeringPage, setVolunteeringPage] = useState(1)
-  const user = useUser()
+  const {user } = useAuth()
 
   const { data: stats } = useQuery(
     [keys.myDonations.stats, user?.token, dateRange],

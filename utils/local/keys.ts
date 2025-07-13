@@ -1,7 +1,5 @@
 const namespace = "CROWDR"
 
-const keys = {
+export default {
   USER: `${namespace}.USER`,
 } as const
-
-export default keys

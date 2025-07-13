@@ -2,7 +2,7 @@
 import ExploreCard from "../../(protected)/dashboard/_components/ExploreCard"
 import { useState, useEffect, useCallback, useMemo } from "react"
 import Footer from "../../(homepage)/_components/layout/Footer"
-import OldModal from "../../(homepage)/_components/layout/OldModal"
+import OldModal from "../../../components/OldModal"
 import WaitlistForm from "../../(homepage)/_components/home-components/WaitlistForm"
 import Head from "next/head"
 import NavBar from "./components/NavBar"
@@ -34,7 +34,7 @@ const Explore = () => {
   const url = useMemo(() => new URL(currentUrl), [currentUrl]);
 
   const campaignsQuery = useQuery({
-    queryKey: queryKey(query.keys.GET_CAMPAIGNS, params),
+    queryKey: queryKey(query.keys.CAMPAIGNS, params),
     queryFn: () => _campaigns.getCampaigns(params)
   });
   const campaigns = campaignsQuery.data;

@@ -1,11 +1,12 @@
 "use client";
 import { useState, useRef, useEffect, type JSX } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "../../../../components/shared/Button";
+import { Button } from "../../../../components/Button";
 import { IconType } from "react-icons/lib";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { FiCheck } from "react-icons/fi";
 import { useUser } from "../../../../contexts/UserProvider";
+import { useAuth } from "@/contexts/AppProvider";
 
 interface CampaignOption {
   id: string;
@@ -14,7 +15,7 @@ interface CampaignOption {
 }
 
 const CreateCampaignDropdown = (): JSX.Element => {
-  const user = useUser();
+  const {user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();

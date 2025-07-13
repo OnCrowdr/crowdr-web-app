@@ -8,7 +8,7 @@ import {
 import { UserType } from "@/api/_users/models/PostSignUp"
 import { useToast } from "@/hooks/useToast"
 import { isAxiosError } from "@/lib/error"
-import { RFC } from "@/types"
+import { DistributiveOmit, RFC } from "@/types"
 import deleteCookie from "@/utils/api/deleteCookie"
 import { getUser } from "@/utils/api/user/getUser"
 import setUserCookie from "@/utils/api/user/setUser"
@@ -42,7 +42,7 @@ const AppProvider: RFC = ({ children }) => {
         if (user) {
           const { token, ...sanitizedUser } = user
           setAuthToken(token)
-          updateUser(sanitizedUser)
+          updateUser(user)
         } else {
           logout()
         }
@@ -65,7 +65,7 @@ const AppProvider: RFC = ({ children }) => {
       await setUserCookie(token) // Set server-side cookie
       setClientSideCookie("token", token, 7)
       setAuthToken(token)
-      updateUser(sanitizedUser)
+      updateUser(user)
       handleUserRedirection(user, router.push)
     } catch (error: any) {
       Mixpanel.track("Login failed")
@@ -97,9 +97,12 @@ const AppProvider: RFC = ({ children }) => {
   }
 
   const updateUser = (partialUser: Partial<IUser>) => {
-    const updatedUser = _.merge(structuredClone(user), partialUser)
+    const { token, ...updatedUser } = _.merge(
+      structuredClone(user),
+      partialUser
+    )
     local.setItem(local.keys.USER, updatedUser)
-    setUser(updatedUser)
+    setUser({ token, ...updatedUser })
   }
 
   const value = {
@@ -134,7 +137,8 @@ interface IAppContext {
   updateUser: (partialUser: Partial<IUser>) => void
 }
 
-type IUser = Omit<IPostSignInResponseData, "token">
+type IUser = IPostSignInResponseData
+// type IUser = DistributiveOmit<IPostSignInResponseData, "token">
 
 interface ICredentials {
   email: string

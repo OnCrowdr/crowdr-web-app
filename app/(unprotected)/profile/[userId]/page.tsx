@@ -24,7 +24,7 @@ const OrganizationProfilePage: React.FC = () => {
   )
 
   const profileQuery = useQuery({
-    queryKey: [query.keys.GET_PROFILE, userId],
+    queryKey: [query.keys.PROFILE, userId],
     queryFn: () => _profile.getProfile({ userId }),
   })
   const profile = profileQuery.data

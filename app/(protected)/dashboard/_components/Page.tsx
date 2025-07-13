@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai"
 import Notifications from "./Notifications"
 import CompletionCard from "./CompletionCard"
 import deleteCookie from "@/utils/api/deleteCookie"
-import { modalStoreAtom } from "../../../../components/shared/ModalTrigger"
+import { modalStoreAtom } from "../../../../components/ModalTrigger"
 
 import { RFC } from "@/types"
 import local from "@/utils/local"
@@ -35,7 +35,7 @@ const Page: RFC = ({ children }) => {
           primaryButton={{
             label: "Log out",
             bgColor: "#D92D20",
-            onClick: logout,
+            onClick: async () => await logout(),
           }}
           secondaryButton={{
             label: "Cancel",

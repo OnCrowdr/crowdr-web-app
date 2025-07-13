@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Navigation from "../../../(homepage)/_components/layout/Navigation";
 import Footer from "../../../(homepage)/_components/layout/Footer";
 import OurPolicies from "./policies-components/OurPolicies";
-import OldModal from "../../../(homepage)/_components/layout/OldModal";
+import OldModal from "../../../../components/OldModal";
 import WaitlistForm from "../../../(homepage)/_components/home-components/WaitlistForm";
 import { Mixpanel } from "../../../../utils/mixpanel";
 

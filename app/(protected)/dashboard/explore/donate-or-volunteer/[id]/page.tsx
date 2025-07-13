@@ -17,7 +17,7 @@ import { useToast } from "../../../../../../hooks/useToast";
 import { formatAmount } from "../../../_common/utils/currency";
 import Link from "next/link";
 import Head from "next/head";
-import { Button } from "../../../../../../components/shared/Button";
+import { Button } from "../../../../../../components/Button";
 import Loading from "../../../../../loading";
 import {
   calculateTransactionFee,
@@ -25,7 +25,7 @@ import {
 } from "../../../../../../utils/seperateText";
 import { useModal } from "@/hooks/useModal";
 import { Mixpanel } from "../../../../../../utils/mixpanel";
-import PhoneNumberInput from "../../../../../../components/shared/PhoneNumberInput";
+import PhoneNumberInput from "../../../../../../components/PhoneNumberInput";
 import NotFound from "../../../../../not-found";
 import { FaApplePay } from "react-icons/fa";
 

@@ -1,6 +1,5 @@
 // payload
 export interface IPostSignUpBody {
-  userType: UserType
   fullName: string
   gender: string
   organizationName: string
@@ -25,18 +24,18 @@ export interface IPostSignUpResponse {
 
 export type IPostSignUpResponseData = IndividualResponse | NonProfitResponse
 
-interface IndividualResponse extends IPostSignInResponseObject {
+interface IndividualResponse extends IPostSignUpBaseResponse {
   userType: UserType.Individual
   fullName: string
 }
 
-interface NonProfitResponse extends IPostSignInResponseObject {
+interface NonProfitResponse extends IPostSignUpBaseResponse {
   userType: UserType.NonProfit
   organizationId: string
   organizationName: string
 }
 
-export interface IPostSignInResponseObject {
+export interface IPostSignUpBaseResponse {
   _id: string
   gender: string
   email: string

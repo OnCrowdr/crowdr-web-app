@@ -1,4 +1,4 @@
-import { WhiteButton } from "../../../../components/shared/Button"
+import { WhiteButton } from "../../../../components/Button"
 import { RFC } from "@/types"
 
 const Pagination: RFC<PaginationProps> = ({

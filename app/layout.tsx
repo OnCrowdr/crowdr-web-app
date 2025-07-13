@@ -17,6 +17,7 @@ import ModalProvider from "../hooks/useModal"
 import { Toaster } from "react-hot-toast"
 import mixpanel from "mixpanel-browser"
 import App from "./app"
+import { ElfSightApp, ElfSightScript } from "./_components/ElfSightComponent"
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -29,23 +30,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
       </head>
 
       <GoogleAnalyticsComponents />
-      {isProd && (
-        <Script
-          src="https://static.elfsight.com/platform/platform.js"
-          strategy="afterInteractive"
-          async
-        />
-      )}
+      <ElfSightScript />
 
       <body className={`${satoshi.variable} ${inter.className}`}>
         <App children={children} />
-
-        {isProd && (
-          <div
-            className="elfsight-app-89621f74-d856-4133-9f3c-dcaedfbe0522"
-            data-elfsight-app-lazy
-          />
-        )}
+        <ElfSightApp />
       </body>
     </html>
   )

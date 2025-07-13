@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useFormContext } from "react-hook-form";
 import { LoginFormContext } from "../../_hooks/useLoginForm";
-import OldButton from "../../../../components/shared/OldButton";
+import OldButton from "../../../../components/OldButton";
 
 const ForgotPassword = () => {
   const {

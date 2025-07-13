@@ -1,6 +1,6 @@
 "use client"
 import { useModal } from "../../../../hooks/useModal"
-import { Button, WhiteButton } from "../../../../components/shared/Button"
+import { Button, WhiteButton } from "../../../../components/Button"
 
 import { RFC } from "@/types"
 import { ReactElement } from "react"
@@ -37,9 +37,9 @@ const CompletionCard: RFC<CompletionCardProps> = ({
               />
             </div>
             {typeof text === "string" ? (
-              <p className="text-sm text-[#475467] md:text-justify md:pr-2">
+              <span className="text-sm text-[#475467] md:text-justify md:pr-2">
                 {text}
-              </p>
+              </span>
             ) : (
               text
             )}
@@ -57,7 +57,7 @@ const CompletionCard: RFC<CompletionCardProps> = ({
 
       <div className={`flex flex-col gap-1 mb-6 ${!altLayout ? 'md:hidden' : ''}`}>
         <p className="text-lg font-semibold">{title}</p>
-        <p className="text-sm text-[#475467]">{text}</p>
+        <span className="text-sm text-[#475467]">{text}</span>
       </div>
 
       <div className="flex flex-col md:flex-row-reverse gap-3">

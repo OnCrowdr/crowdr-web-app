@@ -1,19 +1,20 @@
 import { useUser } from "../../../../../../../../contexts/UserProvider";
 import CaretIcon from "@/public/svg/caret.svg";
 import Image from "next/image";
-import InputTitle from "../../../../../../../../components/shared/InputTitle";
-import SelectInput from "../../../../../../../../components/shared/SelectInput";
-import NumberInput from "../../../../../../../../components/shared/NumberInput";
+import InputTitle from "../../../../../../../../components/InputTitle";
+import SelectInput from "../../../../../../../../components/SelectInput";
+import NumberInput from "../../../../../../../../components/NumberInput";
 import { Option } from "../../../../../_common/utils/form";
 import { useMemo } from "react";
 import { CampaignFormContext } from "../useCampaignForm";
 import { useFormContext } from "react-hook-form";
-import { Button } from "../../../../../../../../components/shared/Button";
+import { Button } from "../../../../../../../../components/Button";
 import { RFC } from "@/types";
 import Link from "next/link";
+import { useAuth } from "@/contexts/AppProvider";
 
 const Step1: RFC<Props> = ({ index, onStep }) => {
-  const user = useUser();
+  const {user } = useAuth();
   const { ...form } = useFormContext() as CampaignFormContext;
   const errors = form.formState.errors;
   const isIndividual = user?.userType == "individual";

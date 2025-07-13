@@ -9,17 +9,19 @@ import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import { keys } from "../_utils/queryKeys"
 import { campaignsTag } from "../../../../utils/tags"
 
-import { ICampaignResponse, IFundraiseVolunteerCampaign } from "@/types/Campaign"
+import { ICampaignResponse, ICampaign } from "@/types/Campaign"
 import { QF } from "@/types"
+import { useAuth } from "@/contexts/AppProvider"
+import { Campaign, IGetCampaignsResponseData } from "@/api/_campaigns/models/GetCampaigns"
 
 export default function DynamicExplore({
   hasNextPage,
 }: {
   hasNextPage?: boolean
 }) {
-  const [campaigns, setCampaigns] = useState<IFundraiseVolunteerCampaign[]>([])
+  const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [page, setPage] = useState(2)
-  const user = useUser()
+  const {user } = useAuth()
 
   const { data } = useQuery(
     [keys.explore.campaigns, user?.token, page],
@@ -98,7 +100,7 @@ export default function DynamicExplore({
   )
 }
 
-type Data = ICampaignResponse | undefined
+type Data = IGetCampaignsResponseData | undefined
 type Token = string | undefined
 type Page = number
 const fetchCampaigns: QF<Data, [Token, Page]> = async ({ queryKey }) => {
@@ -111,7 +113,7 @@ const fetchCampaigns: QF<Data, [Token, Page]> = async ({ queryKey }) => {
     }
 
     try {
-      const { data } = await makeRequest<ICampaignResponse>(endpoint, {
+      const { data } = await makeRequest<IGetCampaignsResponseData>(endpoint, {
         headers,
         tags: [campaignsTag],
       })

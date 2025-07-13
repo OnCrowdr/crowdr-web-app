@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { Button } from '../../../../components/shared/Button';
+import { Button } from '../../../../components/Button';
 import ProgressBar from './ProgressBar';
 import { getUser } from "../../../../utils/api/user/getUser";
 import makeRequest from "../../../../utils/makeRequest";

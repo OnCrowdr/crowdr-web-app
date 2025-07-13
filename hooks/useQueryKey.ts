@@ -1,8 +1,8 @@
 "use client"
-import { useUser } from "@/contexts/UserProvider"
+import { useAuth } from "@/contexts/AppProvider"
 
 const useQueryKey = () => {
-  const user = useUser()
+  const { user } = useAuth()
 
   const queryKey = (...queryKey: any[]) => {
     return user ? [...queryKey, user._id] : queryKey

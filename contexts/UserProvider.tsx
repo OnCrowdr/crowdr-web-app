@@ -22,9 +22,10 @@ const UserProvider: RFC<UserProviderProps> = ({ children }) => {
         local.setItem(local.keys.USER, user)
       }
 
-      setUser(user)
+      // setUser(user)
     })
   }, [])
+  return
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>
 }
@@ -32,7 +33,7 @@ const UserProvider: RFC<UserProviderProps> = ({ children }) => {
 export default UserProvider
 
 export const useUser = () => {
-  return useContext(UserContext)
+  // return useContext(UserContext)
 }
 
 type UserProviderProps = {

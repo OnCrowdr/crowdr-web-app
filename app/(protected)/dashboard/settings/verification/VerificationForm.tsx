@@ -1,12 +1,12 @@
-import { useQuery } from "react-query"
+import { useMutation, useQuery } from "react-query"
 import { useFormContext } from "react-hook-form"
 import { useUser } from "../../../../../contexts/UserProvider"
 import { useToast } from "../../../../../hooks/useToast"
-import TextInput from "../../../../../components/shared/TextInput"
-import SelectInput from "../../../../../components/shared/SelectInput"
-import FileInput from "../../../../../components/shared/FileInput"
-import { FileInputContent } from "../../../../../components/shared/FileInput"
-import { Button } from "../../../../../components/shared/Button"
+import TextInput from "../../../../../components/TextInput"
+import SelectInput from "../../../../../components/SelectInput"
+import FileInput from "../../../../../components/FileInput"
+import { FileInputContent } from "../../../../../components/FileInput"
+import { Button } from "../../../../../components/Button"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import objectToFormData from "../../../../../utils/objectToFormData"
 import makeRequest from "../../../../../utils/makeRequest"
@@ -17,6 +17,10 @@ import VerificationFormContext, {
 } from "../utils/useVerificationForm"
 
 import { QF } from "@/types"
+import { useAuth } from "@/contexts/AppProvider"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
+import query from "@/api/query"
+import _settings from "@/api/_settings"
 
 const VerificationForm = () => {
   const {
@@ -25,26 +29,42 @@ const VerificationForm = () => {
     reset,
     formState: { isSubmitting },
   } = useFormContext() as VerificationFormContext
-  const user = useUser()
+  const { user } = useAuth()
   const toast = useToast()
 
-  const { data: customerDetails, refetch: refetchCustomerDetails } = useQuery(
-    [keys.settings.kyc, user?.token],
-    fetchKyc,
-    {
-      enabled: Boolean(user?.token),
-      retry: false,
-      refetchOnWindowFocus: false,
-      onSuccess: (data) => {
-        const fields = {
-          bvnNumber: data?.BVN,
-          docType: data?.docType,
-        }
+  // const { data: customerDetails, refetch: refetchCustomerDetails } = useQuery(
+  //   [keys.settings.kyc, user?.token],
+  //   fetchKyc,
+  //   {
+  //     enabled: Boolean(user?.token),
+  //     retry: false,
+  //     refetchOnWindowFocus: false,
+  //     onSuccess: (data) => {
+  //       const fields = {
+  //         bvnNumber: data?.BVN,
+  //         docType: data?.docType,
+  //       }
 
-        reset(fields)
-      },
-    }
-  )
+  //       reset(fields)
+  //     },
+  //   }
+  // )
+
+  const kycQuery = useAuthQuery({
+    queryKey: query.keys.SETTINGS_KYC,
+    queryFn: _settings.getKyc,
+    onSuccess: (res) => {
+      const fields = {
+        bvnNumber: res?.BVN,
+        docType: res?.docType,
+      }
+
+      reset(fields)
+    },
+  })
+
+  const kycMutation = useMutation(_settings.updateKyc)
+  const customerDetails = kycQuery.data
 
   const submit = async (formFields: FormFields) => {
     if (user) {
@@ -55,30 +75,31 @@ const VerificationForm = () => {
         selfieImg,
       } = formFields
 
-      const endpoint = "/settings/KYC"
-      const headers = {
-        "Content-Type": "multipart/form-data",
-        "x-auth-token": user.token,
-      }
+      // const endpoint = "/settings/KYC"
+      // const headers = {
+      //   "Content-Type": "multipart/form-data",
+      //   "x-auth-token": user.token,
+      // }
 
       const payload = {
         // BVN: bvnNumber,
         docType,
-        ...(docImg ? {docImg: docImg[0]} : {}),
-        ...(selfieImg ? {selfieImg: selfieImg[0]} : {}),
+        ...(docImg ? { docImg: docImg[0] } : {}),
+        ...(selfieImg ? { selfieImg: selfieImg[0] } : {}),
       }
 
       try {
-        const { success, message } = await makeRequest(endpoint, {
-          headers,
-          method: "PUT",
-          payload: objectToFormData(payload),
-        })
+        // const { success, message } = await makeRequest(endpoint, {
+        //   headers,
+        //   method: "PUT",
+        //   payload: objectToFormData(payload),
+        // })
 
-        if (success) {
-          refetchCustomerDetails()
-          toast({ title: "Well done!", body: message })
-        }
+        // if (success) {
+        const res = await kycMutation.mutateAsync(payload)
+        kycQuery.refetch()
+        toast({ title: "Well done!", body: res.message })
+        // }
       } catch (error) {
         const message = extractErrorMessage(error)
         toast({ title: "Oops!", body: message, type: "error" })

@@ -4,12 +4,12 @@ import Image from "next/image"
 import { atom, useAtom } from "jotai"
 import { useUser } from "../../../../contexts/UserProvider"
 import { useToast } from "../../../../hooks/useToast"
-import { Button, GrayButton } from "../../../../components/shared/Button"
+import { Button, GrayButton } from "../../../../components/Button"
 import FileItem from "./FileItem"
-import TextInput from "../../../../components/shared/TextInput"
+import TextInput from "../../../../components/TextInput"
 import ModalTrigger, {
   modalStoreAtom,
-} from "../../../../components/shared/ModalTrigger"
+} from "../../../../components/ModalTrigger"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import otpService from "../common/services/otp"
 import kycService from "../common/services/kyc"
@@ -17,6 +17,7 @@ import kycService from "../common/services/kyc"
 import { CgSpinner } from "react-icons/cg"
 import XMark from "@/public/svg/x-mark.svg"
 import { IKyc } from "../common/services/kyc/models"
+import { useAuth } from "@/contexts/AppProvider"
 
 export const activeKycIdAtom = atom<string | null>(null)
 export const kycToRejectAtom = atom<{ id: string; otp: string } | null>(null)
@@ -28,7 +29,7 @@ const KycPopup = () => {
   const [modalStore] = useAtom(modalStoreAtom)
   const [_, setKycToReject] = useAtom(kycToRejectAtom)
   const [isApproving, setIsApproving] = useState(false)
-  const user = useUser()
+  const { user } = useAuth()
   const toast = useToast()
   const otpIsFilled = adminOtp.length > 0
   const isOrganization = kycData?.kyc?.user?.userType === "non-profit"

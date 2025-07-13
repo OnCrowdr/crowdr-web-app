@@ -6,7 +6,7 @@ import { RegisterFormContext } from "../utils/useRegisterForm";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { CgSpinner } from "react-icons/cg";
 import { isProd } from "@/config";
-import PhoneNumberInput from "@/components/shared/PhoneNumberInput";
+import PhoneNumberInput from "@/components/PhoneNumberInput";
 
 const AccountDetails = () => {
   const {

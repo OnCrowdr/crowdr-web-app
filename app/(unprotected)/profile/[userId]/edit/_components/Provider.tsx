@@ -9,15 +9,16 @@ import { useUser } from "../../../../../../contexts/UserProvider"
 import FormSkeleton from "../../../../../(protected)/dashboard/_components/skeletons/FormSkeleton"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Provider: RFC<Props> = ({ userId = "", children }) => {
   const form = useForm<FormFields>(config)
-  const user = useUser()
+  const {user } = useAuth()
   const router = useRouter()
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
 
   const profileQuery = useQuery({
-    queryKey: [query.keys.GET_PROFILE, userId],
+    queryKey: [query.keys.PROFILE, userId],
     queryFn: () => _profile.getProfile({ userId }),
   })
   const profile = profileQuery.data

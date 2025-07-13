@@ -1,6 +1,6 @@
 import React from "react"
 import Image from "next/image"
-import { IGetCampaignSummaryResponseData } from "../../../../api/_my_campaigns/models/GetCampaignSummary"
+import { IGetCampaignsSummaryResponseData } from "../../../../api/_my_campaigns/models/GetCampaignsSummary"
 import { RFC } from "@/types"
 import { formatCurrency } from "@/utils/seperateText"
 
@@ -139,7 +139,7 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
 export default CampaignProgress
 
 interface Props {
-  stats: IGetCampaignSummaryResponseData
+  stats: IGetCampaignsSummaryResponseData
 }
 
 interface CampaignProgressProps {

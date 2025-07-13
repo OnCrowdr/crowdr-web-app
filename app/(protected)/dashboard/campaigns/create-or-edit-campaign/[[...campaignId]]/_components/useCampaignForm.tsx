@@ -5,8 +5,8 @@ import { RFC } from "@/types"
 import { CampaignCategory } from "../../../../../../../utils/campaignCategory"
 import {
   // CampaignType,
+  IBaseCampaign,
   ICampaign,
-  IFundraiseVolunteerCampaign,
 } from "@/types/Campaign"
 import {
   createContext,
@@ -15,7 +15,7 @@ import {
   useEffect,
   useState,
 } from "react"
-import { useQuery } from "react-query"
+import { useMutation, useQuery } from "react-query"
 import { mapResponseToForm } from "../../../../_components/CampaignForm"
 import { extractErrorMessage } from "../../../../../../../utils/extractErrorMessage"
 import makeRequest from "../../../../../../../utils/makeRequest"
@@ -33,12 +33,19 @@ import CampaignPreview from "./CampaignPreview"
 import { regex } from "regex"
 import FormSkeleton from "../../../../_components/skeletons/FormSkeleton"
 import { CampaignType } from "../../../../../admin/common/services/campaign/models/GetCampaigns"
+import { useAuth } from "@/contexts/AppProvider"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
+import query from "@/api/query"
+import _my_campaigns from "@/api/_my_campaigns"
+import _campaigns from "@/api/_campaigns"
+import _settings from "@/api/_settings"
+import { Campaign } from "@/api/_campaigns/models/GetCampaigns"
 
 // export const CampaignContext = createContext({} as CampaignFormContext)
 
 const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   const form = useForm<FormFields>(config)
-  const user = useUser()
+  const { user } = useAuth()
   const router = useRouter()
   const modal = useModal()
   const toast = useToast()
@@ -49,6 +56,14 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   const [showPreview, setShowPreview] = useState(false)
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
 
+  const campaignQuery = useAuthQuery({
+    queryKey: [query.keys.MY_CAMPAIGN, campaignId],
+    queryFn: () => _my_campaigns.getCampaign({ campaignId: campaignId! }),
+    // select: (data) => mapCampaignResponseToView(data),
+    enabled: !!campaignId,
+  })
+  const campaign = campaignQuery.data
+
   useEffect(() => {
     const initCampaignForm = (campaignType: CampaignType) => {
       if (campaignType === "volunteer") {
@@ -58,40 +73,37 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       }
     }
 
-    if (user && campaignId) {
+    if (isEdit) {
       const fetchCampaignData = async () => {
         try {
-          const endpoint = `/my-campaigns/${campaignId}`
-          const headers = {
-            "Content-Type": "multipart/form-data",
-            "x-auth-token": user.token,
-          }
+          // const endpoint = `/my-campaigns/${campaignId}`
+          // const headers = {
+          //   "Content-Type": "multipart/form-data",
+          //   "x-auth-token": user.token,
+          // }
+          // const { data } = await makeRequest<ICampaign>(endpoint, {
+          //   headers,
+          //   method: "GET",
+          // })
+        } catch (error) {}
+      }
 
-          const { data } = await makeRequest<IFundraiseVolunteerCampaign>(
-            endpoint,
-            {
-              headers,
-              method: "GET",
-            }
-          )
+      if (campaign) {
+        const coverImage = campaign.campaignCoverImage.url
+        const additionImages = campaign.campaignAdditionalImages.map(
+          (image) => image.url
+        )
 
-          const coverImage = data.campaignCoverImage.url
-          const additionImages = data.campaignAdditionalImages.map(
-            (image) => image.url
-          )
-          setUploadedImages([coverImage, ...additionImages])
+        // setFormFetched(true)
+        setUploadedImages([coverImage, ...additionImages])
+        const formData = mapResponseToForm(campaign)
+        form.reset(formData)
+        form.setValue("campaignDuration", formData.campaignDuration!)
+        setCampaignType(campaign.campaignType)
+        initCampaignForm(campaign.campaignType)
+      }
 
-          const formData = mapResponseToForm(data)
-          form.reset(formData)
-          form.setValue("campaignDuration", formData.campaignDuration!)
-          setCampaignType(data.campaignType)
-          initCampaignForm(data.campaignType)
-          // setFormFetched(true)
-        } catch (error) {
-          const message = extractErrorMessage(error)
-          toast({ title: "Oops!", body: message, type: "error" })
-          router.back()
-        }
+      if (campaignQuery.error) {
       }
 
       fetchCampaignData()
@@ -110,7 +122,7 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       setCampaignType(campaignType)
       initCampaignForm(campaignType)
     }
-  }, [user])
+  }, [campaign])
 
   const submit = async (formFields: FormFields) => {
     Mixpanel.track("Create campaign clicked")
@@ -191,99 +203,112 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       })
     }
 
-    const shareCampaign = async (campaign: ICampaign) => {
+    const shareCampaign = async (campaign: Campaign) => {
       modal.hide()
       setShareCampaignModal({ isOpen: true, campaign })
     }
 
+    const createMutation = useMutation(_campaigns.createCampaign)
+    const updateMutation = useMutation({
+      mutationFn: (body: [any, any]) => _campaigns.updateCampaign(...body),
+    })
+
     try {
-      const headers = {
-        "Content-Type": "multipart/form-data",
-        "x-auth-token": user?.token!,
+      // const headers = {
+      //   "Content-Type": "multipart/form-data",
+      //   "x-auth-token": user?.token!,
+      // }
+      // const endpoint = isEdit ? `/campaigns/${campaignId}` : "/campaigns"
+
+      const body = objectToFormData(payload)
+      const mutation = async () =>
+        isEdit
+          ? await updateMutation.mutateAsync([campaignId, body])
+          : await createMutation.mutateAsync(body)
+
+      const res = await mutation()
+
+      // const { success, message, data } = await makeRequest<IBaseCampaign>(
+      //   endpoint,
+      //   {
+      //     headers,
+      //     method: isEdit ? "PUT" : "POST",
+      //     payload: objectToFormData(payload),
+      //     extractError: false,
+      //   }
+      // )
+
+      // if (success) {
+      switch (true) {
+        case isFundraiseRelated && isVolunteerRelated:
+          Mixpanel.track("Donation and Volunteer Campaign created")
+          break
+        case isFundraiseRelated:
+          Mixpanel.track("Donation Campaign created")
+          break
+        case isVolunteerRelated:
+          Mixpanel.track("Volunteer Campaign created")
+          break
       }
-      const endpoint = isEdit ? `/campaigns/${campaignId}` : "/campaigns"
 
-      const { success, message, data } = await makeRequest<ICampaign>(
-        endpoint,
-        {
-          headers,
-          method: isEdit ? "PUT" : "POST",
-          payload: objectToFormData(payload),
-          extractError: false,
-        }
-      )
+      router.push("/campaigns")
 
-      if (success) {
-        switch (true) {
-          case isFundraiseRelated && isVolunteerRelated:
-            Mixpanel.track("Donation and Volunteer Campaign created")
-            break
-          case isFundraiseRelated:
-            Mixpanel.track("Donation Campaign created")
-            break
-          case isVolunteerRelated:
-            Mixpanel.track("Volunteer Campaign created")
-            break
-        }
-
-        router.push("/campaigns")
-
-        try {
-          await kycService.getKyc({ userToken: user?.token || "" })
-        } catch (error) {
-          modal.show(
-            <CompletionCard
-              title="Complete campaign setup!"
-              text="Upload your identity verification info in settings to finish creating your campaign."
-              primaryButton={{
-                label: "Upload KYC",
-                onClick: () => {
-                  router.push("/dashboard/settings/verification")
-                  modal.hide()
-                },
-              }}
-              secondaryButton={{ label: "Cancel", onClick: modal.hide }}
-              clearModal={modal.hide}
-              icon={
-                <div className="grid place-items-center rounded-full bg-[#FEF0C7] p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M12 11V16M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21ZM12.0498 8V8.1L11.9502 8.1002V8H12.0498Z"
-                      stroke="#FFC328"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-              }
-            />
-          )
-        }
-
-        if (isEdit) {
-          toast({ title: "Well done!", body: message })
-        } else {
-          modal.show(
-            <CompletionCard
-              title="Campaign created successfully"
-              text="This campaign has been created successfully. You will be able to edit this campaign and republish changes."
-              primaryButton={{
-                label: "Share on your Socials",
-                onClick: () => shareCampaign(data),
-              }}
-              secondaryButton={{ label: "Cancel", onClick: modal.hide }}
-              clearModal={modal.hide}
-            />
-          )
-        }
+      try {
+        await _settings.getKyc()
+      } catch (error) {
+        modal.show(
+          <CompletionCard
+            title="Complete campaign setup!"
+            text="Upload your identity verification info in settings to finish creating your campaign."
+            primaryButton={{
+              label: "Upload KYC",
+              onClick: () => {
+                router.push("/dashboard/settings/verification")
+                modal.hide()
+              },
+            }}
+            secondaryButton={{ label: "Cancel", onClick: modal.hide }}
+            clearModal={modal.hide}
+            icon={
+              <div className="grid place-items-center rounded-full bg-[#FEF0C7] p-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M12 11V16M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21ZM12.0498 8V8.1L11.9502 8.1002V8H12.0498Z"
+                    stroke="#FFC328"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            }
+          />
+        )
       }
+
+      if (isEdit) {
+        toast({ title: "Well done!", body: res.message })
+      } else {
+        modal.show(
+          <CompletionCard
+            title="Campaign created successfully"
+            text="This campaign has been created successfully. You will be able to edit this campaign and republish changes."
+            primaryButton={{
+              label: "Share on your Socials",
+              onClick: () => shareCampaign(res.data),
+            }}
+            secondaryButton={{ label: "Cancel", onClick: modal.hide }}
+            clearModal={modal.hide}
+          />
+        )
+      }
+      // }
     } catch (error: any) {
       Mixpanel.track("Campaign creation error")
       const message = extractErrorMessage(error)

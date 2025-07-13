@@ -6,7 +6,7 @@ import Contact from "./pricing-components/Contact";
 import Faqs from "./pricing-components/Faqs";
 import Navigation from "../../../(homepage)/_components/layout/Navigation";
 import Footer from "../../../(homepage)/_components/layout/Footer";
-import Modal from "../../../../components/shared/Modal";
+import Modal from "../../../../components/Modal";
 import Values from "./pricing-components/Values";
 import { Mixpanel } from "../../../../utils/mixpanel";
 

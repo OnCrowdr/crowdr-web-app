@@ -10,27 +10,25 @@ import { PropsWithChildren } from "react"
 
 const AdminLayout = ({ children }: PropsWithChildren) => {
   return (
-    <UserProvider>
-      <div className="h-full">
-        {
-          <>
-            {children}
+    <div className="h-full">
+      {
+        <>
+          {children}
 
-            <SidebarModal id="kycPopup" position="center">
-              <KycPopup />
-            </SidebarModal>
+          <SidebarModal id="kycPopup" position="center">
+            <KycPopup />
+          </SidebarModal>
 
-            <SidebarModal id="withdrawalPopup" position="center">
-              <WithdrawalPopup />
-            </SidebarModal>
+          <SidebarModal id="withdrawalPopup" position="center">
+            <WithdrawalPopup />
+          </SidebarModal>
 
-            <SidebarModal id="kycRejectionForm" position="center">
-              <RejectionForm />
-            </SidebarModal>
-          </>
-        }
-      </div>
-    </UserProvider>
+          <SidebarModal id="kycRejectionForm" position="center">
+            <RejectionForm />
+          </SidebarModal>
+        </>
+      }
+    </div>
   )
 }
 

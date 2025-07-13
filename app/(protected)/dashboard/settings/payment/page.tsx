@@ -8,7 +8,7 @@ import Table from "../../_components/Table"
 import Label from "../../_components/Label"
 import Detail from "../../_components/Detail"
 import Pagination from "../../_components/Pagination"
-import { Button } from "../../../../../components/shared/Button"
+import { Button } from "../../../../../components/Button"
 import AccountForm from "./AccountForm"
 import AccountFormContext, { FormFields } from "../utils/useAccountForm"
 import makeRequest from "../../../../../utils/makeRequest"
@@ -20,12 +20,13 @@ import CaretIcon from "@/public/svg/caret.svg"
 import { formatAmount } from "../../_common/utils/currency"
 import moment from "moment"
 import { regex } from "regex"
+import { useAuth } from "@/contexts/AppProvider"
 
 const PaymentPage = () => {
   const [page, setPage] = useState(1)
   const [showForm, setShowForm] = useState(false)
   const [accountToEdit, setAccountToEdit] = useState<IBankDetail>()
-  const user = useUser()
+  const {user } = useAuth()
   const toast = useToast()
 
   const { data: bankDetails, refetch } = useQuery(

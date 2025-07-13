@@ -15,14 +15,16 @@ import { Mixpanel } from "../../../../../../utils/mixpanel"
 import kycService from "../../../_common/services/kycService"
 import { shareCampaignModalAtom } from "../../../_utils/atoms"
 
-import { ICampaign } from "@/types/Campaign"
+import { IBaseCampaign } from "@/types/Campaign"
 import { regex } from "regex"
+import { useAuth } from "@/contexts/AppProvider";
+import { Campaign } from "@/api/_campaigns/models/GetCampaigns";
 
 const CreateEditCampaign = () => {
   const { campaignId } = useParams() as { campaignId: string }
   const setShareCampaignModal = useSetAtom(shareCampaignModalAtom)
   const router = useRouter()
-  const user = useUser()
+  const {user } = useAuth()
   const modal = useModal()
   const toast = useToast()
   const isEdit = Boolean(campaignId)
@@ -101,7 +103,7 @@ const CreateEditCampaign = () => {
       })
     }
 
-    const shareCampaign = async (campaign: ICampaign) => {
+    const shareCampaign = async (campaign: Campaign) => {
       modal.hide()
       setShareCampaignModal({ isOpen: true, campaign })
 
@@ -130,7 +132,7 @@ const CreateEditCampaign = () => {
         ? `/campaigns/${campaignId}`
         : "/campaigns"
 
-      const { success, message, data } = await makeRequest<ICampaign>(
+      const { success, message, data } = await makeRequest<Campaign>(
         endpoint,
         {
           headers,

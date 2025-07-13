@@ -8,9 +8,10 @@ import { useUser } from "../../../../../contexts/UserProvider"
 import { RiEditLine } from "react-icons/ri"
 import Link from "next/link"
 import Text from "../../../../(protected)/dashboard/_components/Text"
+import { useAuth } from "@/contexts/AppProvider"
 
 const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
-  const user = useUser()
+  const {user } = useAuth()
   const isOwnProfile = user?._id === profile.user._id
   const profileName =
     profile.user.userType === "individual"

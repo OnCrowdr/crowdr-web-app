@@ -3,7 +3,7 @@ import Image from "next/image"
 import moment, { Moment } from "moment"
 import { useSetAtom } from "jotai"
 import { useNotification } from "../_common/hooks/useNotification"
-import ModalTrigger from "../../../../components/shared/ModalTrigger"
+import ModalTrigger from "../../../../components/ModalTrigger"
 import Dot from "./Dot"
 
 import { formatAmount } from "../_common/utils/currency"
@@ -13,7 +13,7 @@ import { RFC } from "@/types"
 import { IMessage } from "@novu/headless"
 import { HiMiniXMark } from "react-icons/hi2"
 import { FaRegCircleCheck, FaRegCircleXmark } from "react-icons/fa6"
-import { GrayButton } from "../../../../components/shared/Button"
+import { GrayButton } from "../../../../components/Button"
 
 const imageUrl =
   "https://res.cloudinary.com/crowdr/image/upload/v1697259678/hyom8zz9lpmeyuhe6fss.jpg"

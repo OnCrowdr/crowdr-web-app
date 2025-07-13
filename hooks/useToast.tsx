@@ -1,5 +1,5 @@
 import _toast, { ToastOptions } from "react-hot-toast"
-import Toast from "../components/shared/Toast"
+import Toast from "../components/Toast"
 
 const useToast = () => {
   return toast

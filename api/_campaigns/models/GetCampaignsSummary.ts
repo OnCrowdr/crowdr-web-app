@@ -1,18 +1,18 @@
 // payload
-export interface IGetCampaignSummaryParams {
+export interface IGetCampaignsSummaryParams {
   userId: string
   startDate?: string
   endDate?: string
 }
 
 // response
-export interface IGetCampaignSummaryResponse {
+export interface IGetCampaignsSummaryResponse {
   success: boolean;
   message: string;
-  data:    IGetCampaignSummaryResponseData;
+  data:    IGetCampaignsSummaryResponseData;
 }
 
-export interface IGetCampaignSummaryResponseData {
+export interface IGetCampaignsSummaryResponseData {
   totalNoOfCampaigns:    number;
   totalCampaignViews:    number;
   totalAmountDonated:    TotalAmountDonated[];

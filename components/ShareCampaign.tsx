@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import { IoMdClose } from "react-icons/io";
-import useClipboard from "../../hooks/useClipboard";
+import useClipboard from "../hooks/useClipboard";
 import { BsWhatsapp } from "react-icons/bs";
-import { Mixpanel } from "../../utils/mixpanel";
+import { Mixpanel } from "../utils/mixpanel";
 
 type ShareCampaignProps = {
   campaignId?: string;

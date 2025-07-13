@@ -1,7 +1,7 @@
 "use client"
 import { atom, useAtom } from "jotai"
-import OldModal from "../../../(homepage)/_components/layout/OldModal"
-import ShareCampaign from "../../../../components/shared/ShareCampaign"
+import OldModal from "../../../../components/OldModal"
+import ShareCampaign from "../../../../components/ShareCampaign"
 import { shareCampaignModalAtom } from "../_utils/atoms"
 
 import { RFC } from "@/types"

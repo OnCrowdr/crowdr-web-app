@@ -1,7 +1,7 @@
+import { Pagination, PaginationParams } from "@/api/types"
+
 // payload
-export interface IGetCampaignsParams {
-  page?: number
-  perPage?: number
+export interface IGetCampaignsParams extends PaginationParams {
   campaignStatus?: CampaignStatus
   runningStatus?: RunningStatus
   title?: string
@@ -55,35 +55,76 @@ export interface IGetCampaignsResponseData {
   pagination: Pagination;
 }
 
-export interface Campaign {
-  _id:                         string;
-  userId:                      string;
-  category:                    string;
-  title:                       string;
-  story:                       string;
-  campaignType:                CampaignType;
-  campaignStatus:              string;
-  campaignCoverImage:          Image;
-  campaignAdditionalImages:    Image[];
-  campaignStartDate:           string;
-  campaignEndDate:             string;
-  volunteer?:                  Volunteer;
-  campaignVolunteers:          CampaignVolunteer[];
+// export interface Campaign {
+//   _id:                         string;
+//   userId:                      string;
+//   category:                    CampaignCategory;
+//   title:                       string;
+//   story:                       string;
+//   campaignType:                CampaignType;
+//   campaignStatus:              CampaignStatus;
+//   campaignCoverImage:          CampaignImage;
+//   campaignAdditionalImages:    CampaignImage[];
+//   campaignStartDate:           string;
+//   campaignEndDate:             string;
+//   volunteer?:                  Volunteer;
+//   campaignVolunteers:          CampaignVolunteer[];
+//   campaignDonors:              any[];
+//   user:                        User;
+//   campaignViews:               number;
+//   totalNoOfCampaignDonors:     number;
+//   totalNoOfCampaignVolunteers: number;
+//   totalAmountDonated:          TotalAmountDonated[];
+//   isCompleted:                 boolean;
+//   sortAmount?:                 number;
+//   fundraise?:                  Fundraise;
+//   tipsEmailSent?:              boolean;
+//   deletedAt?:                  null;
+//   photo?:                      CampaignImage;
+// }
+
+export interface BaseCampaign {
+  campaignAdditionalImages:    CampaignImage[];
+  campaignCoverImage:          CampaignImage;
   campaignDonors:              any[];
-  user:                        User;
+  campaignEndDate:             string;
+  campaignStartDate:           string;
+  campaignStatus:              CampaignStatus;
   campaignViews:               number;
+  campaignVolunteers:          CampaignVolunteer[];
+  category:                    CampaignCategory;
+  deletedAt?:                  null;
+  isCompleted:                 boolean;
+  photo:                       CampaignImage;
+  sortAmount?:                 number;
+  story:                       string;
+  tipsEmailSent:               boolean;
+  title:                       string;
+  totalAmountDonated:          TotalAmountDonated[];
   totalNoOfCampaignDonors:     number;
   totalNoOfCampaignVolunteers: number;
-  totalAmountDonated:          TotalAmountDonated[];
-  isCompleted:                 boolean;
-  sortAmount:                  number;
-  fundraise?:                  Fundraise;
-  tipsEmailSent?:              boolean;
-  deletedAt?:                  null;
-  photo?:                      Image;
+  user:                        User;
+  userId:                      string;
+  _id:                         string;
 }
 
-export interface Image {
+export interface FundraiseCampaign extends BaseCampaign {
+  campaignType:                CampaignType.Fundraise;
+  fundraise:                   Fundraise;
+}
+
+export interface VolunteerCampaign extends BaseCampaign {
+  campaignType:                CampaignType.Volunteer;
+  volunteer:                   Volunteer;
+}
+
+export interface FundraiseAndVolunteerCampaign extends Omit<FundraiseCampaign, 'campaignType'>, Omit<VolunteerCampaign, 'campaignType'> {
+  campaignType:                CampaignType.FundraiseVolunteer;
+}
+
+export type Campaign = FundraiseCampaign | VolunteerCampaign | FundraiseAndVolunteerCampaign
+
+export interface CampaignImage {
   _id:       string;
   url:       string;
   public_id: string;
@@ -150,13 +191,4 @@ export interface Volunteer {
   email?:               string;
   phoneNumber?:         string;
   address?:             string;
-}
-
-export interface Pagination {
-  total:       number;
-  perPage:     number;
-  currentPage: number;
-  totalPages:  number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
 }

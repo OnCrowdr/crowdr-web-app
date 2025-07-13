@@ -1,7 +1,7 @@
 import { CampaignCategory, CampaignType } from "@/api/_campaigns/models/GetCampaigns";
 import { IPagination } from ".";
 
-export interface ICampaign {
+export interface IBaseCampaign {
   _id: string;
   userId: string;
   category: CampaignCategory;
@@ -24,15 +24,15 @@ export interface ICampaign {
   isCompleted: boolean;
 }
 
-export interface IFundraiseCampaign extends ICampaign {
+export interface IFundraiseCampaign extends IBaseCampaign {
   fundraise: Fundraise;
 }
 
-export interface IVolunteerCampaign extends ICampaign {
+export interface IVolunteerCampaign extends IBaseCampaign {
   volunteer: Volunteer;
 }
 
-export type IFundraiseVolunteerCampaign =
+export type ICampaign =
   | IFundraiseCampaign
   | IVolunteerCampaign;
 
@@ -80,7 +80,7 @@ export interface Volunteer {
 }
 
 export interface ICampaignResponse {
-  campaigns: IFundraiseVolunteerCampaign[];
+  campaigns: ICampaign[];
   pagination: IPagination;
 }
 

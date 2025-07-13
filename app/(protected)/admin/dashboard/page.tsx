@@ -6,16 +6,16 @@ import { useQuery } from "react-query"
 import { useDebounceCallback } from "usehooks-ts"
 import { useUser } from "../../../../contexts/UserProvider"
 import Image from "next/image"
-import { Button } from "../../../../components/shared/Button"
-import TextInput from "../../../../components/shared/TextInput"
+import { Button } from "../../../../components/Button"
+import TextInput from "../../../../components/TextInput"
 import StatCard from "../admin-dashboard-components/StatCard"
 import ButtonGroup from "../admin-dashboard-components/ButtonGroup"
 import Table from "../admin-dashboard-components/Table"
 import Pagination from "../admin-dashboard-components/Pagination"
 import ModalTrigger, {
   modalStoreAtom,
-} from "../../../../components/shared/ModalTrigger"
-import DropdownTrigger from "../../../../components/shared/DropdownTrigger"
+} from "../../../../components/ModalTrigger"
+import DropdownTrigger from "../../../../components/DropdownTrigger"
 import CircularProgress from "../admin-dashboard-components/CircularProgress"
 import { label } from "../admin-dashboard-components/Label"
 import makeRequest from "../../../../utils/makeRequest"
@@ -53,6 +53,7 @@ import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import UserIcon from "@/public/svg/user-01.svg"
 import { regex } from "regex"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Dashboard = () => {
   const [searchText, setSearchText] = useState("")
@@ -68,7 +69,7 @@ const Dashboard = () => {
   const [userCount, setUserCount] = useAtom(userCountAtom)
   const searchParams = useSearchParams()
   const route = useRouter()
-  const user = useUser()
+  const {user } = useAuth()
 
   const view = searchParams.get("view")
   const selectedTable = (

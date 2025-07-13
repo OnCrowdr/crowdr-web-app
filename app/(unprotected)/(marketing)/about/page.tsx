@@ -8,7 +8,7 @@ import Contact from "./about-components/Contact";
 import Team from "./about-components/Team";
 import Navigation from "../../../(homepage)/_components/layout/Navigation";
 import Footer from "../../../(homepage)/_components/layout/Footer";
-import OldModal from "../../../(homepage)/_components/layout/OldModal";
+import OldModal from "../../../../components/OldModal";
 import WaitlistForm from "../../../(homepage)/_components/home-components/WaitlistForm";
 import Values from "./about-components/Values";
 import { Mixpanel } from "../../../../utils/mixpanel";

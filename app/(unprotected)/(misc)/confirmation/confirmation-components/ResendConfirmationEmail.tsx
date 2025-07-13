@@ -1,7 +1,7 @@
 "use client"
 import { revalidate } from "../../../../../utils/api/revalidate"
 import { getUser } from "../../../../../utils/api/user/getUser"
-import OldButton from "../../../../../components/shared/OldButton"
+import OldButton from "../../../../../components/OldButton"
 import { useToast } from "../../../../../hooks/useToast"
 import { userTag } from "../../../../../utils/tags"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"

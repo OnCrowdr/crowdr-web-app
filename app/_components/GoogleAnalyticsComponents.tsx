@@ -1,7 +1,7 @@
 "use client"
 
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google"
-import { ErrorBoundary } from "../../components/shared/ErrorBoundary"
+import { ErrorBoundary } from "../../components/ErrorBoundary"
 
 const GoogleAnalyticsComponents = () => {
   return (
