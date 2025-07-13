@@ -4,8 +4,8 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone()
 
   if (!request.cookies.has("token")) {
-    // url.pathname = "/login"
-    // return NextResponse.redirect(url)
+    url.pathname = "/login"
+    return NextResponse.redirect(url)
   }
 
   // Store current request pathname in a custom header

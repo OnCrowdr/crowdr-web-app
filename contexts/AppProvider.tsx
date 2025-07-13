@@ -92,7 +92,6 @@ const AppProvider: RFC = ({ children }) => {
       console.error("Logout request failed:", error)
     } finally {
       local.removeItem(local.keys.USER)
-      location.replace("/login")
     }
   }
 

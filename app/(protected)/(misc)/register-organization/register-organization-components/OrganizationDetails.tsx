@@ -15,6 +15,7 @@ import { stateOptions } from "../../../dashboard/_common/utils/form"
 
 import UploadIcon from "@/public/svg/upload-cloud.svg"
 import { CgSpinner } from "react-icons/cg"
+import { GrayButton } from "@/components/Button"
 
 const OrganisationDetails = () => {
   const {
@@ -279,6 +280,10 @@ const OrganisationDetails = () => {
                 </span>
               )}
             </button>
+
+            <GrayButton href="/explore" className="mb-6">
+              Explore Campaigns
+            </GrayButton>
           </div>
         </div>
       </div>

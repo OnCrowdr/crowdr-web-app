@@ -35,7 +35,10 @@ const Page: RFC = ({ children }) => {
           primaryButton={{
             label: "Log out",
             bgColor: "#D92D20",
-            onClick: async () => await logout(),
+            onClick: async () => {
+              await logout()
+              location.replace("/login")
+            },
           }}
           secondaryButton={{
             label: "Cancel",
