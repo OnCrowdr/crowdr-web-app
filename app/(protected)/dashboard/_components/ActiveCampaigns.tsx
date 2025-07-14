@@ -2,15 +2,16 @@ import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatCurrency } from "../../../../utils/seperateText"
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import { formatAmount } from "../_common/utils/currency"
 import {
   Campaign,
   CampaignType,
 } from "../../../../api/_campaigns/models/GetCampaigns"
+import { isFundraise } from "../_common/utils/campaign"
 
 const ActiveCampaign: RFC<Props> = ({ campaign }) => {
-  const [fundingGoalDetail] = campaign.fundraise?.fundingGoalDetails ?? []
+  const [fundingGoalDetail] = isFundraise(campaign) ? campaign.fundraise?.fundingGoalDetails : []
   const [totalAmountDonated] = campaign.totalAmountDonated
 
   const fundingGoal = fundingGoalDetail?.amount

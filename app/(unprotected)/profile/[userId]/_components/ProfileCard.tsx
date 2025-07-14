@@ -2,15 +2,16 @@
 import { Edit, ExternalLink, Instagram, Link as LinkIcon, Link2, Mail, Twitter } from "lucide-react"
 import Image from "next/image"
 import { IGetProfileResponseData } from "../../../../../api/_profile/models/GetProfile"
-import { RFC } from "../../../../common/types"
+import { RFC } from "@/types"
 import toast from "react-hot-toast"
-import { useUser } from "../../../../(protected)/dashboard/_common/hooks/useUser"
+import { useUser } from "../../../../../contexts/UserProvider"
 import { RiEditLine } from "react-icons/ri"
 import Link from "next/link"
 import Text from "../../../../(protected)/dashboard/_components/Text"
+import { useAuth } from "@/contexts/AppProvider"
 
 const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
-  const user = useUser()
+  const {user } = useAuth()
   const isOwnProfile = user?._id === profile.user._id
   const profileName =
     profile.user.userType === "individual"

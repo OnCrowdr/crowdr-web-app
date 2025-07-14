@@ -2,7 +2,7 @@
 import { useEffect, useState, use } from 'react';
 import Tabs from '../../../../_components/Tabs'
 import Table from '../../../../_components/Table'
-import { getSingleCampaign } from '../../../../../../api/campaigns/getCampaigns'
+import { getSingleCampaign } from '../../../../../../../utils/api/campaigns/getCampaigns'
 
 export default function AllDonations(props: { params: Promise<{ id: string }> }) {
   const params = use(props.params);

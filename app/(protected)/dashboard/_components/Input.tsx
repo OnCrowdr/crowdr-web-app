@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { RFC } from '../../../common/types'
+import { RFC } from '@/types'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
 import { ChangeEvent, ClipboardEvent, KeyboardEvent } from 'react'

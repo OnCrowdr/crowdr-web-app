@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "../public/coolicons.css";
+@import "./variable.css";
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  color: var(--BASE);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  .hide-sm {
+    display: none;
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.icon path {
+  fill: white;
+}
+
+.spinner path {
+  fill: #068645;
+}
+
+.flatpickr-wrapper {
+  display: block !important;
+}
+
+.slick-prev::before,
+.slick-next::before {
+  color: #068645 !important;
+}
+
+.hide-slide {
+  display: none !important;
+}
+
+.slick-disabled {
+  display: none !important;
+}
+
+.slick-prev {
+  left: 12px !important;
+  z-index: 1 !important;
+  height: 18px !important;
+  width: 18px !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 0 0 1px transparent, 0 0 0 4px transparent,
+    0 2px 4px rgba(0, 0, 0, 0.18) !important;
+  padding: 5px !important;
+  border-radius: 50%;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.slick-prev:hover {
+  opacity: 1;
+}
+
+.slick-next {
+  top: 47% !important;
+  right: 12px !important;
+  z-index: 1 !important;
+  height: 18px !important;
+  width: 18px !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  padding: 5px !important;
+  box-shadow: 0 0 0 1px transparent, 0 0 0 4px transparent,
+    0 2px 4px rgba(0, 0, 0, 0.18) !important;
+  border-radius: 50%;
+  transform: rotate(180deg) !important;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+.slick-next:hover {
+  opacity: 1;
+}
+
+.slick-dots {
+  bottom: 8px !important;
+}
+
+.slick-dots li {
+  width: 5px !important;
+}
+
+.slick-dots li button:before {
+  font-size: 8px !important;
+  color: #00b964 !important;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #00b964 !important;
+  opacity: 1;
+}
+
+.tooltip-anchor {
+  width: 300px !important;
+  text-align: center;
+}
+
+.PhoneInputInput {
+  border-width: 0px;
+  border-radius: 0.5rem;
+}
+
+.PhoneInputInput:focus {
+  outline: none;
+  border-color: none;
+  --tw-ring-color: none;
+}
+
+/* Apple Pay button styles */
+#apple-pay-button {
+  display: none; /* Hidden by default */
+  height: 48px;
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+/* Only show Apple Pay button on supported devices/browsers */
+@supports (-webkit-appearance: -apple-pay-button) {
+  #apple-pay-button {
+    display: block;
+    -webkit-appearance: -apple-pay-button;
+    -apple-pay-button-type: donate; /* Use 'donate' for donations */
+    -apple-pay-button-style: black; /* Button style: black or white */
+  }
+
+  /* Hide the default button text */
+  #apple-pay-button > * {
+    display: none;
+  }
+}
+
+/* Fallback for browsers that don't support Apple Pay */
+@supports not (-webkit-appearance: -apple-pay-button) {
+  #apple-pay-button {
+    display: none;
+  }
+}
+
+.apple-pay-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 6px;
+  background-color: #000;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.apple-pay-button:hover {
+  background-color: #1a1a1a;
+}
+
+.apple-pay-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.apple-pay-text {
+  margin-right: 8px;
+  color: #fff;
+}
+
+.apple-pay-logo {
+  width: 45px;
+  background-image: url("data:image/svg+xml;base64,..."); /* Add base64 encoded Apple Pay logo */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

@@ -1,4 +1,4 @@
-import { RFC } from "../../../common/types";
+import { RFC } from "@/types";
 import Image from "next/image";
 import FilterIcon from "@/public/svg/filters.svg";
 

@@ -1,4 +1,4 @@
-import { RFC } from "../../../../../../common/types";
+import { RFC } from "@/types";
 import { Fragment } from "react";
 import { IconType } from "react-icons/lib";
 

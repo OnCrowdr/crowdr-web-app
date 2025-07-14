@@ -5,28 +5,33 @@ import { useFormContext, useWatch } from "react-hook-form"
 import CampaignFormContext, {
   FormFields,
 } from "../campaigns/_create-or-edit-campaign/utils/useCreateCampaign"
-import { Button, WhiteButton } from "../../../common/components/Button"
-import TextInput from "../../../common/components/TextInput"
-import SelectInput from "../../../common/components/SelectInput"
-import InputTitle from "../../../common/components/InputTitle"
-import TextAreaInput from "../../../common/components/TextAreaInput"
-import NumberInput from "../../../common/components/NumberInput"
-import DateInput from "../../../common/components/DateInput"
-import OptionInput from "../../../common/components/OptionInput"
-import FileInput from "../../../common/components/FileInput"
+import { Button, WhiteButton } from "../../../../components/Button"
+import TextInput from "../../../../components/TextInput"
+import SelectInput from "../../../../components/SelectInput"
+import InputTitle from "../../../../components/InputTitle"
+import TextAreaInput from "../../../../components/TextAreaInput"
+import NumberInput from "../../../../components/NumberInput"
+import DateInput from "../../../../components/DateInput"
+import OptionInput from "../../../../components/OptionInput"
+import FileInput from "../../../../components/FileInput"
 import FormSkeleton from "./skeletons/FormSkeleton"
-import { useUser } from "../_common/hooks/useUser"
-import { useToast } from "../../../common/hooks/useToast"
+import { useUser } from "../../../../contexts/UserProvider"
+import { useToast } from "../../../../hooks/useToast"
 import { Option } from "../_common/utils/form"
 import makeRequest from "../../../../utils/makeRequest"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import { isFundraise, isVolunteer } from "../_common/utils/campaign"
 
 import { campaignCategories } from "../../../../utils/campaignCategory"
-import { RFC } from "../../../common/types"
-import { IFundraiseVolunteerCampaign } from "../../../common/types/Campaign"
+import { RFC } from "@/types"
+import { ICampaign } from "@/types/Campaign"
 import CaretIcon from "@/public/svg/caret.svg"
 import { regex } from "regex"
+import { Campaign } from "@/api/_campaigns/models/GetCampaigns"
+import { useAuth } from "@/contexts/AppProvider"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
+import query from "@/api/query"
+import _my_campaigns from "@/api/_my_campaigns"
 
 const CampaignForm: RFC<CampaignFormProps> = ({ submit, campaignId }) => {
   const {
@@ -39,7 +44,7 @@ const CampaignForm: RFC<CampaignFormProps> = ({ submit, campaignId }) => {
     reset,
     formState: { errors, isSubmitting },
   } = useFormContext() as CampaignFormContext
-  const user = useUser()
+  const { user } = useAuth()
   const router = useRouter()
   const toast = useToast()
   const [skillsNeeded, campaignType, currency] = useWatch({
@@ -76,37 +81,41 @@ const CampaignForm: RFC<CampaignFormProps> = ({ submit, campaignId }) => {
     return currencyLabel?.label?.slice(-3)?.at(1)
   }, [currency])
 
+  const campaignQuery = useAuthQuery({
+    queryKey: [query.keys.MY_CAMPAIGN, campaignId],
+    queryFn: () => _my_campaigns.getCampaign({ campaignId: campaignId! }),
+    select: (data) => mapResponseToForm(data),
+    enabled: !!campaignId,
+  })
+  const campaign = campaignQuery.data
+
   useEffect(() => {
-    if (user && campaignId) {
-      const fetchCampaignData = async () => {
-        try {
-          const endpoint = `/my-campaigns/${campaignId}`
-          const headers = {
-            "Content-Type": "multipart/form-data",
-            "x-auth-token": user.token,
-          }
+    if (campaign) {
+      reset(campaign)
+      setFormFetched(true)
 
-          const { data } = await makeRequest<IFundraiseVolunteerCampaign>(
-            endpoint,
-            {
-              headers,
-              method: "GET",
-            }
-          )
+      // const fetchCampaignData = async () => {
+      //   try {
+      //     // const endpoint = `/my-campaigns/${campaignId}`
+      //     // const headers = {
+      //     //   "Content-Type": "multipart/form-data",
+      //     //   "x-auth-token": user.token,
+      //     // }
+      //     // const { data } = await makeRequest<ICampaign>(endpoint, {
+      //     //   headers,
+      //     //   method: "GET",
+      //     // })
+      //     // const formData = mapResponseToForm(campaign)
+      //   } catch (error) {}
+      // }
 
-          const formData = mapResponseToForm(data)
-          reset(formData)
-          setFormFetched(true)
-        } catch (error) {
-          const message = extractErrorMessage(error)
-          toast({ title: "Oops!", body: message, type: "error" })
-          router.back()
-        }
-      }
-
-      fetchCampaignData()
+      // fetchCampaignData()
+    } else if (campaignQuery.error) {
+      const message = extractErrorMessage(campaignQuery.error)
+      toast({ title: "Oops!", body: message, type: "error" })
+      router.back()
     }
-  }, [user])
+  }, [campaign])
 
   return (
     <form>
@@ -576,9 +585,7 @@ const volunteerCommitment = [
   Option("flexible schedule", "Flexible schedule"),
 ]
 
-export function mapResponseToForm(
-  campaign: IFundraiseVolunteerCampaign
-): Partial<FormFields> {
+export function mapResponseToForm(campaign: Campaign): Partial<FormFields> {
   const {
     title,
     category,
@@ -624,7 +631,7 @@ export function mapResponseToForm(
     ]
     volunteerCommitment = volunteer.requiredCommitment
     additionalNotes = volunteer.additonalNotes
-    otherSkillsNeeded = volunteer.otherSkillsNeeded
+    // otherSkillsNeeded = volunteer.otherSkillsNeeded
     volunteerCount = volunteer.volunteersNeeded
     campaignAddress = volunteer.address
     phoneNumber = volunteer.phoneNumber
@@ -640,7 +647,7 @@ export function mapResponseToForm(
     fundingGoal,
     campaignDuration,
     skillsNeeded,
-    otherSkillsNeeded,
+    // otherSkillsNeeded,
     ageRange,
     genderPreference,
     timeCommitment,
@@ -649,6 +656,6 @@ export function mapResponseToForm(
     volunteerCount,
     campaignAddress,
     phoneNumber,
-    contactEmail
+    contactEmail,
   }
 }

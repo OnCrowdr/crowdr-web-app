@@ -8,9 +8,10 @@ import {
   ReactNode,
 } from "react"
 import { HeadlessService, IMessage } from "@novu/headless"
-import { useUser } from "./useUser"
+import { useUser } from "../../../../../contexts/UserProvider"
 import { useSetAtom } from "jotai"
 import { pageDrawerAtom } from "../../_components/Sidebar"
+import { useAuth } from "@/contexts/AppProvider"
 
 interface NotificationContextType {
   notifications: IMessage[]
@@ -41,7 +42,7 @@ type Props = {
 type Pagination = NotificationContextType["pagination"]
 
 const NotificationProvider: React.FC<Props> = ({ children }) => {
-  const user = useUser()
+  const {user } = useAuth()
   const headlessServiceRef = useRef<HeadlessService | null>(null)
   const [notifications, setNotifications] = useState<IMessage[]>([])
   const [pageNum, setPageNum] = useState(0)

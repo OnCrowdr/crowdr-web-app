@@ -1,5 +1,6 @@
 import axios from "axios"
 import { IGetUsersParams, IGetUsersResponse } from "./models/GetUsers"
+import api from "@/api"
 
 const getUsers = async (params: Partial<IGetUsersParams> = {}) => {
   const url = `/admin/users`
@@ -12,7 +13,7 @@ const getUsers = async (params: Partial<IGetUsersParams> = {}) => {
   }
 
   try {
-    const res = await axios.get<IGetUsersResponse>(url, { params })
+    const res = await api.get<IGetUsersResponse>(url, { params })
     return res.data.data
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "An error occurred")

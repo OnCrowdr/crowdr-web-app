@@ -1,17 +1,17 @@
 import Link from "next/link"
 import { mapCampaignResponseToView } from "../_common/utils/campaign"
 import ProgressBar from "./ProgressBar"
-import { GrayButton } from "../../../common/components/Button"
+import { GrayButton } from "../../../../components/Button"
 import { label } from "./Label"
 import { pill } from "./Pill"
 
-import { Nullable, QF, RFC } from "../../../common/types"
-import { IFundraiseVolunteerCampaign } from "../../../common/types/Campaign"
+import { Nullable, QF, RFC } from "@/types"
+import { ICampaign } from "@/types/Campaign"
 import makeRequest from "../../../../utils/makeRequest"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import { BsThreeDotsVertical } from "react-icons/bs"
 import { RiDeleteBinLine } from "react-icons/ri"
-import DropdownTrigger from "../../../common/components/DropdownTrigger"
+import DropdownTrigger from "../../../../components/DropdownTrigger"
 import { useRouter } from "next/navigation"
 import { useMutation } from "react-query"
 import _my_campaign from "../../../../api/_my_campaigns"
@@ -23,11 +23,12 @@ import SidebarModal from "./SidebarModal"
 import CompletionCard from "./CompletionCard"
 import ModalTrigger, {
   modalStoreAtom,
-} from "../../../common/components/ModalTrigger"
+} from "../../../../components/ModalTrigger"
 import { useAtomValue } from "jotai"
 import { LuEye, LuTrash2 } from "react-icons/lu"
 import { MdBlock } from "react-icons/md"
 import { isAfter, parseISO } from "date-fns"
+import { Campaign } from "@/api/_campaigns/models/GetCampaigns"
 
 const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
   const {
@@ -252,7 +253,7 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
 export default CampaignCard
 
 type CampaignCardProps = {
-  campaign: IFundraiseVolunteerCampaign
+  campaign: Campaign
   onDelete: () => void
 }
 

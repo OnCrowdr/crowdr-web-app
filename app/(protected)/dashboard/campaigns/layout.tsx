@@ -1,10 +1,10 @@
 "use client"
 import { atom, useAtom } from "jotai"
-import OldModal from "../../../common/components/OldModal"
-import ShareCampaign from "../../../common/components/share-campaign"
+import OldModal from "../../../../components/OldModal"
+import ShareCampaign from "../../../../components/ShareCampaign"
 import { shareCampaignModalAtom } from "../_utils/atoms"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 const CampaignsPageLayout: RFC = ({ children }) => {
   const [{ isOpen, campaign }, setShareCampaignModal] = useAtom(

@@ -1,5 +1,5 @@
 import Label from "./Label"
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import { ReactElement } from "react"
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6"
 import { regex } from "regex"
@@ -37,7 +37,7 @@ const Detail: RFC<DetailProps> = ({
 
           {status &&
             !button &&
-            (status.match(regex("i")`success`) ? (
+            (status.match(/success/i) ? (
               <Label text={status} />
             ) : (
               <Label text={status} textColor="#B42318" bgColor="#FEF3F2" />

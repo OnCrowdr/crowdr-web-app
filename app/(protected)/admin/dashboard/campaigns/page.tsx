@@ -1,17 +1,17 @@
 "use client"
 import { useState } from "react"
 import { useQuery } from "react-query"
-import { useUser } from "../../../dashboard/_common/hooks/useUser"
+import { useUser } from "../../../../../contexts/UserProvider"
 import { useDebounceCallback } from "usehooks-ts"
 import Image from "next/image"
 import StatCard from "../../admin-dashboard-components/StatCard"
 import ButtonGroup from "../../admin-dashboard-components/ButtonGroup"
-import TextInput from "../../../../common/components/TextInput"
-import DropdownTrigger from "../../../../common/components/DropdownTrigger"
+import TextInput from "../../../../../components/TextInput"
+import DropdownTrigger from "../../../../../components/DropdownTrigger"
 import Pagination from "../../admin-dashboard-components/Pagination"
 import Table from "../../admin-dashboard-components/Table"
 import CircularProgress from "../../admin-dashboard-components/CircularProgress"
-import { Button } from "../../../../common/components/Button"
+import { Button } from "../../../../../components/Button"
 import campaignService from "../../common/services/campaign"
 
 import {
@@ -23,9 +23,10 @@ import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import { mapCampaignResponseToView } from "../../common/utils/mappings"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Campaigns = () => {
-  const user = useUser()
+  const {user } = useAuth()
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
   const [activeFilter, setActiveFilter] = useState<RunningStatus>(

@@ -2,19 +2,16 @@ import SidebarModal from "./SidebarModal"
 import { useAtomValue } from "jotai"
 import Notifications from "./Notifications"
 import CompletionCard from "./CompletionCard"
-import deleteCookie from "../../../api/deleteCookie"
-import { modalStoreAtom } from "../../../common/components/ModalTrigger"
+import deleteCookie from "@/utils/api/deleteCookie"
+import { modalStoreAtom } from "../../../../components/ModalTrigger"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
+import local from "@/utils/local"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Page: RFC = ({ children }) => {
   const modalStore = useAtomValue(modalStoreAtom)
-
-  const logout = async () => {
-    await deleteCookie("token")
-    location.replace("/login")
-    localStorage.removeItem("USER")
-  }
+  const { logout } = useAuth()
 
   const hideLogoutModal = () => {
     const modal = modalStore.get("logout-modal")
@@ -38,7 +35,10 @@ const Page: RFC = ({ children }) => {
           primaryButton={{
             label: "Log out",
             bgColor: "#D92D20",
-            onClick: logout,
+            onClick: async () => {
+              await logout()
+              location.replace("/login")
+            },
           }}
           secondaryButton={{
             label: "Cancel",

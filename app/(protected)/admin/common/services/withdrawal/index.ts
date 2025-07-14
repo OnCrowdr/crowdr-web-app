@@ -1,3 +1,4 @@
+import api from "@/api";
 import { extractErrorMessage } from "../../../../../../utils/extractErrorMessage";
 import makeRequest from "../../../../../../utils/makeRequest";
 import {
@@ -24,7 +25,7 @@ const getWithdrawals = async (params: Partial<IGetWithdrawalsParams>) => {
   }
 
   try {
-    const res = await axios.get<IGetWithdrawalsResponse>(url, { params });
+    const res = await api.get<IGetWithdrawalsResponse>(url, { params });
     return res.data.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "An error occurred");

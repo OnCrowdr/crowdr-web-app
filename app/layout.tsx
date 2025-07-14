@@ -3,33 +3,42 @@ import type { Metadata } from "next"
 import Script from "next/script"
 import { Public_Sans } from "next/font/google"
 import localFont from "next/font/local"
-import "./globals.css"
-import "./common/styles/button.css"
-import "react-loading-skeleton/dist/skeleton.css";
+import "@/styles/globals.css"
+import "@/styles/button.css"
+import "react-loading-skeleton/dist/skeleton.css"
 
-import RootApp from "./app"
 import { isProd } from "../config"
-import GoogleAnalyticsComponents from "./_components/home/GoogleAnalyticsComponents"
+import GoogleAnalyticsComponents from "./_components/GoogleAnalyticsComponents"
+import { QueryClient, QueryClientProvider } from "react-query"
+import { PostHogProvider } from "posthog-js/react"
+import posthog from "posthog-js"
+import PostHogPageView from "./_components/PostHogPageView"
+import ModalProvider from "../hooks/useModal"
+import { Toaster } from "react-hot-toast"
+import mixpanel from "mixpanel-browser"
+import App from "./app"
+import { ElfSightApp, ElfSightScript } from "./_components/ElfSightComponent"
 
-const satoshi = localFont({
-  src: [
-    {
-      path: "../public/fonts/Satoshi-Regular.otf",
-      weight: "400",
-    },
-    {
-      path: "../public/fonts/Satoshi-Medium.otf",
-      weight: "500",
-    },
-    {
-      path: "../public/fonts/Satoshi-Bold.otf",
-      weight: "700",
-    },
-  ],
-  variable: "--font-satoshi",
-})
+export default function RootLayout({ children }: PropsWithChildren) {
+  return (
+    <html lang="en">
+      <head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+      </head>
 
-const inter = Public_Sans({ subsets: ["latin"] })
+      <GoogleAnalyticsComponents />
+      <ElfSightScript />
+
+      <body className={`${satoshi.variable} ${inter.className}`}>
+        <App children={children} />
+        <ElfSightApp />
+      </body>
+    </html>
+  )
+}
 
 export const metadata: Metadata = {
   title: {
@@ -95,64 +104,21 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: PropsWithChildren) {
-  return (
-    <html lang="en">
-      <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-        />
-      </head>
-      <GoogleAnalyticsComponents />
-      {/* <Script id="google-tag-manager" strategy="afterInteractive">
-        {`
-          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-N95QRZ5K');
-        `}
-      </Script> */}
-      {/* <Script
-        strategy="afterInteractive"
-        src="https://www.googletagmanager.com/gtag/js?id=G-JL3VDJ3QRX"
-        async
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag('config', 'G-JL3VDJ3QRX');
-        `}
-      </Script> */}
-
-      {isProd && (
-        <Script
-          src="https://static.elfsight.com/platform/platform.js"
-          strategy="afterInteractive"
-          async
-        />
-      )}
-      <body className={`${satoshi.variable} ${inter.className}`}>
-        <RootApp>{children}</RootApp>
-        {isProd && (
-          <div
-            className="elfsight-app-89621f74-d856-4133-9f3c-dcaedfbe0522"
-            data-elfsight-app-lazy
-          ></div>
-        )}
-        {/* <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-N95QRZ5K"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript> */}
-      </body>
-    </html>
-  )
-}
+const satoshi = localFont({
+  src: [
+    {
+      path: "../public/fonts/Satoshi-Regular.otf",
+      weight: "400",
+    },
+    {
+      path: "../public/fonts/Satoshi-Medium.otf",
+      weight: "500",
+    },
+    {
+      path: "../public/fonts/Satoshi-Bold.otf",
+      weight: "700",
+    },
+  ],
+  variable: "--font-satoshi",
+})
+const inter = Public_Sans({ subsets: ["latin"] })

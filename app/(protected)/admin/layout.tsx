@@ -1,5 +1,5 @@
 "use client"
-import UserProvider from "../dashboard/_common/hooks/useUser"
+import UserProvider from "../../../contexts/UserProvider"
 import SidebarModal from "../dashboard/_components/SidebarModal"
 import KycPopup from "./admin-dashboard-components/KycPopup"
 import WithdrawalPopup from "./admin-dashboard-components/WithdrawalPopup"
@@ -10,27 +10,25 @@ import { PropsWithChildren } from "react"
 
 const AdminLayout = ({ children }: PropsWithChildren) => {
   return (
-    <UserProvider>
-      <div className="h-full">
-        {
-          <>
-            {children}
+    <div className="h-full">
+      {
+        <>
+          {children}
 
-            <SidebarModal id="kycPopup" position="center">
-              <KycPopup />
-            </SidebarModal>
+          <SidebarModal id="kycPopup" position="center">
+            <KycPopup />
+          </SidebarModal>
 
-            <SidebarModal id="withdrawalPopup" position="center">
-              <WithdrawalPopup />
-            </SidebarModal>
+          <SidebarModal id="withdrawalPopup" position="center">
+            <WithdrawalPopup />
+          </SidebarModal>
 
-            <SidebarModal id="kycRejectionForm" position="center">
-              <RejectionForm />
-            </SidebarModal>
-          </>
-        }
-      </div>
-    </UserProvider>
+          <SidebarModal id="kycRejectionForm" position="center">
+            <RejectionForm />
+          </SidebarModal>
+        </>
+      }
+    </div>
   )
 }
 

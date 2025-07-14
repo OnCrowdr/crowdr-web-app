@@ -1,4 +1,4 @@
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 const ButtonGroup: RFC<ButtonGroupProps> = ({ buttons, selected }) => {
   return (

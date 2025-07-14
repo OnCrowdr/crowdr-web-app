@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useFormContext } from "react-hook-form";
-import { LoginFormContext } from "../../../common/hooks/useLoginForm";
+import { LoginFormContext } from "../../_hooks/useLoginForm";
 import { LuEye, LuEyeOff } from "react-icons/lu";
 import { CgSpinner } from "react-icons/cg";
 import "../styles/shared.css";
-import OldButton from "../../../common/components/OldButton";
+import OldButton from "../../../../components/OldButton";
 import { Mixpanel } from "../../../../utils/mixpanel";
 
 const SignIn = () => {

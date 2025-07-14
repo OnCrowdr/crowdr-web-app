@@ -1,12 +1,13 @@
 "use client"
 import { useEffect, useState } from "react"
-import { useUser } from "../_common/hooks/useUser"
+import { useUser } from "../../../../contexts/UserProvider"
 import Tabs from "../_components/Tabs"
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
+import { useAuth } from "@/contexts/AppProvider"
 
 const SettingsLayout: RFC = ({ children }) => {
   const [settingsPages, setSettingsPages] = useState<typeof pages>()
-  const user = useUser()
+  const {user } = useAuth()
 
   useEffect(() => {
     if (user && user.userType === "non-profit") {

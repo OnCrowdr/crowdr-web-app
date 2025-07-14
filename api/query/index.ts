@@ -1,5 +1,2 @@
-import keys from "./keys";
-
-export default {
-  keys
-}
+import keys from "./keys"
+export default { keys }
