@@ -55,7 +55,9 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
 
   // Fix 1: Move mutations to component level
   const createMutation = useMutation({
-    mutationFn: (data: FormData) => _campaigns.createCampaign(data),
+    mutationFn: (data: FormData) => {
+      return _campaigns.createCampaign(data)
+    },
     onSuccess: (response) => {
       handleMutationSuccess(response, false)
     },
@@ -65,8 +67,9 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   })
 
   const updateMutation = useMutation({
-    mutationFn: ({ campaignId, data }: { campaignId: string | any, data: FormData }) => 
-      _campaigns.updateCampaign(campaignId, data),
+    mutationFn: ({ campaignId, data }: { campaignId: string, data: FormData }) => {
+      return _campaigns.updateCampaign({ campaignId }, data)
+    },
     onSuccess: (response) => {
       handleMutationSuccess(response, true)
     },
@@ -77,12 +80,27 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
 
   const campaignQuery = useAuthQuery({
     queryKey: [query.keys.MY_CAMPAIGN, campaignId],
-    queryFn: () => _my_campaigns.getCampaign({ campaignId: campaignId! }),
-    enabled: !!campaignId,
+    queryFn: () => {
+      if (!campaignId) {
+        throw new Error('Campaign ID is required to fetch campaign data')
+      }
+      return _my_campaigns.getCampaign({ campaignId })
+    },
+    enabled: !!campaignId && isEdit,
+    onError: (error) => {
+      console.error('Failed to fetch campaign:', error)
+      toast({ 
+        title: "Error", 
+        body: "Failed to load campaign data", 
+        type: "error" 
+      })
+    }
   })
   const campaign = campaignQuery.data
 
+
   useEffect(() => {
+    
     const initCampaignForm = (campaignType: CampaignType) => {
       if (campaignType === "volunteer") {
         setCampaignForm("volunteer")
@@ -104,10 +122,11 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
         form.setValue("campaignDuration", formData.campaignDuration!)
         setCampaignType(campaign.campaignType)
         initCampaignForm(campaign.campaignType)
+        
       }
 
       if (campaignQuery.error) {
-        // Handle query error
+        console.error('Campaign query error:', campaignQuery.error) // Debug log
       }
     } else {
       const currentUrl = window.location.href
@@ -124,7 +143,7 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       setCampaignType(campaignType)
       initCampaignForm(campaignType)
     }
-  }, [campaign])
+  }, [campaign, campaignId, isEdit])
 
   // Fix 2: Separate success and error handlers
   const handleMutationSuccess = async (response: any, isEdit: boolean) => {
@@ -211,6 +230,7 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   }
 
   const handleMutationError = (error: any) => {
+    console.error('Mutation error details:', error) // Enhanced debug log
     Mixpanel.track("Campaign creation error")
     const message = extractErrorMessage(error)
 
@@ -219,7 +239,7 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
         toast({ title: "Oops!", body: msg, type: "error" })
       }
     } else {
-      toast({ title: "Oops!", body: message, type: "error" })
+      toast({ title: "Oops!", body: message || 'An unexpected error occurred', type: "error" })
     }
   }
 
@@ -295,16 +315,17 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
 
     const body = objectToFormData(payload)
 
-    // Fix 4: Use proper mutation calls
+    // Fix 4: Use proper mutation calls with validation
     try {
-      if (isEdit && campaignId) {
-        updateMutation.mutate({ campaignId, data: body })
+      if (isEdit && campaignId?.[0]) {
+       
+        updateMutation.mutate({ campaignId: campaignId?.[0], data: body })
       } else {
         createMutation.mutate(body)
       }
     } catch (error) {
       // Error handling is now in the mutation onError callbacks
-      console.error('Submission error:', error)
+      handleMutationError(error)
     }
   }
 
@@ -320,12 +341,26 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
     ...form,
   }
 
-  // Show loading state during mutations
-  if (createMutation.isLoading || updateMutation.isLoading) {
+  // Show loading state during mutations or while fetching campaign data
+  if (createMutation.isLoading || updateMutation.isLoading || (isEdit && campaignQuery.isLoading)) {
     return <FormSkeleton />
   }
 
-  if (campaignId && !form.getValues().title) {
+  // Show loading state if editing but no campaign data yet
+  if (isEdit && campaignId && !campaign && !campaignQuery.error) {
+    return <FormSkeleton />
+  }
+
+  // If we're editing but don't have a campaign ID, show error
+  if (isEdit && !campaignId) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-500">Error: No campaign ID provided for editing</p>
+      </div>
+    )
+  }
+
+  if (campaignId && !form.getValues().title && !campaignQuery.isLoading) {
     return <FormSkeleton />
   }
 
@@ -340,7 +375,13 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
 export default CampaignProvider
 
 interface Props {
-  campaignId?: string
+  campaignId?: string // Optional for create, required for edit
+  children: React.ReactNode
+}
+
+// Add a type guard to help with debugging
+const isValidCampaignId = (id: string | undefined): id is string => {
+  return typeof id === 'string' && id.trim().length > 0
 }
 
 export type { CampaignProvider, FormFields }
