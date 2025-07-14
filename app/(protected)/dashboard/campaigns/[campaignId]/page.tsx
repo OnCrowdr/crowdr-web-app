@@ -1,109 +1,101 @@
-"use client";
-import { useState, use } from "react";
-import { useParams, usePathname, useSearchParams } from "next/navigation";
-import { useQuery } from "react-query";
-import { useUser } from "../../_common/hooks/useUser";
-import moment from "moment";
-import makeRequest from "../../../../../utils/makeRequest";
-import { formatAmount } from "../../_common/utils/currency";
-import { mapCampaignResponseToView } from "../../_common/utils/campaign";
-import { extractErrorMessage } from "../../../../../utils/extractErrorMessage";
-import { keys } from "../../_utils/queryKeys";
+"use client"
+import { useState } from "react"
+import { useParams, usePathname, useSearchParams } from "next/navigation"
+import { useUser } from "@/contexts/UserProvider"
+import moment from "moment"
+import { formatAmount } from "../../_common/utils/currency"
+import { mapCampaignResponseToView } from "../../_common/utils/campaign"
 
-import { Button, GrayButton } from "../../../../common/components/Button";
-import Detail from "../../_components/Detail";
-import Pagination from "../../_components/Pagination";
-import Table from "../../_components/Table";
-import Tabs from "../../_components/Tabs";
-import CampaignPageSkeleton from "../../_components/skeletons/CampaignPageSkeleton";
-import ProgressBar from "../../_components/ProgressBar";
-import Text from "../../_components/Text";
-import { pill } from "../../_components/Pill";
+import { Button, GrayButton } from "@/components/Button"
+import Detail from "../../_components/Detail"
+import Pagination from "../../_components/Pagination"
+import Table from "../../_components/Table"
+import Tabs from "../../_components/Tabs"
+import CampaignPageSkeleton from "../../_components/skeletons/CampaignPageSkeleton"
+import ProgressBar from "../../_components/ProgressBar"
+import Text from "../../_components/Text"
+import { pill } from "../../_components/Pill"
 
-import { Nullable, QF, Route } from "../../../../common/types";
-import {
-  ICampaign,
-  IFundraiseVolunteerCampaign
-} from "../../../../common/types/Campaign";
 import {
   IDonationResponse,
-  IVolunteeringResponse
-} from "../../../../common/types/DonationsVolunteering";
-import { useToast } from "../../../../common/hooks/useToast";
-import { useModal } from "../../../../common/hooks/useModal";
-import { BiSearch } from "react-icons/bi";
-import { IoShareSocial, IoDownload } from "react-icons/io5";
-import FileDownloadIcon from "@/public/svg/file-download.svg";
-import OldModal from "../../../../common/components/OldModal";
-import ShareCampaign from "../../../../common/components/share-campaign";
-import { Parser } from "json2csv";
-import { Mixpanel } from "../../../../../utils/mixpanel";
-import SidebarModal from "../../_components/SidebarModal";
-import VolunteerProfile from "../../_components/VolunteerProfile";
-import ModalTrigger from "../../../../common/components/ModalTrigger";
-import { regex } from "regex";
-import { isAfter, parseISO } from "date-fns";
+  IVolunteeringResponse,
+} from "@/types/DonationsVolunteering"
+import { useToast } from "@/hooks/useToast"
+import { useModal } from "@/hooks/useModal"
+import { BiSearch } from "react-icons/bi"
+import { IoShareSocial, IoDownload } from "react-icons/io5"
+import FileDownloadIcon from "@/public/svg/file-download.svg"
+import OldModal from "@/components/OldModal"
+import ShareCampaign from "@/components/ShareCampaign"
+import { Parser } from "json2csv"
+import { Mixpanel } from "../../../../../utils/mixpanel"
+import SidebarModal from "../../_components/SidebarModal"
+import VolunteerProfile from "../../_components/VolunteerProfile"
+import ModalTrigger from "@/components/ModalTrigger"
+import { regex } from "regex"
+import { isAfter, parseISO } from "date-fns"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
+import query from "@/api/query"
+import _my_campaigns from "@/api/_my_campaigns"
+import _campaigns from "@/api/_campaigns"
 
 const Campaign = () => {
-  const { campaignId } = useParams() as { campaignId: string };
-  const [donorsPage, setDonorsPage] = useState(1);
-  const [volunteersPage, setVolunteersPage] = useState(1);
-  const [volunteerProfile, setVolunteerProfile] = useState<IVolunteerProfile>();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const user = useUser();
-  const modal = useModal();
-  const toast = useToast();
+  const { campaignId } = useParams() as { campaignId: string }
+  const [donorsPage, setDonorsPage] = useState(1)
+  const [volunteersPage, setVolunteersPage] = useState(1)
+  const [volunteerProfile, setVolunteerProfile] = useState<IVolunteerProfile>()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  // const {user } = useAuth()
+  // const modal = useModal()
+  // const toast = useToast()
 
-  const [shareModal, setShareModal] = useState(false);
+  const [shareModal, setShareModal] = useState(false)
 
-  const { data: campaign } = useQuery(
-    [keys.campaignPage.details, user?.token, campaignId],
-    fetchCampaign,
-    {
-      enabled: Boolean(user?.token),
-      refetchOnWindowFocus: false
-    }
-  );
+  const campaignQuery = useAuthQuery({
+    queryKey: [query.keys.MY_CAMPAIGN, campaignId],
+    queryFn: () => _my_campaigns.getCampaign({ campaignId }),
+    select: (data) => mapCampaignResponseToView(data),
+  })
 
-  const isFundraiseCampaign = /fundraise/i.test(campaign?.campaignType || "");
-  const isVolunteerCampaign = /volunteer/i.test(campaign?.campaignType || "");
+  const donationsQuery = useAuthQuery({
+    queryKey: [query.keys.CAMPAIGN_DONATIONS, campaignId, donorsPage],
+    queryFn: () =>
+      _campaigns.getCampaignDonations({ campaignId }, { page: donorsPage }),
+    select: (data) => {
+      return {
+        donors: mapDonationsResponseToView(data.donations),
+        pagination: data.pagination,
+      }
+    },
+  })
 
-  const { data: donors } = useQuery(
-    [keys.campaignPage.donors, user?.token, campaignId, donorsPage],
-    fetchDonors,
-    {
-      enabled: isFundraiseCampaign,
-      refetchOnWindowFocus: false
-    }
-  );
+  const volunteersQuery = useAuthQuery({
+    queryKey: [query.keys.CAMPAIGN_VOLUNTEERS, campaignId, volunteersPage],
+    queryFn: () =>
+      _campaigns.getCampaignVolunteers(
+        { campaignId },
+        { page: volunteersPage }
+      ),
+    select: (data) => {
+      return {
+        volunteers: mapVolunteeringResponseToView(data.volunteerings),
+        pagination: data.pagination,
+        unfiltered: data.volunteerings,
+      }
+    },
+  })
 
-  const { data: volunteers } = useQuery(
-    [keys.campaignPage.volunteers, user?.token, campaignId, volunteersPage],
-    fetchVolunteers,
-    {
-      enabled: isVolunteerCampaign,
-      refetchOnWindowFocus: false
-    }
-  );
-
-  const camelCaseToTitleCase = (str: string) => {
-    // 1. Split before each uppercase letter (global)
-    const splitter = regex("g")`([A-Z])`;
-
-    // 2. Match the very first character of the string
-    const firstChar = regex`^.`;
-
-    // return str.replace(/([A-Z])/g, " $1").replace(/^./, function (ch) {
-    return str.replace(splitter, " $1").replace(firstChar, function (ch) {
-      return ch.toUpperCase();
-    });
-  };
+  const campaign = campaignQuery.data
+  const donors = donationsQuery.data
+  const volunteers = volunteersQuery.data
+  const isFundraiseCampaign = /fundraise/i.test(campaign?.campaignType || "")
+  const isVolunteerCampaign = /volunteer/i.test(campaign?.campaignType || "")
 
   const downloadCSV = () => {
-    if (!volunteers?.unfiltered) return;
+    if (!volunteers?.unfiltered) return
 
-    const volunteerings = volunteers?.unfiltered;
+    const volunteerings = volunteers?.unfiltered
 
     const fields = [
       "fullName",
@@ -114,46 +106,44 @@ const Campaign = () => {
       "about",
       "phoneNumber",
       "createdAt",
-      "updatedAt"
-    ];
+      "updatedAt",
+    ]
 
     const headers = fields.map((field) => ({
       label: camelCaseToTitleCase(field),
-      value: field
-    }));
+      value: field,
+    }))
 
-    const json2csvParser = new Parser({ fields: headers });
-    const csv = json2csvParser.parse(volunteerings);
+    const json2csvParser = new Parser({ fields: headers })
+    const csv = json2csvParser.parse(volunteerings)
 
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `${campaign?.title}.volunteers.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.href = url
+    link.setAttribute("download", `${campaign?.title}.volunteers.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   const shareCampaign = async (campaign: any) => {
-    setShareModal(true);
+    setShareModal(true)
     // downloadCSV();
-  };
+  }
 
   // Check if campaign has ended
-  const currentDate = new Date();
-  const campaignEndDate = campaign?.endDate
-    ? parseISO(campaign?.endDate)
-    : null;
+  const currentDate = new Date()
+  const campaignEndDate = campaign?.endDate ? parseISO(campaign?.endDate) : null
   const hasEnded = campaignEndDate
     ? isAfter(currentDate, campaignEndDate)
-    : false;
+    : false
 
   const selectedView =
     searchParams.get("view") ||
     (isFundraiseCampaign && "Donors") ||
     (isVolunteerCampaign && "Volunteers") ||
-    undefined;
+    undefined
 
   return (
     <>
@@ -171,7 +161,8 @@ const Campaign = () => {
               <Text
                 characterLimit={128}
                 expandText="Read more"
-                className="md:hidden text-[#667085] text-[15px] md:text-[13px] mb-[9px]">
+                className="md:hidden text-[#667085] text-[15px] md:text-[13px] mb-[9px]"
+              >
                 {campaign.story}
               </Text>
 
@@ -211,7 +202,8 @@ const Campaign = () => {
                     <p>
                       <span className="text-black font-medium">Duration:</span>{" "}
                       <span
-                        className={hasEnded ? "text-red-600 font-medium" : ""}>
+                        className={hasEnded ? "text-red-600 font-medium" : ""}
+                      >
                         {hasEnded ? "Ended" : campaign.duration}
                       </span>
                     </p>
@@ -230,14 +222,14 @@ const Campaign = () => {
           ) : (
             <CampaignPageSkeleton />
           )}
-          {/* TODO: ADD SKELETON LOADING */}
 
           <OldModal isOpen={shareModal} onClose={() => setShareModal(false)}>
             <div
               className="relative p-12"
               style={{
-                background: "rgba(76, 76, 76, 0)"
-              }}>
+                background: "rgba(76, 76, 76, 0)",
+              }}
+            >
               <ShareCampaign
                 onClose={() => setShareModal(false)}
                 campaignId={campaign?._id}
@@ -246,6 +238,7 @@ const Campaign = () => {
               />
             </div>
           </OldModal>
+
           <div className="flex items-start gap-3 mb-[23px] md:mb-[9px]">
             {isVolunteerCampaign && (
               <Button
@@ -255,11 +248,12 @@ const Campaign = () => {
                 textColor="#344054"
                 outlineColor="#D0D5DD"
                 onClick={() => {
-                  downloadCSV();
-                  Mixpanel.track("Downloaded volunteer CSV file");
+                  downloadCSV()
+                  Mixpanel.track("Downloaded volunteer CSV file")
                 }}
               />
             )}
+
             <Button
               text="Share Campaign"
               icon={IoShareSocial}
@@ -267,10 +261,11 @@ const Campaign = () => {
               textColor="#344054"
               outlineColor="#D0D5DD"
               onClick={() => {
-                shareCampaign(campaign);
-                Mixpanel.track("Clicked Share Campaign");
+                shareCampaign(campaign)
+                Mixpanel.track("Clicked Share Campaign")
               }}
             />
+
             {!isVolunteerCampaign && (
               <Button
                 text="Withdraw Donations"
@@ -281,10 +276,10 @@ const Campaign = () => {
         </div>
 
         {/* donors x volunteers */}
+        {/* TODO: CONFIGURE TABS TO REPLACE NAVIGATION HISTORY INSTEAD OF PUSHING */}
         {campaign && (
           <Tabs activeTab={selectedView}>
             {isFundraiseCampaign && (
-              // TODO: CONFIGURE TABS TO REPLACE NAVIGATION HISTORY INSTEAD OF PUSHING
               <Tabs.Item heading="Donors" href={`${pathname}?view=Donors`}>
                 {donors && (
                   <>
@@ -337,8 +332,8 @@ const Campaign = () => {
                 textColor="#344054"
                 outlineColor="#D0D5DD"
                 onClick={() => {
-                  downloadCSV();
-                  Mixpanel.track("Downloaded volunteer CSV file");
+                  downloadCSV()
+                  Mixpanel.track("Downloaded volunteer CSV file")
                 }}
               />
             )}
@@ -346,7 +341,8 @@ const Campaign = () => {
             {isVolunteerCampaign && (
               <Tabs.Item
                 heading="Volunteers"
-                href={`${pathname}?view=Volunteers`}>
+                href={`${pathname}?view=Volunteers`}
+              >
                 {volunteers && (
                   <>
                     <Table className="hidden md:block mb-9">
@@ -374,7 +370,8 @@ const Campaign = () => {
                                     className="font-semibold text-sm text-[#475467]"
                                     onClick={() =>
                                       setVolunteerProfile(volunteer)
-                                    }>
+                                    }
+                                  >
                                     View Profile
                                   </button>
                                 </ModalTrigger>
@@ -385,7 +382,8 @@ const Campaign = () => {
                                     className="font-semibold text-sm text-primary"
                                     onClick={() =>
                                       setVolunteerProfile(volunteer)
-                                    }>
+                                    }
+                                  >
                                     Manage
                                   </button>
                                 </ModalTrigger>
@@ -398,7 +396,7 @@ const Campaign = () => {
 
                     <div className="flex flex-col md:hidden">
                       {volunteers.volunteers.map((volunteer, index) => (
-                        <Detail key={index} {...volunteer} />
+                        <Detail key={index} {...volunteer} status={undefined} />
                       ))}
                     </div>
                   </>
@@ -424,144 +422,42 @@ const Campaign = () => {
           </Tabs>
         )}
       </div>
+
       <SidebarModal id="volunteer" position="right">
         <VolunteerProfile volunteer={volunteerProfile} />
       </SidebarModal>
     </>
-  );
-};
+  )
+}
 
-export default Campaign;
-
-type ICampaignView = ReturnType<typeof mapCampaignResponseToView>;
-
-type IDonors = {
-  donors: ReturnType<typeof mapDonationsResponseToView>;
-  pagination: IDonationResponse["pagination"];
-};
-
-type IVolunteers = {
-  volunteers: ReturnType<typeof mapVolunteeringResponseToView>;
-  pagination: IVolunteeringResponse["pagination"];
-  unfiltered: IVolunteeringResponse["volunteerings"];
-};
+export default Campaign
 
 export type IVolunteerProfile = ReturnType<
   typeof mapVolunteeringResponseToView
->[number];
+>[number]
 
-const ITEMS_PER_PAGE = "20";
-const DATE_FORMAT = "ddd DD MMM, YYYY; hh:mm A";
+const ITEMS_PER_PAGE = "20"
+const DATE_FORMAT = "ddd DD MMM, YYYY; hh:mm A"
 
-const fetchCampaign: QF<
-  Nullable<ICampaignView>,
-  [Nullable<string>, string]
-> = async ({ queryKey }) => {
-  const [_, token, campaignId] = queryKey;
+const camelCaseToTitleCase = (str: string) => {
+  // 1. Split before each uppercase letter (global)
+  const splitter = regex("g")`([A-Z])`
 
-  if (token) {
-    const headers = {
-      "Content-Type": "multipart/form-data",
-      "x-auth-token": token
-    };
+  // 2. Match the very first character of the string
+  const firstChar = regex`^.`
 
-    const endpoint = `/my-campaigns/${campaignId}`;
-
-    try {
-      const { data } = await makeRequest<IFundraiseVolunteerCampaign>(
-        endpoint,
-        {
-          headers,
-          method: "GET"
-        }
-      );
-
-      const campaign = mapCampaignResponseToView(data);
-      return campaign;
-    } catch (error) {
-      const message = extractErrorMessage(error);
-      throw new Error(message);
-    }
-  }
-};
-
-const fetchDonors: QF<
-  Nullable<IDonors>,
-  [Nullable<string>, string, number]
-> = async ({ queryKey }) => {
-  const [_, token, campaignId, donorsPage] = queryKey;
-
-  if (token) {
-    const query = new URLSearchParams({
-      page: `${donorsPage}`,
-      perPage: ITEMS_PER_PAGE
-    });
-    const endpoint = `/campaigns/${campaignId}/donations?${query}`;
-
-    const headers = {
-      "Content-Type": "multipart/form-data",
-      "x-auth-token": token
-    };
-
-    try {
-      const { data } = await makeRequest<IDonationResponse>(endpoint, {
-        headers,
-        method: "GET"
-      });
-
-      return {
-        donors: mapDonationsResponseToView(data.donations),
-        pagination: data.pagination
-      };
-    } catch (error) {
-      const message = extractErrorMessage(error);
-      throw new Error(message);
-    }
-  }
-};
-
-const fetchVolunteers: QF<
-  Nullable<IVolunteers>,
-  [Nullable<string>, string, number]
-> = async ({ queryKey }) => {
-  const [_, token, campaignId, volunteersPage] = queryKey;
-
-  if (token) {
-    const query = new URLSearchParams({
-      page: `${volunteersPage}`,
-      perPage: ITEMS_PER_PAGE
-    });
-    const endpoint = `/campaigns/${campaignId}/volunteers?${query}`;
-
-    const headers = {
-      "Content-Type": "multipart/form-data",
-      "x-auth-token": token
-    };
-
-    try {
-      const { data } = await makeRequest<IVolunteeringResponse>(endpoint, {
-        headers,
-        method: "GET"
-      });
-
-      return {
-        volunteers: mapVolunteeringResponseToView(data.volunteerings),
-        pagination: data.pagination,
-        unfiltered: data.volunteerings
-      };
-    } catch (error) {
-      const message = extractErrorMessage(error);
-      throw new Error(message);
-    }
-  }
-};
+  // return str.replace(/([A-Z])/g, " $1").replace(/^./, function (ch) {
+  return str.replace(splitter, " $1").replace(firstChar, function (ch) {
+    return ch.toUpperCase()
+  })
+}
 
 function mapDonationsResponseToView(donations: IDonationResponse["donations"]) {
   return donations.map((donation) => ({
     title: donation.fullName,
     detail: formatAmount(Number(donation.amount), donation.currency),
-    date: moment(donation.createdAt).format(DATE_FORMAT)
-  }));
+    date: moment(donation.createdAt).format(DATE_FORMAT),
+  }))
 }
 
 function mapVolunteeringResponseToView(
@@ -572,6 +468,6 @@ function mapVolunteeringResponseToView(
     title: volunteer.fullName,
     phoneNumber: volunteer.phoneNumber,
     detail: volunteer.gender,
-    date: moment(volunteer.createdAt).format(DATE_FORMAT)
-  }));
+    date: moment(volunteer.createdAt).format(DATE_FORMAT),
+  }))
 }

@@ -1,17 +1,17 @@
 "use client"
 import { useState } from "react"
 import { useQuery } from "react-query"
-import { useUser } from "../../../dashboard/_common/hooks/useUser"
+import { useUser } from "../../../../../contexts/UserProvider"
 import { useDebounceCallback } from "usehooks-ts"
 import Image from "next/image"
 import StatCard from "../../admin-dashboard-components/StatCard"
 import ButtonGroup from "../../admin-dashboard-components/ButtonGroup"
-import TextInput from "../../../../common/components/TextInput"
-import DropdownTrigger from "../../../../common/components/DropdownTrigger"
+import TextInput from "../../../../../components/TextInput"
+import DropdownTrigger from "../../../../../components/DropdownTrigger"
 import Pagination from "../../admin-dashboard-components/Pagination"
 import Table from "../../admin-dashboard-components/Table"
 import Label from "../../admin-dashboard-components/Label"
-import { Button } from "../../../../common/components/Button"
+import { Button } from "../../../../../components/Button"
 import userService from "../../common/services/user"
 
 import {
@@ -23,9 +23,10 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa6"
 import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Users = () => {
-  const user = useUser()
+  const { user } = useAuth()
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
   const [activeFilter, setActiveFilter] = useState<UserType | "">("")
@@ -37,6 +38,33 @@ const Users = () => {
     queryKey: ["GET /admin/users", params],
     queryFn: () => userService.getUsers(params),
     onSuccess: (data) => setPage(data.pagination.currentPage),
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    enabled: Boolean(user),
+  })
+
+  // TODO: REPLACE WITH SINGLE ENDPOINT CALL
+  const allUsersQuery = useQuery({
+    queryKey: ["GET /admin/users", "all-users"],
+    queryFn: () => userService.getUsers({ perPage: 1 }),
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    enabled: Boolean(user),
+  })
+
+  const individualsQuery = useQuery({
+    queryKey: ["GET /admin/users", "individuals"],
+    queryFn: () =>
+      userService.getUsers({ perPage: 1, userType: UserType.Individual }),
+    refetchOnWindowFocus: false,
+    keepPreviousData: true,
+    enabled: Boolean(user),
+  })
+
+  const organizationsQuery = useQuery({
+    queryKey: ["GET /admin/users", "organizations"],
+    queryFn: () =>
+      userService.getUsers({ perPage: 1, userType: UserType.NonProfit }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
     enabled: Boolean(user),
@@ -103,6 +131,21 @@ const Users = () => {
     }
   }
 
+  const stats = [
+    {
+      title: "All Users",
+      value: allUsersQuery.data?.pagination?.total ?? 0,
+    },
+    {
+      title: "Individuals",
+      value: individualsQuery.data?.pagination?.total ?? 0,
+    },
+    {
+      title: "Organizations",
+      value: organizationsQuery.data?.pagination?.total ?? 0,
+    },
+  ]
+
   return (
     <div>
       {/* page title x subtitle */}
@@ -117,8 +160,8 @@ const Users = () => {
 
       {/* stats */}
       <div className="flex gap-6 px-8 pt-8 mb-8">
-        {dummyStats &&
-          dummyStats.map((stat, index) => <StatCard key={index} {...stat} />)}
+        {stats &&
+          stats.map((stat, index) => <StatCard key={index} {...stat} />)}
       </div>
 
       {/* toggle buttons x search x filters */}
@@ -284,18 +327,3 @@ const Users = () => {
 }
 
 export default Users
-
-const dummyStats = [
-  {
-    title: "Pending Campaigns",
-    value: 123,
-  },
-  {
-    title: "Active Campaigns",
-    value: 456,
-  },
-  {
-    title: "Completed Campaigns",
-    value: 789,
-  },
-]

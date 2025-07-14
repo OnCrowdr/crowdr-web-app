@@ -1,21 +1,22 @@
 "use client"
 import { useEffect, useState } from "react"
 import { useAtom, useAtomValue } from "jotai"
-import { useUser } from "../../dashboard/_common/hooks/useUser"
-import { useToast } from "../../../common/hooks/useToast"
-import { Button } from "../../../common/components/Button"
-import TextInput from "../../../common/components/TextInput"
-import TextAreaInput from "../../../common/components/TextAreaInput"
+import { useUser } from "../../../../contexts/UserProvider"
+import { useToast } from "../../../../hooks/useToast"
+import { Button } from "../../../../components/Button"
+import TextInput from "../../../../components/TextInput"
+import TextAreaInput from "../../../../components/TextAreaInput"
 import ModalTrigger, {
   modalStoreAtom,
-} from "../../../common/components/ModalTrigger"
+} from "../../../../components/ModalTrigger"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import kycService from "../common/services/kyc"
 import { kycToRejectAtom } from "./KycPopup"
 import { withdrawalToRejectAtom } from "./WithdrawalPopup"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import withdrawalService from "../common/services/withdrawal"
+import { useAuth } from "@/contexts/AppProvider"
 
 const RejectionForm: RFC<RejectionFormProps> = () => {
   const [title, setTitle] = useState("")
@@ -26,7 +27,7 @@ const RejectionForm: RFC<RejectionFormProps> = () => {
   )
   const [isRejecting, setIsRejecting] = useState(false)
   const modalStore = useAtomValue(modalStoreAtom)
-  const user = useUser()
+  const {user } = useAuth()
   const toast = useToast()
 
   const modal = modalStore.get("kycRejectionForm")!

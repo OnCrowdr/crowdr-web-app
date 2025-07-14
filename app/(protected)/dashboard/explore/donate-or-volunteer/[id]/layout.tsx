@@ -1,7 +1,7 @@
 import React, { Fragment, PropsWithChildren } from 'react'
 import type { Metadata } from 'next'
 import { ResolvingMetadata } from 'next'
-import { getSingleCampaign } from '../../../../../api/campaigns/getCampaigns'
+import { getSingleCampaign } from '../../../../../../utils/api/campaigns/getCampaigns'
 
 export async function generateMetadata(props: any, parent: ResolvingMetadata): Promise<Metadata> {
   const params = await props.params;

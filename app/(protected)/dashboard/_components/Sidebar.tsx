@@ -4,23 +4,24 @@ import { usePathname } from "next/navigation"
 import { atom, useAtom } from "jotai"
 import Link from "next/link"
 import Image from "next/image"
-import ModalTrigger from "../../../common/components/ModalTrigger"
-import DrawerTrigger from "../../../common/components/DrawerTrigger"
-import { useUser } from "../_common/hooks/useUser"
+import ModalTrigger from "../../../../components/ModalTrigger"
+import DrawerTrigger from "../../../../components/DrawerTrigger"
+import { useUser } from "../../../../contexts/UserProvider"
 import { useNotification } from "../_common/hooks/useNotification"
 import { Page, pageGroups as _pageGroups } from "../pages"
 import Icon from "./Icon"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import CrowdrLogo from "@/public/images/brand/crowdr-logo.svg"
 import shield from "@/public/svg/shield.svg"
 import bell from "@/public/svg/bell.svg"
 import bell_dot from "@/public/svg/bell-dot.svg"
+import { useAuth } from "@/contexts/AppProvider"
 
 export const pageDrawerAtom = atom("")
 
 const Sidebar: RFC<SidebarProps> = ({ drawer }) => {
-  const user = useUser()
+  const {user } = useAuth()
   const [currentDrawerId, setCurrentDrawerId] = useAtom(pageDrawerAtom)
   const currentPath = usePathname()
   const { unseenCount, setUnseenCount, markAllMessagesAsSeen } =

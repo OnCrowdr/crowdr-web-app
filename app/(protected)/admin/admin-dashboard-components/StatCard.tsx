@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import DotsVertical from "@/public/svg/dots-vertical.svg"
 
 const StatCard: RFC<StatCardProps> = ({ title, value }) => {

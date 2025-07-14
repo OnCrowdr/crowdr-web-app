@@ -1,12 +1,12 @@
 import { useQuery } from "react-query"
 import { useFormContext } from "react-hook-form"
-import { useUser } from "../../_common/hooks/useUser"
-import { useToast } from "../../../../common/hooks/useToast"
-import NumberInput from "../../../../common/components/NumberInput"
-import SelectInput from "../../../../common/components/SelectInput"
-import FileInput from "../../../../common/components/FileInput"
-import { FileInputContent } from "../../../../common/components/FileInput"
-import { Button } from "../../../../common/components/Button"
+import { useUser } from "../../../../../contexts/UserProvider"
+import { useToast } from "../../../../../hooks/useToast"
+import NumberInput from "../../../../../components/NumberInput"
+import SelectInput from "../../../../../components/SelectInput"
+import FileInput from "../../../../../components/FileInput"
+import { FileInputContent } from "../../../../../components/FileInput"
+import { Button } from "../../../../../components/Button"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import objectToFormData from "../../../../../utils/objectToFormData"
 import makeRequest from "../../../../../utils/makeRequest"
@@ -16,7 +16,9 @@ import OrganizationFormContext, {
 } from "../utils/useOrganizationForm"
 import { Option, stateOptions } from "../../_common/utils/form"
 
-import { Nullable, QF } from "../../../../common/types"
+import { Nullable, QF } from "@/types"
+import { useAuth } from "@/contexts/AppProvider"
+import { UserType } from "@/api/_users/models/PostSignUp"
 
 const OrganizationForm = () => {
   const {
@@ -25,16 +27,19 @@ const OrganizationForm = () => {
     reset,
     formState: { isSubmitting },
   } = useFormContext() as OrganizationFormContext
-  const user = useUser()
+  const { user } = useAuth()
   const toast = useToast()
+  const organizationId =
+    user?.userType === UserType.NonProfit ? user.organizationId : ""
 
   const { data: orgDetails, refetch: refetchOrgDetails } = useQuery(
-    [keys.settings.organization, user?.token, user?.organizationId],
+    [keys.settings.organization, user?.token, organizationId],
     fetchOrgDetails,
     {
       enabled: Boolean(user?.token),
       retry: false,
       refetchOnWindowFocus: false,
+
       onSuccess: (data) => {
         const fields = {
           cacNumber: data?.cacNumber,
@@ -49,15 +54,10 @@ const OrganizationForm = () => {
 
   const submit = async (formFields: FormFields) => {
     if (user) {
-      const {
-        cacNumber,
-        profileImage,
-        orgLocation,
-        publicUrl,
-      } = formFields
+      const { cacNumber, profileImage, orgLocation, publicUrl } = formFields
 
       const endpoint = `/organizations/${
-        orgDetails ? user.organizationId : "register"
+        orgDetails ? organizationId : "register"
       }`
       const headers = {
         "Content-Type": "multipart/form-data",
@@ -102,7 +102,10 @@ const OrganizationForm = () => {
           />
 
           {/* profile image */}
-          <FileInput config={register("profileImage")} styles={{ wrapper: "mb-[20px]" }}>
+          <FileInput
+            config={register("profileImage")}
+            styles={{ wrapper: "mb-[20px]" }}
+          >
             <FileInputContent
               previewImage={orgDetails?.imageId.url}
               subtext="or drag and drop"

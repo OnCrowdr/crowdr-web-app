@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import NextImage from "next/image"
 
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 import FileIcon from "@/public/svg/file-icon.svg"
 
 const FileItem: RFC<FileItemProps> = ({ fileName, url }) => {

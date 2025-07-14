@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import { Button } from "./common/components/Button";
+import { Button } from "../components/Button";
 import { useRouter } from "next/navigation";
 
 export default function NotFound({

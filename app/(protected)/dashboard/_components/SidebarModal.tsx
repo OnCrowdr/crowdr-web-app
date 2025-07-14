@@ -1,7 +1,7 @@
 "use client"
 import { useRef } from "react"
 import Sidebar from "./Sidebar"
-import { RFC } from "../../../common/types"
+import { RFC } from "@/types"
 
 const SidebarModal: RFC<SidebarModalProps> = ({
   id,

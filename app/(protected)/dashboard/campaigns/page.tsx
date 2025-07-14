@@ -1,67 +1,54 @@
-"use client";
-import { useState } from "react";
-import { useQuery } from "react-query";
-import CampaignCard from "../_components/CampaignCard";
-import {
-  Button,
-  GrayButton,
-  WhiteButton
-} from "../../../common/components/Button";
-import TextInput from "../../../common/components/TextInput";
-import DateRange from "../_components/DateRange";
-import StatCard from "../_components/StatCard";
-import Pagination from "../_components/Pagination";
-import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton";
-import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton";
-import { useUser } from "../_common/hooks/useUser";
-import { formatAmount } from "../_common/utils/currency";
-import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
-import makeRequest from "../../../../utils/makeRequest";
-import { keys } from "../_utils/queryKeys";
-import { time } from "../_utils/time";
+"use client"
+import { useState } from "react"
+import { useQuery } from "react-query"
+import CampaignCard from "../_components/CampaignCard"
+import { Button, GrayButton, WhiteButton } from "@/components/Button"
+import TextInput from "@/components/TextInput"
+import DateRange from "../_components/DateRange"
+import StatCard from "../_components/StatCard"
+import Pagination from "../_components/Pagination"
+import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton"
+import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton"
+import { useUser } from "@/contexts/UserProvider"
+import { formatAmount } from "../_common/utils/currency"
+import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
+import makeRequest from "../../../../utils/makeRequest"
+import { keys } from "../_utils/queryKeys"
+import { time } from "../_utils/time"
 
-import { Nullable, QF } from "../../../common/types";
+import { Nullable, QF } from "@/types"
 // import { CampaignResponse, ICampaignStats } from "@/app/common/types/Campaign"
-import { IDateRange } from "../_components/DateRange";
-import { IUser } from "../../../api/user/getUser";
+import { IDateRange } from "../_components/DateRange"
 
-import { BiSearch } from "react-icons/bi";
-import FileDownloadIcon from "@/public/svg/file-download.svg";
-import FilterIcon from "@/public/svg/filter.svg";
-import { ICampaignStats } from "../../../common/types/UserStats";
-import { ICampaignResponse } from "../../../common/types/Campaign";
-import { Mixpanel } from "../../../../utils/mixpanel";
+import { BiSearch } from "react-icons/bi"
+import FileDownloadIcon from "@/public/svg/file-download.svg"
+import FilterIcon from "@/public/svg/filter.svg"
+import { ICampaignStats } from "@/types/UserStats"
+import { ICampaignResponse } from "@/types/Campaign"
+import { Mixpanel } from "../../../../utils/mixpanel"
+import query from "@/api/query"
+import _my_campaigns from "@/api/_my_campaigns"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
 
 const Campaigns = () => {
-  const [dateRange, setDateRange] = useState<IDateRange>();
-  const [page, setPage] = useState(1);
-  const [input, setInput] = useState("");
-  const user = useUser();
+  const [dateRange, setDateRange] = useState<IDateRange>()
+  const [page, setPage] = useState(1)
+  const [input, setInput] = useState("")
+  const [startDate, endDate] = dateRange ?? []
 
-  const { data: stats } = useQuery(
-    [keys.myCampaigns.stats, user?.token, dateRange],
-    fetchStats,
-    {
-      enabled: Boolean(user?.token),
-      // staleTime: time.mins(2),
-      refetchOnWindowFocus: false
-    }
-  );
+  const summaryParams = { startDate, endDate }
+  const campaignsSummaryQuery = useAuthQuery({
+    queryKey: [query.keys.MY_CAMPAIGNS, summaryParams],
+    queryFn: () => _my_campaigns.getCampaignsSummary(summaryParams),
+  })
 
-  const {
-    isPreviousData,
-    data,
-    refetch: refetchCampaigns
-  } = useQuery(
-    [keys.myCampaigns.campaigns, user?.token, page],
-    fetchCampaigns,
-    {
-      enabled: Boolean(user?.token),
-      // keepPreviousData: true,
-      // staleTime: time.mins(10),
-      refetchOnWindowFocus: false
-    }
-  );
+  const campaignsQuery = useAuthQuery({
+    queryKey: [query.keys.MY_CAMPAIGNS, page],
+    queryFn: () => _my_campaigns.getCampaigns({ page }),
+  })
+
+  const summary = campaignsSummaryQuery.data
+  const campaigns = campaignsQuery.data
 
   return (
     <div>
@@ -92,13 +79,13 @@ const Campaigns = () => {
 
       {/* stats */}
       <div className="grid md:grid-cols-[repeat(3,_minmax(0,_350px))] 2xl:grid-cols-3 gap-4 md:gap-5 mb-[23px] md:mb-[44px]">
-        {stats ? (
+        {summary ? (
           <>
             <StatCard
               title="Total Raised"
               text={formatAmount(
-                stats.totalAmountDonated[0].totalAmount,
-                stats.totalAmountDonated[0].currency,
+                summary.totalAmountDonated[0].totalAmount,
+                summary.totalAmountDonated[0].currency,
                 { minimumFractionDigits: 2 }
               )}
               // percentage={100}
@@ -119,14 +106,14 @@ const Campaigns = () => {
             /> */}
             <StatCard
               title="Total Campaigns"
-              text={stats.totalNoOfCampaigns}
+              text={summary.totalNoOfCampaigns}
               // percentage={100}
               // time="yesterday"
               colorScheme="light"
             />
             <StatCard
               title="Campaign Views"
-              text={stats.totalCampaignViews}
+              text={summary.totalCampaignViews}
               // percentage={100}
               // time="yesterday"
               colorScheme="light"
@@ -156,13 +143,13 @@ const Campaigns = () => {
         <TextInput
           value={input}
           onChange={(e) => {
-            setInput(e.target.value);
+            setInput(e.target.value)
           }}
           placeholder="Search campaigns"
           icon={BiSearch}
           styles={{
             wrapper: "grow mr-[22px] block md:hidden",
-            input: "text-sm"
+            input: "text-sm",
           }}
         />
         {/* <GrayButton text="Filters" iconUrl={FilterIcon} /> */}
@@ -170,12 +157,12 @@ const Campaigns = () => {
 
       {/* campaigns */}
       <div className="grid md:grid-cols-[repeat(2,_minmax(0,_550px))] 2xl:grid-cols-3 gap-x-[10px] gap-y-3 md:gap-y-[10px] mb-[30px] md:mb-10">
-        {data
-          ? data.campaigns.map((campaign) => (
+        {campaigns
+          ? campaigns.campaigns.map((campaign: any) => (
               <CampaignCard
                 key={campaign._id}
                 campaign={campaign}
-                onDelete={refetchCampaigns}
+                onDelete={campaignsQuery.refetch}
               />
             ))
           : Array.from({ length: 6 }).map((_, index) => (
@@ -184,84 +171,84 @@ const Campaigns = () => {
       </div>
 
       {/* pagination */}
-      {data && data.campaigns.length !== 0 && (
+      {campaigns && campaigns.campaigns.length !== 0 && (
         <Pagination
-          currentPage={data.pagination.currentPage}
-          perPage={data.pagination.perPage}
-          total={data.pagination.total}
+          currentPage={campaigns.pagination.currentPage}
+          perPage={campaigns.pagination.perPage}
+          total={campaigns.pagination.total}
           onPageChange={setPage}
           className="px-4 py-3 md:p-0"
         />
       )}
 
       {/* no campaigns */}
-      {data && data.campaigns.length === 0 && (
+      {campaigns && campaigns.campaigns.length === 0 && (
         <p className="flex justify-center items-center text-center font-semibold text-[18px] md:text-[30px]">
           No campaigns available at this moment.
         </p>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Campaigns;
+export default Campaigns
 
 const fetchStats: QF<
   Nullable<ICampaignStats>,
   [Nullable<string>, IDateRange?]
 > = async ({ queryKey }) => {
-  const [_, token, dateRange] = queryKey;
+  const [_, token, dateRange] = queryKey
 
   if (token) {
-    const query = new URLSearchParams();
+    const query = new URLSearchParams()
     if (dateRange) {
-      query.set("startDate", dateRange[0]);
-      query.set("endDate", dateRange[1]);
+      query.set("startDate", dateRange[0])
+      query.set("endDate", dateRange[1])
     }
 
-    const endpoint = `/my-campaigns/summary?${query}`;
+    const endpoint = `/my-campaigns/summary?${query}`
     const headers = {
       "Content-Type": "multipart/form-data",
-      "x-auth-token": token
-    };
+      "x-auth-token": token,
+    }
 
     try {
       const { data } = await makeRequest<ICampaignStats>(endpoint, {
         headers,
-        method: "GET"
-      });
+        method: "GET",
+      })
 
-      return data;
+      return data
     } catch (error) {
-      const message = extractErrorMessage(error);
-      throw new Error(message);
+      const message = extractErrorMessage(error)
+      throw new Error(message)
     }
   }
-};
+}
 
 const fetchCampaigns: QF<
   Nullable<ICampaignResponse>,
   [Nullable<string>, number]
 > = async ({ queryKey }) => {
-  const [_, token, page] = queryKey;
+  const [_, token, page] = queryKey
 
   if (token) {
-    const query = new URLSearchParams({ page: `${page}`, perPage: "6" });
-    const endpoint = `/my-campaigns?${query}`;
+    const query = new URLSearchParams({ page: `${page}`, perPage: "6" })
+    const endpoint = `/my-campaigns?${query}`
     const headers = {
-      "x-auth-token": token
-    };
+      "x-auth-token": token,
+    }
 
     try {
       const { data } = await makeRequest<ICampaignResponse>(endpoint, {
         headers,
-        method: "GET"
-      });
+        method: "GET",
+      })
 
-      return data;
+      return data
     } catch (error) {
-      const message = extractErrorMessage(error);
-      throw new Error(message);
+      const message = extractErrorMessage(error)
+      throw new Error(message)
     }
   }
-};
+}

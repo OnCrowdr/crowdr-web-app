@@ -4,15 +4,16 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { atom, useAtom, useAtomValue } from "jotai"
-import TextInput from "../../../common/components/TextInput"
+import TextInput from "../../../../components/TextInput"
 import { pages as _pages } from "../pages"
 import userService from "../common/services/user"
-import { useUser } from "../../dashboard/_common/hooks/useUser"
+import { useUser } from "../../../../contexts/UserProvider"
 
 import CrowdrLogo from "@/public/images/brand/crowdr-logo.svg"
 import CrowdrLogoType from "@/public/svg/crowdr-logo.svg"
 import SearchIcon from "@/public/svg/search.svg"
 import LogoutIcon from "@/public/svg/logout-2.svg"
+import { useAuth } from "@/contexts/AppProvider"
 
 export const userCountAtom = atom(0)
 
@@ -21,7 +22,7 @@ const Sidebar = () => {
   const currentPath = usePathname()
   const [pages, setPages] = useState(_pages)
   const [userCount, setUserCount] = useAtom(userCountAtom)
-  const user = useUser()
+  const {user } = useAuth()
 
   useEffect(() => {
     if (user) {

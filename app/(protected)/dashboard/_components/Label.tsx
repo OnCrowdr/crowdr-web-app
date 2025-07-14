@@ -1,5 +1,5 @@
-import { CampaignStatus } from "../../../common/types/Campaign";
-import { RFC } from "../../../common/types";
+import { CampaignStatus, RunningStatus } from "@/api/_campaigns/models/GetCampaigns";
+import { RFC } from "@/types";
 
 const Label: RFC<LabelProps> = ({
   text,
@@ -61,7 +61,7 @@ const InReview = (
   />
 );
 
-export const label = (type: CampaignStatus) => {
+export const label = (type: CampaignStatus | RunningStatus | string) => {
   switch (type) {
     case "completed":
       return Completed;

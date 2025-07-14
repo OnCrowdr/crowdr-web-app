@@ -1,14 +1,15 @@
+import { Campaign, FundraiseCampaign, VolunteerCampaign } from "@/api/_campaigns/models/GetCampaigns"
 import { formatAmount } from "./currency"
 import { getDuration } from "./date"
 
 import {
   IFundraiseCampaign,
-  IFundraiseVolunteerCampaign,
+  ICampaign,
   IVolunteerCampaign,
-} from "../../../../common/types/Campaign"
+} from "@/types/Campaign"
 
 export const mapCampaignResponseToView = (
-  campaign: IFundraiseVolunteerCampaign
+  campaign: Campaign
 ) => {
   const {
     _id,
@@ -100,13 +101,13 @@ export const mapCampaignResponseToView = (
 export type ICampaignView = ReturnType<typeof mapCampaignResponseToView>
 
 export function isFundraise(
-  campaign: IFundraiseVolunteerCampaign
-): campaign is IFundraiseCampaign {
+  campaign: Campaign
+): campaign is FundraiseCampaign {
   return "fundraise" in campaign
 }
 
 export function isVolunteer(
-  campaign: IFundraiseVolunteerCampaign
-): campaign is IVolunteerCampaign {
+  campaign: Campaign
+): campaign is VolunteerCampaign {
   return "volunteer" in campaign
 }

@@ -12,15 +12,15 @@ import Filter from "../../../../(protected)/dashboard/_components/Filter";
 import Input from "../../../../(protected)/dashboard/_components/Input";
 import Checkbox from "../../../../(protected)/dashboard/_components/Checkbox";
 import Select from "../../../../(protected)/dashboard/_components/Select";
-import { Button } from "../../../../common/components/Button";
-import Footer from "../../../../common/components/Footer";
+import { Button } from "@/components/Button";
+import Footer from "@/app/(homepage)/_components/layout/Footer";
 import NavBar from "../../components/NavBar";
 import Loading from "../../../../loading";
 import NotFound from "../../../../not-found";
-import PhoneNumberInput from "../../../../common/components/PhoneNumberInput";
+import PhoneNumberInput from "@/components/PhoneNumberInput";
 
 // Hooks and utilities
-import { useToast } from "../../../../common/hooks/useToast";
+import { useToast } from "@/hooks/useToast";
 import makeRequest from "../../../../../utils/makeRequest";
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage";
 import { formatAmount } from "../../../../(protected)/dashboard/_common/utils/currency";
@@ -30,18 +30,15 @@ import { Mixpanel } from "../../../../../utils/mixpanel";
 
 // Assets
 import HeartHand from "@/public/svg/hand-holding-heart.svg";
-import ShareCampaign from "@/app/common/components/share-campaign";
-import OldModal from "@/app/common/components/OldModal";
-import {
-  useFetchSingleCampaign,
-  useVerifyPaymentReference
-} from "@/app/_hooks/useFetchCampaignById";
+import ShareCampaign from "@/components/ShareCampaign";
+import OldModal from "@/components/OldModal";
+import { useFetchSingleCampaign, useVerifyPaymentReference } from "@/hooks/useFetchCampaignById";
 import {
   CheckboxValues,
   DonationInputs,
   VolunteerInputs
 } from "@/app/types/campaign-types";
-import DonorsModal from "@/app/common/components/DonorsModal";
+import DonorsModal from "@/components/DonorsModal";
 
 declare global {
   interface Window {

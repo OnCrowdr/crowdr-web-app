@@ -1,21 +1,22 @@
-import { useUser } from "../../../../../_common/hooks/useUser"
+import { useUser } from "../../../../../../../../contexts/UserProvider"
 import CaretIcon from "@/public/svg/caret.svg"
 import Image from "next/image"
-import InputTitle from "../../../../../../../common/components/InputTitle"
-import SelectInput from "../../../../../../../common/components/SelectInput"
-import NumberInput from "../../../../../../../common/components/NumberInput"
+import InputTitle from "../../../../../../../../components/InputTitle"
+import SelectInput from "../../../../../../../../components/SelectInput"
+import NumberInput from "../../../../../../../../components/NumberInput"
 import { Option } from "../../../../../_common/utils/form"
 import { use, useMemo, useRef } from "react"
 import { CampaignFormContext } from "../useCampaignForm"
 import { useFormContext } from "react-hook-form"
-import { Button, WhiteButton } from "../../../../../../../common/components/Button"
-import { RFC } from "../../../../../../../common/types"
-import OptionInput from "../../../../../../../common/components/OptionInput"
-import TextInput from "../../../../../../../common/components/TextInput"
+import { Button, WhiteButton } from "../../../../../../../../components/Button"
+import { RFC } from "@/types"
+import OptionInput from "../../../../../../../../components/OptionInput"
+import TextInput from "../../../../../../../../components/TextInput"
 import { CampaignType } from "../../../../../../admin/common/services/campaign/models/GetCampaigns"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Step1: RFC<Props> = ({ index, onStep }) => {
-  const user = useUser()
+  const {user } = useAuth()
   const { campaignType, setCampaignForm, ...form } =
     useFormContext() as CampaignFormContext
   const errors = form.formState.errors

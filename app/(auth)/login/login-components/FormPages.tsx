@@ -1,42 +1,31 @@
 import { useRouter } from "next/navigation"
 import { useFormContext } from "react-hook-form"
 import _ from "lodash"
-import LoginFormContext, { FormFields } from "../../../common/hooks/useLoginForm"
+import LoginFormContext, { FormFields } from "../../_hooks/useLoginForm"
 import SignIn from "./SignIn"
-import setUserCookie from "../../../api/user/setUser"
-import { useToast } from "../../../common/hooks/useToast"
+import setUserCookie from "../../../../utils/api/user/setUser"
+import { useToast } from "../../../../hooks/useToast"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import { handleUserRedirection } from "../../../../utils/handleUserRedirection"
 import makeRequest from "../../../../utils/makeRequest"
-import { IUser } from "../../../api/user/getUser"
+import { IUser } from "../../../../utils/api/user/getUser"
 import { Mixpanel } from "../../../../utils/mixpanel"
 import { setClientSideCookie } from "../../../../utils/cookie-setup"
+import { useAuth } from "@/contexts/AppProvider"
+import { IPostSignInError } from "@/api/_users/models/PostSignIn"
 
 const FormPages = () => {
   const { handleSubmit } = useFormContext() as LoginFormContext
   const router = useRouter()
   const toast = useToast()
+  const { login } = useAuth()
 
   const submit = async (formFields: FormFields) => {
-    Mixpanel.track("Login clicked")
-    const endpoint = "/users/signin"
-    let payload = JSON.stringify(_.pick(formFields, ["email", "password"]))
+    const credentials = _.pick(formFields, ["email", "password"])
 
     try {
-      const { data: user } = await makeRequest<IUser>(endpoint, {
-        method: "POST",
-        payload,
-      })
-
-      const { token } = user
-      if (token) {
-        // Set server-side cookie
-        await setUserCookie(token);
-        setClientSideCookie("token", token, 7); 
-      }
-      handleUserRedirection(user, router.push)
-    } catch (error) {
-      Mixpanel.track("Login failed")
+      await login(credentials)
+    } catch (error: any) {
       const message = extractErrorMessage(error)
       toast({ title: "Oops!", body: message, type: "error" })
     }

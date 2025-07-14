@@ -4,6 +4,7 @@ import { extractErrorMessage } from "../../../../../../utils/extractErrorMessage
 
 import { IGetKyc, IKyc, IPatchKyc } from "./models";
 import { IGetKycsParams, IGetKycsResponse } from "./models/GetKycs";
+import api from "@/api";
 
 const getKycs = async (params: Partial<IGetKycsParams> = {}) => {
   const url = `/admin/kyc`;
@@ -16,7 +17,7 @@ const getKycs = async (params: Partial<IGetKycsParams> = {}) => {
   }
 
   try {
-    const res = await axios.get<IGetKycsResponse>(url, { params });
+    const res = await api.get<IGetKycsResponse>(url, { params });
     return res.data.data;
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "An error occurred");

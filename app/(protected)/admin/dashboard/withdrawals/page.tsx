@@ -2,17 +2,17 @@
 import { useState } from "react"
 import { useQuery } from "react-query"
 import { useSetAtom } from "jotai"
-import { useUser } from "../../../dashboard/_common/hooks/useUser"
+import { useUser } from "../../../../../contexts/UserProvider"
 import { useDebounceCallback } from "usehooks-ts"
 import Image from "next/image"
 import StatCard from "../../admin-dashboard-components/StatCard"
 import ButtonGroup from "../../admin-dashboard-components/ButtonGroup"
-import TextInput from "../../../../common/components/TextInput"
-import DropdownTrigger from "../../../../common/components/DropdownTrigger"
+import TextInput from "../../../../../components/TextInput"
+import DropdownTrigger from "../../../../../components/DropdownTrigger"
 import Pagination from "../../admin-dashboard-components/Pagination"
 import Table from "../../admin-dashboard-components/Table"
-import ModalTrigger from "../../../../common/components/ModalTrigger"
-import { Button } from "../../../../common/components/Button"
+import ModalTrigger from "../../../../../components/ModalTrigger"
+import { Button } from "../../../../../components/Button"
 import { label } from "../../admin-dashboard-components/Label"
 import { activeWithdrawalIdAtom } from "../../admin-dashboard-components/WithdrawalPopup"
 import withdrawalService from "../../common/services/withdrawal"
@@ -25,9 +25,10 @@ import {
   WithdrawalStatus,
 } from "../../common/services/withdrawal/models/GetWithdrawals"
 import { mapWithdrawalResponseToView } from "../../common/utils/mappings"
+import { useAuth } from "@/contexts/AppProvider"
 
 const Withdrawals = () => {
-  const user = useUser()
+  const {user } = useAuth()
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
   const setActiveWithdrawalIdAtom = useSetAtom(activeWithdrawalIdAtom)

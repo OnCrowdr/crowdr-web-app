@@ -25,7 +25,7 @@ export const config = {
     "/dashboard/(.*)",
     "/admin/(.*)",
     "/register-organization",
-    "/confirmation",
+    // "/confirmation",
     // "/explore",
     // "/explore/(.*)",
     // "/campaigns",

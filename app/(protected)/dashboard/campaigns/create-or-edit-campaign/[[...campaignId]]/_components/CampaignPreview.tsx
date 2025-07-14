@@ -2,7 +2,7 @@ import { Modal } from "flowbite-react"
 import { useFormContext } from "react-hook-form"
 import { CampaignFormContext } from "./useCampaignForm"
 import { getInitials } from "../../../../_components/Header"
-import { useUser } from "../../../../_common/hooks/useUser"
+import { useUser } from "../../../../../../../contexts/UserProvider"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import Slider from "react-slick"
@@ -10,12 +10,14 @@ import ArrowRight from "@/public/svg/arrow-right.svg"
 import ArrowLeft from "@/public/svg/arrow-left.svg"
 import React from "react"
 import ProgressBar from "../../../../_components/ProgressBar"
-import { Button } from "../../../../../../common/components/Button"
+import { Button } from "../../../../../../../components/Button"
 import moment from "moment"
 import { regex } from "regex"
 import { formatAmount } from "../../../../_common/utils/currency"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
+import { useAuth } from "@/contexts/AppProvider"
+import { UserType } from "@/api/_users/models/PostSignUp"
 
 const CampaignPreview = () => {
   const [hover, setHover] = useState(false)
@@ -30,7 +32,7 @@ const CampaignPreview = () => {
     submitForm,
     ...form
   } = useFormContext() as CampaignFormContext
-  const user = useUser()
+  const { user } = useAuth()
   const values = form.getValues()
   const subheader = values.story
   const totalAmount = values.fundingGoal
@@ -39,6 +41,11 @@ const CampaignPreview = () => {
   const progress = 0
   const [slideImages, setSlideImages] = useState(uploadedImages)
   const images = values.campaignImages ?? []
+  const accountName = user
+    ? user.userType === UserType.Individual
+      ? user.fullName
+      : user.organizationName
+    : "User"
 
   useEffect(() => {
     const promises = images.map((img) => {
@@ -74,7 +81,7 @@ const CampaignPreview = () => {
     if (!subheader) return { shortText: "", fullText: "" }
 
     // WARN: Commented code uses look-behind which isn't compaitble with older safari browsers
-    // const sentences = subheader.split(/(?<=[.!?])\s+/) 
+    // const sentences = subheader.split(/(?<=[.!?])\s+/)
     const sentenceSplitter = /([.!?])\s+/
     const sentences = subheader.split(sentenceSplitter)
     const shortSentences = sentences.slice(0, 3).join(" ")
@@ -160,17 +167,13 @@ const CampaignPreview = () => {
                 />
               ) : ( */}
               <div className="rounded-full bg-[#00B964] flex flex-row items-center justify-center h-[40px] w-[40px] font-bold text-white">
-                {getInitials(
-                  user.userType == "individual"
-                    ? user.fullName
-                    : user.organizationName
-                )}
+                {getInitials(accountName)}
               </div>
               {/* )} */}
 
               <div className="pl-3">
                 <h3 className="text-sm font-normal text-[#344054]">
-                  {user.fullName}
+                  {accountName}
                 </h3>
                 <h4 className="text-xs font-normal text-[#667085]">
                   {user.userType.toLowerCase() === "non-profit"

@@ -1,23 +1,24 @@
 "use client"
 import Image from "next/image"
 import { atom, useAtom } from "jotai"
-import { Button, GrayButton } from "../../../common/components/Button"
-import TextInput from "../../../common/components/TextInput"
+import { Button, GrayButton } from "../../../../components/Button"
+import TextInput from "../../../../components/TextInput"
 import ModalTrigger, {
   modalStoreAtom,
-} from "../../../common/components/ModalTrigger"
+} from "../../../../components/ModalTrigger"
 
 import { CgSpinner } from "react-icons/cg"
 import XMark from "@/public/svg/x-mark.svg"
 import { useEffect, useState } from "react"
 import withdrawalService from "../common/services/withdrawal"
-import { useUser } from "../../dashboard/_common/hooks/useUser"
-import { useToast } from "../../../common/hooks/useToast"
+import { useUser } from "../../../../contexts/UserProvider"
+import { useToast } from "../../../../hooks/useToast"
 import otpService from "../common/services/otp"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import Text from "../../dashboard/_components/Text"
 import { formatAmount } from "../../dashboard/_common/utils/currency"
 import { IBankingDetails, IWithdrawal } from "../common/services/withdrawal/models"
+import { useAuth } from "@/contexts/AppProvider"
 
 export const activeWithdrawalIdAtom = atom<string | null>(null)
 export const withdrawalToRejectAtom = atom<{ id: string; otp: string } | null>(
@@ -34,7 +35,7 @@ const WithdrawalPopup = () => {
   const [modalStore] = useAtom(modalStoreAtom)
   const [_, setWithdrawalToReject] = useAtom(withdrawalToRejectAtom)
   const [isApproving, setIsApproving] = useState(false)
-  const user = useUser()
+  const {user } = useAuth()
   const toast = useToast()
   const otpIsFilled = adminOtp.length > 0
   const isOrganization = withdrawalData?.user.userType === "non-profit"

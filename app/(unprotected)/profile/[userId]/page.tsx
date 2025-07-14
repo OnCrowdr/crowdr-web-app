@@ -24,7 +24,7 @@ const OrganizationProfilePage: React.FC = () => {
   )
 
   const profileQuery = useQuery({
-    queryKey: [query.keys.GET_PROFILE, userId],
+    queryKey: [query.keys.PROFILE, userId],
     queryFn: () => _profile.getProfile({ userId }),
   })
   const profile = profileQuery.data
@@ -53,8 +53,8 @@ const OrganizationProfilePage: React.FC = () => {
   }, [activeCampaignsQuery.data])
 
 
-  const fundingGoal = selectedCampaign?.fundraise
-  const amountDonated = selectedCampaign?.totalAmountDonated
+  // const fundingGoal = selectedCampaign?.fundraise
+  // const amountDonated = selectedCampaign?.totalAmountDonated
 
   return (
     <div className="max-w-[1140px] p-4 mx-auto py-10">
