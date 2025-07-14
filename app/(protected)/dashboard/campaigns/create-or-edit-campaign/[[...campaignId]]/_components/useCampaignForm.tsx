@@ -4,7 +4,6 @@ import { UseFormReturn } from "react-hook-form/dist/types"
 import { RFC } from "@/types"
 import { CampaignCategory } from "../../../../../../../utils/campaignCategory"
 import {
-  // CampaignType,
   IBaseCampaign,
   ICampaign,
 } from "@/types/Campaign"
@@ -41,8 +40,6 @@ import _campaigns from "@/api/_campaigns"
 import _settings from "@/api/_settings"
 import { Campaign } from "@/api/_campaigns/models/GetCampaigns"
 
-// export const CampaignContext = createContext({} as CampaignFormContext)
-
 const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   const form = useForm<FormFields>(config)
   const { user } = useAuth()
@@ -56,15 +53,54 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   const [showPreview, setShowPreview] = useState(false)
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
 
+  // Fix 1: Move mutations to component level
+  const createMutation = useMutation({
+    mutationFn: (data: FormData) => {
+      return _campaigns.createCampaign(data)
+    },
+    onSuccess: (response) => {
+      handleMutationSuccess(response, false)
+    },
+    onError: (error) => {
+      handleMutationError(error)
+    }
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({ campaignId, data }: { campaignId: string, data: FormData }) => {
+      return _campaigns.updateCampaign({ campaignId }, data)
+    },
+    onSuccess: (response) => {
+      handleMutationSuccess(response, true)
+    },
+    onError: (error) => {
+      handleMutationError(error)
+    }
+  })
+
   const campaignQuery = useAuthQuery({
     queryKey: [query.keys.MY_CAMPAIGN, campaignId],
-    queryFn: () => _my_campaigns.getCampaign({ campaignId: campaignId! }),
-    // select: (data) => mapCampaignResponseToView(data),
-    enabled: !!campaignId,
+    queryFn: () => {
+      if (!campaignId) {
+        throw new Error('Campaign ID is required to fetch campaign data')
+      }
+      return _my_campaigns.getCampaign({ campaignId })
+    },
+    enabled: !!campaignId && isEdit,
+    onError: (error) => {
+      console.error('Failed to fetch campaign:', error)
+      toast({ 
+        title: "Error", 
+        body: "Failed to load campaign data", 
+        type: "error" 
+      })
+    }
   })
   const campaign = campaignQuery.data
 
+
   useEffect(() => {
+    
     const initCampaignForm = (campaignType: CampaignType) => {
       if (campaignType === "volunteer") {
         setCampaignForm("volunteer")
@@ -74,39 +110,24 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
     }
 
     if (isEdit) {
-      const fetchCampaignData = async () => {
-        try {
-          // const endpoint = `/my-campaigns/${campaignId}`
-          // const headers = {
-          //   "Content-Type": "multipart/form-data",
-          //   "x-auth-token": user.token,
-          // }
-          // const { data } = await makeRequest<ICampaign>(endpoint, {
-          //   headers,
-          //   method: "GET",
-          // })
-        } catch (error) {}
-      }
-
       if (campaign) {
         const coverImage = campaign.campaignCoverImage.url
         const additionImages = campaign.campaignAdditionalImages.map(
           (image) => image.url
         )
 
-        // setFormFetched(true)
         setUploadedImages([coverImage, ...additionImages])
         const formData = mapResponseToForm(campaign)
         form.reset(formData)
         form.setValue("campaignDuration", formData.campaignDuration!)
         setCampaignType(campaign.campaignType)
         initCampaignForm(campaign.campaignType)
+        
       }
 
       if (campaignQuery.error) {
+        console.error('Campaign query error:', campaignQuery.error) // Debug log
       }
-
-      fetchCampaignData()
     } else {
       const currentUrl = window.location.href
       const url = new URL(currentUrl)
@@ -122,16 +143,115 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       setCampaignType(campaignType)
       initCampaignForm(campaignType)
     }
-  }, [campaign])
+  }, [campaign, campaignId, isEdit])
 
+  // Fix 2: Separate success and error handlers
+  const handleMutationSuccess = async (response: any, isEdit: boolean) => {
+    const isFundraiseRelated = campaignType?.toLowerCase()?.includes("fundraise")
+    const isVolunteerRelated = campaignType?.toLowerCase()?.includes("volunteer")
+
+    // Track analytics
+    switch (true) {
+      case isFundraiseRelated && isVolunteerRelated:
+        Mixpanel.track("Donation and Volunteer Campaign created")
+        break
+      case isFundraiseRelated:
+        Mixpanel.track("Donation Campaign created")
+        break
+      case isVolunteerRelated:
+        Mixpanel.track("Volunteer Campaign created")
+        break
+    }
+
+    router.push("/campaigns")
+
+    // Handle KYC check
+    try {
+      await _settings.getKyc()
+    } catch (error) {
+      modal.show(
+        <CompletionCard
+          title="Complete campaign setup!"
+          text="Upload your identity verification info in settings to finish creating your campaign."
+          primaryButton={{
+            label: "Upload KYC",
+            onClick: () => {
+              router.push("/dashboard/settings/verification")
+              modal.hide()
+            },
+          }}
+          secondaryButton={{ label: "Cancel", onClick: modal.hide }}
+          clearModal={modal.hide}
+          icon={
+            <div className="grid place-items-center rounded-full bg-[#FEF0C7] p-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M12 11V16M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21ZM12.0498 8V8.1L11.9502 8.1002V8H12.0498Z"
+                  stroke="#FFC328"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          }
+        />
+      )
+    }
+
+    // Handle completion modal
+    if (isEdit) {
+      toast({ title: "Well done!", body: response.message })
+    } else {
+      const shareCampaign = async (campaign: Campaign) => {
+        modal.hide()
+        setShareCampaignModal({ isOpen: true, campaign })
+      }
+
+      modal.show(
+        <CompletionCard
+          title="Campaign created successfully"
+          text="This campaign has been created successfully. You will be able to edit this campaign and republish changes."
+          primaryButton={{
+            label: "Share on your Socials",
+            onClick: () => shareCampaign(response.data),
+          }}
+          secondaryButton={{ label: "Cancel", onClick: modal.hide }}
+          clearModal={modal.hide}
+        />
+      )
+    }
+  }
+
+  const handleMutationError = (error: any) => {
+    console.error('Mutation error details:', error) // Enhanced debug log
+    Mixpanel.track("Campaign creation error")
+    const message = extractErrorMessage(error)
+
+    if (Array.isArray(message)) {
+      for (let msg of message) {
+        toast({ title: "Oops!", body: msg, type: "error" })
+      }
+    } else {
+      toast({ title: "Oops!", body: message || 'An unexpected error occurred', type: "error" })
+    }
+  }
+
+  // Fix 3: Simplified submit function
   const submit = async (formFields: FormFields) => {
     Mixpanel.track("Create campaign clicked")
+    
     const {
       category,
       campaignImages,
       title,
       story,
-      // campaignType,
       skillsNeeded,
       otherSkillsNeeded,
       currency,
@@ -143,12 +263,9 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       volunteerCommitment,
       additionalNotes,
     } = formFields
-    const isFundraiseRelated = campaignType
-      ?.toLowerCase()
-      ?.includes("fundraise")
-    const isVolunteerRelated = campaignType
-      ?.toLowerCase()
-      ?.includes("volunteer")
+
+    const isFundraiseRelated = campaignType?.toLowerCase()?.includes("fundraise")
+    const isVolunteerRelated = campaignType?.toLowerCase()?.includes("volunteer")
     const isIndividual = user?.userType == "individual"
 
     const payload: any = {
@@ -158,12 +275,6 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       campaignType: isIndividual ? CampaignType.Fundraise : campaignType,
       campaignStartDate: campaignDuration[0].toISOString(),
       campaignEndDate: campaignDuration[1].toISOString(),
-      // campaignStartDate: new Date(
-      //   campaignDuration[0] as any as Date
-      // ).toISOString(),
-      // campaignEndDate: new Date(
-      //   campaignDuration[1] as any as Date
-      // ).toISOString(),
     }
 
     if (campaignImages) {
@@ -175,7 +286,6 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
     }
 
     if (isFundraiseRelated || isIndividual) {
-      // TODO: MAKE objectToFormData handle converting nested objects to JSON
       payload.fundraise = JSON.stringify({
         fundingGoalDetails: [
           {
@@ -203,123 +313,19 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
       })
     }
 
-    const shareCampaign = async (campaign: Campaign) => {
-      modal.hide()
-      setShareCampaignModal({ isOpen: true, campaign })
-    }
+    const body = objectToFormData(payload)
 
-    const createMutation = useMutation(_campaigns.createCampaign)
-    const updateMutation = useMutation({
-      mutationFn: (body: [any, any]) => _campaigns.updateCampaign(...body),
-    })
-
+    // Fix 4: Use proper mutation calls with validation
     try {
-      // const headers = {
-      //   "Content-Type": "multipart/form-data",
-      //   "x-auth-token": user?.token!,
-      // }
-      // const endpoint = isEdit ? `/campaigns/${campaignId}` : "/campaigns"
-
-      const body = objectToFormData(payload)
-      const mutation = async () =>
-        isEdit
-          ? await updateMutation.mutateAsync([campaignId, body])
-          : await createMutation.mutateAsync(body)
-
-      const res = await mutation()
-
-      // const { success, message, data } = await makeRequest<IBaseCampaign>(
-      //   endpoint,
-      //   {
-      //     headers,
-      //     method: isEdit ? "PUT" : "POST",
-      //     payload: objectToFormData(payload),
-      //     extractError: false,
-      //   }
-      // )
-
-      // if (success) {
-      switch (true) {
-        case isFundraiseRelated && isVolunteerRelated:
-          Mixpanel.track("Donation and Volunteer Campaign created")
-          break
-        case isFundraiseRelated:
-          Mixpanel.track("Donation Campaign created")
-          break
-        case isVolunteerRelated:
-          Mixpanel.track("Volunteer Campaign created")
-          break
-      }
-
-      router.push("/campaigns")
-
-      try {
-        await _settings.getKyc()
-      } catch (error) {
-        modal.show(
-          <CompletionCard
-            title="Complete campaign setup!"
-            text="Upload your identity verification info in settings to finish creating your campaign."
-            primaryButton={{
-              label: "Upload KYC",
-              onClick: () => {
-                router.push("/dashboard/settings/verification")
-                modal.hide()
-              },
-            }}
-            secondaryButton={{ label: "Cancel", onClick: modal.hide }}
-            clearModal={modal.hide}
-            icon={
-              <div className="grid place-items-center rounded-full bg-[#FEF0C7] p-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M12 11V16M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21ZM12.0498 8V8.1L11.9502 8.1002V8H12.0498Z"
-                    stroke="#FFC328"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-            }
-          />
-        )
-      }
-
-      if (isEdit) {
-        toast({ title: "Well done!", body: res.message })
+      if (isEdit && campaignId?.[0]) {
+       
+        updateMutation.mutate({ campaignId: campaignId?.[0], data: body })
       } else {
-        modal.show(
-          <CompletionCard
-            title="Campaign created successfully"
-            text="This campaign has been created successfully. You will be able to edit this campaign and republish changes."
-            primaryButton={{
-              label: "Share on your Socials",
-              onClick: () => shareCampaign(res.data),
-            }}
-            secondaryButton={{ label: "Cancel", onClick: modal.hide }}
-            clearModal={modal.hide}
-          />
-        )
+        createMutation.mutate(body)
       }
-      // }
-    } catch (error: any) {
-      Mixpanel.track("Campaign creation error")
-      const message = extractErrorMessage(error)
-
-      if (Array.isArray(message)) {
-        for (let msg of message) {
-          toast({ title: "Oops!", body: msg, type: "error" })
-        }
-      } else {
-        toast({ title: "Oops!", body: message, type: "error" })
-      }
+    } catch (error) {
+      // Error handling is now in the mutation onError callbacks
+      handleMutationError(error)
     }
   }
 
@@ -335,7 +341,26 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
     ...form,
   }
 
-  if (campaignId && !form.getValues().title) {
+  // Show loading state during mutations or while fetching campaign data
+  if (createMutation.isLoading || updateMutation.isLoading || (isEdit && campaignQuery.isLoading)) {
+    return <FormSkeleton />
+  }
+
+  // Show loading state if editing but no campaign data yet
+  if (isEdit && campaignId && !campaign && !campaignQuery.error) {
+    return <FormSkeleton />
+  }
+
+  // If we're editing but don't have a campaign ID, show error
+  if (isEdit && !campaignId) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-500">Error: No campaign ID provided for editing</p>
+      </div>
+    )
+  }
+
+  if (campaignId && !form.getValues().title && !campaignQuery.isLoading) {
     return <FormSkeleton />
   }
 
@@ -350,7 +375,13 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
 export default CampaignProvider
 
 interface Props {
-  campaignId?: string
+  campaignId?: string // Optional for create, required for edit
+  children: React.ReactNode
+}
+
+// Add a type guard to help with debugging
+const isValidCampaignId = (id: string | undefined): id is string => {
+  return typeof id === 'string' && id.trim().length > 0
 }
 
 export type { CampaignProvider, FormFields }
@@ -396,7 +427,6 @@ type FormFields = {
   phoneNumber: string
   contactEmail: string
 }
-// type CampaignFormProvider = UseFormReturn<FormFields>
 
 type CampaignForm = "fundraise" | "volunteer"
 export type CampaignFormContext = {

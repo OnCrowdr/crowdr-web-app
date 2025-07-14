@@ -802,6 +802,7 @@ export default function DonateOrVolunteer(props: {
                 <button
                   onClick={() => {
                     donate("apple_pay");
+                    Mixpanel.track("Apple Pay Donation Clicked");
                   }}
                   className="apple-pay-button"
                   disabled={
