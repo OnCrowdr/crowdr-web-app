@@ -8,9 +8,10 @@ import {
   Campaign,
   CampaignType,
 } from "../../../../api/_campaigns/models/GetCampaigns"
+import { isFundraise } from "../_common/utils/campaign"
 
 const ActiveCampaign: RFC<Props> = ({ campaign }) => {
-  const [fundingGoalDetail] = campaign.fundraise?.fundingGoalDetails ?? []
+  const [fundingGoalDetail] = isFundraise(campaign) ? campaign.fundraise?.fundingGoalDetails : []
   const [totalAmountDonated] = campaign.totalAmountDonated
 
   const fundingGoal = fundingGoalDetail?.amount

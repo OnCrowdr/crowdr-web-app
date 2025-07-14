@@ -2,8 +2,9 @@
 import { useQuery, useQueryClient } from "react-query"
 import keys from "./keys"
 import _my_campaigns from "../_my_campaigns"
-import { IGetCampaignsSummaryParams } from "../_my_campaigns/models/GetCampaignsSummary"
 import { useEffect, useState } from "react"
+import _campaigns from "../_campaigns"
+import { IGetCampaignsSummaryParams } from "../_campaigns/models/GetCampaignsSummary"
 
 const useCampaignSummaryQuery = ({ params, enableQuery = true }: Props) => {
   const queryClient = useQueryClient()
@@ -12,7 +13,7 @@ const useCampaignSummaryQuery = ({ params, enableQuery = true }: Props) => {
 
   const query = useQuery({
     queryKey,
-    queryFn: () => _my_campaigns.getCampaignSummary(params),
+    queryFn: () => _campaigns.getCampaignSummary(params),
     refetchOnWindowFocus: false,
     enabled: enableQuery,
   })

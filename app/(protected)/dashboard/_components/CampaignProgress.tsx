@@ -1,8 +1,8 @@
 import React from "react"
 import Image from "next/image"
-import { IGetCampaignsSummaryResponseData } from "../../../../api/_my_campaigns/models/GetCampaignsSummary"
 import { RFC } from "@/types"
 import { formatCurrency } from "@/utils/seperateText"
+import { IGetCampaignsSummaryResponseData } from "@/api/_campaigns/models/GetCampaignsSummary"
 
 const CampaignProgress: RFC<Props> = ({ stats }) => {
   return (

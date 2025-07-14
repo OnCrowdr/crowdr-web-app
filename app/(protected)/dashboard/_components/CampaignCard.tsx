@@ -28,6 +28,7 @@ import { useAtomValue } from "jotai"
 import { LuEye, LuTrash2 } from "react-icons/lu"
 import { MdBlock } from "react-icons/md"
 import { isAfter, parseISO } from "date-fns"
+import { Campaign } from "@/api/_campaigns/models/GetCampaigns"
 
 const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
   const {
@@ -252,7 +253,7 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
 export default CampaignCard
 
 type CampaignCardProps = {
-  campaign: ICampaign
+  campaign: Campaign
   onDelete: () => void
 }
 
