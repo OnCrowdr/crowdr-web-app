@@ -220,8 +220,8 @@ const Campaign = () => {
                       </span>
                     </p>
                     <p>
-                      <span className="text-black font-medium">Donors:</span>{" "}
-                      <span>{donors?.pagination?.total}</span>
+                      <span className="text-black font-medium">{isFundraiseCampaign ? "Donors:" : "Volunteers:"}</span>{" "}
+                      <span>{isFundraiseCampaign ? donors?.pagination?.total : volunteers?.pagination?.total}</span>
                     </p>
                     <p>
                       <span className="text-black font-medium">Duration:</span>{" "}

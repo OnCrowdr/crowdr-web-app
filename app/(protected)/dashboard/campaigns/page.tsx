@@ -1,54 +1,54 @@
-"use client"
-import { useState } from "react"
-import { useQuery } from "react-query"
-import CampaignCard from "../_components/CampaignCard"
-import { Button, GrayButton, WhiteButton } from "@/components/Button"
-import TextInput from "@/components/TextInput"
-import DateRange from "../_components/DateRange"
-import StatCard from "../_components/StatCard"
-import Pagination from "../_components/Pagination"
-import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton"
-import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton"
-import { useUser } from "@/contexts/UserProvider"
-import { formatAmount } from "../_common/utils/currency"
-import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
-import makeRequest from "../../../../utils/makeRequest"
-import { keys } from "../_utils/queryKeys"
-import { time } from "../_utils/time"
+"use client";
+import { useState } from "react";
+import { useQuery } from "react-query";
+import CampaignCard from "../_components/CampaignCard";
+import { Button, GrayButton, WhiteButton } from "@/components/Button";
+import TextInput from "@/components/TextInput";
+import DateRange from "../_components/DateRange";
+import StatCard from "../_components/StatCard";
+import Pagination from "../_components/Pagination";
+import StatCardSkeleton from "../_components/skeletons/StatCardSkeleton";
+import CampaignCardSkeleton from "../_components/skeletons/CampaignCardSkeleton";
+import { useUser } from "@/contexts/UserProvider";
+import { formatAmount } from "../_common/utils/currency";
+import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
+import makeRequest from "../../../../utils/makeRequest";
+import { keys } from "../_utils/queryKeys";
+import { time } from "../_utils/time";
 
-import { Nullable, QF } from "@/types"
+import { Nullable, QF } from "@/types";
 // import { CampaignResponse, ICampaignStats } from "@/app/common/types/Campaign"
-import { IDateRange } from "../_components/DateRange"
+import { IDateRange } from "../_components/DateRange";
 
-import { BiSearch } from "react-icons/bi"
-import FileDownloadIcon from "@/public/svg/file-download.svg"
-import FilterIcon from "@/public/svg/filter.svg"
-import { ICampaignStats } from "@/types/UserStats"
-import { ICampaignResponse } from "@/types/Campaign"
-import { Mixpanel } from "../../../../utils/mixpanel"
-import query from "@/api/query"
-import _my_campaigns from "@/api/_my_campaigns"
-import { useAuthQuery } from "@/hooks/useAuthQuery"
+import { BiSearch } from "react-icons/bi";
+import FileDownloadIcon from "@/public/svg/file-download.svg";
+import FilterIcon from "@/public/svg/filter.svg";
+import { ICampaignStats } from "@/types/UserStats";
+import { ICampaignResponse } from "@/types/Campaign";
+import { Mixpanel } from "../../../../utils/mixpanel";
+import query from "@/api/query";
+import _my_campaigns from "@/api/_my_campaigns";
+import { useAuthQuery } from "@/hooks/useAuthQuery";
 
 const Campaigns = () => {
-  const [dateRange, setDateRange] = useState<IDateRange>()
-  const [page, setPage] = useState(1)
-  const [input, setInput] = useState("")
-  const [startDate, endDate] = dateRange ?? []
+  const [dateRange, setDateRange] = useState<IDateRange>();
+  const [page, setPage] = useState(1);
+  const [input, setInput] = useState("");
+  const [startDate, endDate] = dateRange ?? [];
 
-  const summaryParams = { startDate, endDate }
+  const summaryParams = { startDate, endDate };
   const campaignsSummaryQuery = useAuthQuery({
     queryKey: [query.keys.MY_CAMPAIGNS, summaryParams],
-    queryFn: () => _my_campaigns.getCampaignsSummary(summaryParams),
-  })
+    queryFn: () => _my_campaigns.getCampaignsSummary(summaryParams)
+  });
 
   const campaignsQuery = useAuthQuery({
     queryKey: [query.keys.MY_CAMPAIGNS, page],
-    queryFn: () => _my_campaigns.getCampaigns({ page }),
-  })
+    queryFn: () => _my_campaigns.getCampaigns({ page })
+  });
 
-  const summary = campaignsSummaryQuery.data
-  const campaigns = campaignsQuery.data
+  const summary = campaignsSummaryQuery.data;
+  const campaigns = campaignsQuery.data;
 
   return (
     <div>
@@ -143,13 +143,13 @@ const Campaigns = () => {
         <TextInput
           value={input}
           onChange={(e) => {
-            setInput(e.target.value)
+            setInput(e.target.value);
           }}
           placeholder="Search campaigns"
           icon={BiSearch}
           styles={{
             wrapper: "grow mr-[22px] block md:hidden",
-            input: "text-sm",
+            input: "text-sm"
           }}
         />
         {/* <GrayButton text="Filters" iconUrl={FilterIcon} /> */}
@@ -188,67 +188,67 @@ const Campaigns = () => {
         </p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Campaigns
+export default Campaigns;
 
 const fetchStats: QF<
   Nullable<ICampaignStats>,
   [Nullable<string>, IDateRange?]
 > = async ({ queryKey }) => {
-  const [_, token, dateRange] = queryKey
+  const [_, token, dateRange] = queryKey;
 
   if (token) {
-    const query = new URLSearchParams()
+    const query = new URLSearchParams();
     if (dateRange) {
-      query.set("startDate", dateRange[0])
-      query.set("endDate", dateRange[1])
+      query.set("startDate", dateRange[0]);
+      query.set("endDate", dateRange[1]);
     }
 
-    const endpoint = `/my-campaigns/summary?${query}`
+    const endpoint = `/my-campaigns/summary?${query}`;
     const headers = {
       "Content-Type": "multipart/form-data",
-      "x-auth-token": token,
-    }
+      "x-auth-token": token
+    };
 
     try {
       const { data } = await makeRequest<ICampaignStats>(endpoint, {
         headers,
-        method: "GET",
-      })
+        method: "GET"
+      });
 
-      return data
+      return data;
     } catch (error) {
-      const message = extractErrorMessage(error)
-      throw new Error(message)
+      const message = extractErrorMessage(error);
+      throw new Error(message);
     }
   }
-}
+};
 
 const fetchCampaigns: QF<
   Nullable<ICampaignResponse>,
   [Nullable<string>, number]
 > = async ({ queryKey }) => {
-  const [_, token, page] = queryKey
+  const [_, token, page] = queryKey;
 
   if (token) {
-    const query = new URLSearchParams({ page: `${page}`, perPage: "6" })
-    const endpoint = `/my-campaigns?${query}`
+    const query = new URLSearchParams({ page: `${page}`, perPage: "6" });
+    const endpoint = `/my-campaigns?${query}`;
     const headers = {
-      "x-auth-token": token,
-    }
+      "x-auth-token": token
+    };
 
     try {
       const { data } = await makeRequest<ICampaignResponse>(endpoint, {
         headers,
-        method: "GET",
-      })
+        method: "GET"
+      });
 
-      return data
+      return data;
     } catch (error) {
-      const message = extractErrorMessage(error)
-      throw new Error(message)
+      const message = extractErrorMessage(error);
+      throw new Error(message);
     }
   }
-}
+};

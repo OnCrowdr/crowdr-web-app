@@ -49,6 +49,8 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
   const isVolunteerCampaign = campaignType === "volunteer"
   const modalStore = useAtomValue(modalStoreAtom)
 
+  console.log("volunteers rendered", duration)
+
   // Check if campaign has ended
   const currentDate = new Date()
   const campaignEndDate = campaign.campaignEndDate ? parseISO(campaign.campaignEndDate) : null
@@ -149,7 +151,7 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
               <span className="text-black font-medium">
                 {!isVolunteerCampaign ? "Donors:" : "Volunteers:"}
               </span>{" "}
-              <span>{!isVolunteerCampaign ? campaign?.campaignDonors?.length : volunteers}</span>
+              <span>{!isVolunteerCampaign ? campaign?.campaignDonors?.length : campaign?.campaignVolunteers?.length}</span>
             </p>
             <p>
               <span className="text-black font-medium">Duration:</span>{" "}
