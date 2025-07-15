@@ -232,7 +232,6 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   };
 
   const handleMutationError = (error: any) => {
-    console.error("Mutation error details:", error); // Enhanced debug log
     Mixpanel.track("Campaign creation error");
     const message = extractErrorMessage(error);
 
@@ -253,7 +252,6 @@ const CampaignProvider: RFC<Props> = ({ children, campaignId }) => {
   const submit = async (formFields: FormFields) => {
     Mixpanel.track("Create campaign clicked");
 
-    console.log("here is the form fields", formFields);
     const {
       category,
       campaignImages,
