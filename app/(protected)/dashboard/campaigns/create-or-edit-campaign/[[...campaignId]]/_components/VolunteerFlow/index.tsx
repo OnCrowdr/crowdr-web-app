@@ -1,24 +1,25 @@
-import { useState } from "react"
-import { CampaignFormContext } from "../useCampaignForm"
-import Step1 from "./Step1"
-import Step2 from "./Step2"
-import Step3 from "./Step3"
-import Stepper from "../Stepper"
-import { BiWallet } from "react-icons/bi"
-import { BsMegaphone } from "react-icons/bs"
-import { LuImageUp } from "react-icons/lu"
-import { useFormContext } from "react-hook-form"
+import { useState } from "react";
+import { CampaignFormContext } from "../useCampaignForm";
+import Step1 from "./Step1";
+import Step2 from "./Step2";
+import Step3 from "./Step3";
+import Stepper from "../Stepper";
+import { BiWallet } from "react-icons/bi";
+import { BsMegaphone } from "react-icons/bs";
+import { LuImageUp } from "react-icons/lu";
+import { useFormContext } from "react-hook-form";
 
 const VolunteerFlow = () => {
   const { isEdit, campaignType, setCampaignForm, submitForm, ...form } =
-    useFormContext() as CampaignFormContext
-  const [currentStep, setStep] = useState(0)
-  const pageTitle = isEdit ? "Edit Campaign" : "Create a volunteer campaign"
-  const pageSubtext = isEdit ? form.getValues().title : "Start a campaign now"
+    useFormContext() as CampaignFormContext;
+  const [currentStep, setStep] = useState(0);
+  const pageTitle = isEdit ? "Edit Campaign" : "Create a volunteer campaign";
+  const pageSubtext = isEdit ? form.getValues().title : "Start a campaign now";
 
   const handleDone = () => {
-    submitForm()
-  }
+    setCampaignForm("volunteer");
+    submitForm();
+  };
 
   return (
     <div>
@@ -41,22 +42,22 @@ const VolunteerFlow = () => {
         <Step3 index={2} onStep={setStep} onDone={handleDone} />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default VolunteerFlow
+export default VolunteerFlow;
 
 const steps = [
   {
     label: "Volunteering goal",
-    icon: BiWallet,
+    icon: BiWallet
   },
   {
     label: "Event details",
-    icon: BsMegaphone,
+    icon: BsMegaphone
   },
   {
     label: "Event Images",
-    icon: LuImageUp,
-  },
-]
+    icon: LuImageUp
+  }
+];
