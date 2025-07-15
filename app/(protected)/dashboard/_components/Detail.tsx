@@ -31,7 +31,8 @@ const Detail: RFC<DetailProps> = ({
 
         <div className="hidden group-open:flex justify-between">
           <div className="flex flex-col gap-2">
-            <p className="text-[#555]">{detail}</p>
+            <p className="text-[#555]">Gender: {detail}</p>
+            <p className="text-[#555]">Status: {status}</p>
             <p className="text-sm text-[#667085]">{date}</p>
           </div>
 

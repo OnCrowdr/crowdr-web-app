@@ -132,6 +132,30 @@ const Campaign = () => {
     // downloadCSV();
   }
 
+  // Helper function to create volunteer management buttons
+  const createVolunteerButtons = (volunteer: IVolunteerProfile) => (
+    <div className="flex flex-col gap-2 min-w-[100px]">
+      <ModalTrigger id="volunteer">
+        <button
+          className="bg-gray-100 hover:bg-gray-200 transition-colors duration-200 font-medium text-sm text-[#475467] px-3 py-2 rounded border border-gray-200"
+          onClick={() => setVolunteerProfile(volunteer)}
+        >
+          View Profile
+        </button>
+      </ModalTrigger>
+
+      <ModalTrigger id="volunteer">
+        <button
+          type="button"
+          className="bg-blue-50 hover:bg-blue-100 transition-colors duration-200 font-medium text-sm text-primary px-3 py-2 rounded border border-blue-200"
+          onClick={() => setVolunteerProfile(volunteer)}
+        >
+          Manage
+        </button>
+      </ModalTrigger>
+    </div>
+  )
+
   // Check if campaign has ended
   const currentDate = new Date()
   const campaignEndDate = campaign?.endDate ? parseISO(campaign?.endDate) : null
@@ -196,8 +220,8 @@ const Campaign = () => {
                       </span>
                     </p>
                     <p>
-                      <span className="text-black font-medium">Donors:</span>{" "}
-                      <span>{donors?.pagination?.total}</span>
+                      <span className="text-black font-medium">{isFundraiseCampaign ? "Donors:" : "Volunteers:"}</span>{" "}
+                      <span>{isFundraiseCampaign ? donors?.pagination?.total : volunteers?.pagination?.total}</span>
                     </p>
                     <p>
                       <span className="text-black font-medium">Duration:</span>{" "}
@@ -350,6 +374,7 @@ const Campaign = () => {
                         <Table.HeadCell>Volunteers</Table.HeadCell>
                         <Table.HeadCell>Phone number</Table.HeadCell>
                         <Table.HeadCell>Gender</Table.HeadCell>
+                        <Table.HeadCell>Status</Table.HeadCell>
                         <Table.HeadCell>Date & time</Table.HeadCell>
                         <Table.HeadCell></Table.HeadCell>
                       </Table.Head>
@@ -362,6 +387,7 @@ const Campaign = () => {
                               {volunteer.phoneNumber}
                             </Table.HeadCell>
                             <Table.Cell>{volunteer.detail}</Table.Cell>
+                            <Table.Cell>{volunteer.status}</Table.Cell>
                             <Table.Cell>{volunteer.date}</Table.Cell>
                             <Table.Cell>
                               <div className="flex gap-3">
@@ -394,9 +420,15 @@ const Campaign = () => {
                       </Table.Body>
                     </Table>
 
+                    {/* Updated mobile view with modal triggers */}
                     <div className="flex flex-col md:hidden">
                       {volunteers.volunteers.map((volunteer, index) => (
-                        <Detail key={index} {...volunteer} status={undefined} />
+                        <Detail 
+                          key={index} 
+                          {...volunteer} 
+                          status={volunteer.status}
+                          button={createVolunteerButtons(volunteer)}
+                        />
                       ))}
                     </div>
                   </>
@@ -468,6 +500,7 @@ function mapVolunteeringResponseToView(
     title: volunteer.fullName,
     phoneNumber: volunteer.phoneNumber,
     detail: volunteer.gender,
+    status: volunteer.status,
     date: moment(volunteer.createdAt).format(DATE_FORMAT),
   }))
 }

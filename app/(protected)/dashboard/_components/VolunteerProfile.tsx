@@ -1,41 +1,45 @@
-import ModalTrigger from "../../../../components/ModalTrigger"
-import { useSetAtom } from "jotai"
-import { pageDrawerAtom } from "./Sidebar"
-import { HiMiniXMark } from "react-icons/hi2"
-import { IVolunteerProfile } from "../campaigns/[campaignId]/page"
-import { RFC } from "@/types"
-import TextInput from "../../../../components/TextInput"
-import TextAreaInput from "../../../../components/TextAreaInput"
-import { Button, WhiteButton } from "../../../../components/Button"
-import { useUser } from "../../../../contexts/UserProvider"
-import makeRequest from "../../../../utils/makeRequest"
-import toast from "react-hot-toast"
-import { useAuth } from "@/contexts/AppProvider"
+import ModalTrigger from "../../../../components/ModalTrigger";
+import { useSetAtom } from "jotai";
+import { pageDrawerAtom } from "./Sidebar";
+import { HiMiniXMark } from "react-icons/hi2";
+import { IVolunteerProfile } from "../campaigns/[campaignId]/page";
+import { RFC } from "@/types";
+import TextInput from "../../../../components/TextInput";
+import TextAreaInput from "../../../../components/TextAreaInput";
+import { Button, WhiteButton } from "../../../../components/Button";
+import { useUser } from "../../../../contexts/UserProvider";
+import makeRequest from "../../../../utils/makeRequest";
+import toast from "react-hot-toast";
+import { useAuth } from "@/contexts/AppProvider";
 
 const VolunteerProfile: RFC<Props> = ({ volunteer }) => {
-  const setCurrentDrawerId = useSetAtom(pageDrawerAtom)
-  const clearDrawerId = () => setCurrentDrawerId("")
-  const {user } = useAuth()
+  const setCurrentDrawerId = useSetAtom(pageDrawerAtom);
+  const clearDrawerId = () => setCurrentDrawerId("");
+  const { user } = useAuth();
 
-  const updateApproval = async (body: IPatchVolunteerBody) => {
+  const updateApproval = async (
+    body: IPatchVolunteerBody,
+    action: "Accept" | "Reject"
+  ) => {
     if (user && volunteer) {
-      const endpoint = `/my-campaigns/${volunteer.campaignId}/volunteer/${volunteer._id}`
+      const endpoint = `/my-campaigns/${volunteer.campaignId}/volunteer/${volunteer._id}`;
       const headers = {
-        "x-auth-token": user.token,
-      }
+        "x-auth-token": user.token
+      };
 
       try {
-        const { data } = await makeRequest<IPatchVolunteerResponse>(endpoint, {
+        const response = await makeRequest<IPatchVolunteerResponse>(endpoint, {
           method: "PATCH",
           headers,
-          payload: JSON.stringify(body),
-        })
-        toast.success(data.message)
+          payload: JSON.stringify(body)
+        });
+        toast.success("Volunteer " + action.toLowerCase() + "ed successfully");
+        clearDrawerId();
       } catch (error: any) {
-        toast.error(error?.error || "Something went wrong")
+        toast.error(error?.error || "Something went wrong");
       }
     }
-  }
+  };
 
   return (
     <div className="flex flex-col bg-white w-[400px] h-full max-h-full pt-6">
@@ -45,8 +49,7 @@ const VolunteerProfile: RFC<Props> = ({ volunteer }) => {
         <ModalTrigger id="volunteer" type="hide">
           <div
             onClick={clearDrawerId}
-            className="relative hover:bg-[#F8F8F8] transition cursor-pointer rounded-full p-2 -top-1"
-          >
+            className="relative hover:bg-[#F8F8F8] transition cursor-pointer rounded-full p-2 -top-1">
             <HiMiniXMark fill="#98A2B3" className="h-6 w-6" />
           </div>
         </ModalTrigger>
@@ -63,11 +66,11 @@ const VolunteerProfile: RFC<Props> = ({ volunteer }) => {
           />
           <TextInput disabled label="Gender" value={volunteer.gender} />
           <TextInput disabled label="Age" value={volunteer.ageRange} />
-          <TextInput disabled label="Social Media Links" value={"--"} />
-          <div className="grid gap-1.5">
+          {/* <TextInput disabled label="Social Media Links" value={"--"} /> */}
+          {/* <div className="grid gap-1.5">
             <p>Skills</p>
             <p>--</p>
-          </div>
+          </div> */}
           <TextAreaInput
             disabled
             label="Volunteer's Motivation"
@@ -76,52 +79,52 @@ const VolunteerProfile: RFC<Props> = ({ volunteer }) => {
 
           <div className="flex justify-end gap-3 my-[60px]">
             <WhiteButton
-              onClick={() => updateApproval({ status: "REJECTED" })}
+              onClick={() => updateApproval({ status: "REJECTED" }, "Reject")}
               text="Reject Volunteer"
               outlineColor="#D0D5DD"
             />
             <Button
-              onClick={() => updateApproval({ status: "APPROVED" })}
+              onClick={() => updateApproval({ status: "APPROVED" }, "Accept")}
               text="Accept Volunteer"
             />
           </div>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default VolunteerProfile
+export default VolunteerProfile;
 
 interface Props {
-  volunteer: IVolunteerProfile | undefined
+  volunteer: IVolunteerProfile | undefined;
 }
 
 interface IPatchVolunteerBody {
-  status: "PENDING" | "APPROVED" | "REJECTED"
-  remark?: string
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  remark?: string;
 }
 
 export interface IPatchVolunteerResponse {
   success: boolean;
   message: string;
-  data:    IPatchVolunteerResponseData;
+  data: IPatchVolunteerResponseData;
 }
 
 export interface IPatchVolunteerResponseData {
-  _id:         string;
-  campaignId:  string;
-  fullName:    string;
-  email:       string;
-  status:      string;
-  gender:      string;
-  ageRange:    string;
-  address:     string;
-  about:       string;
-  userId:      string;
+  _id: string;
+  campaignId: string;
+  fullName: string;
+  email: string;
+  status: string;
+  gender: string;
+  ageRange: string;
+  address: string;
+  about: string;
+  userId: string;
   phoneNumber: string;
-  createdAt:   Date;
-  updatedAt:   Date;
-  __v:         number;
-  remark:      string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+  remark: string;
 }
