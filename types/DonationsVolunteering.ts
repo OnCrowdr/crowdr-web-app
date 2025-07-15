@@ -36,6 +36,7 @@ export interface IVolunteer {
   gender: string;
   ageRange: string;
   address: string;
+  status: string;
   about: string;
   phoneNumber: string;
   createdAt: string;
