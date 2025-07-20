@@ -18,7 +18,7 @@ import { Option, stateOptions } from "../../_common/utils/form"
 
 import { Nullable, QF } from "@/types"
 import { useAuth } from "@/contexts/AppProvider"
-import { UserType } from "@/api/_users/models/PostSignUp"
+import { UserType } from "@/types"
 
 const OrganizationForm = () => {
   const {

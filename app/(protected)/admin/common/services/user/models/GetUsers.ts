@@ -1,3 +1,5 @@
+import { UserType } from "@/types";
+
 // params
 export interface IGetUsersParams {
   page:   number;
@@ -46,9 +48,4 @@ export interface User {
 export enum Referrer {
   Google = "google",
   String = "string",
-}
-
-export enum UserType {
-  Individual = "individual",
-  NonProfit = "non-profit",
 }

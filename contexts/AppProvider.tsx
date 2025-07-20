@@ -5,7 +5,7 @@ import {
   IPostSignInError,
   IPostSignInResponseData,
 } from "@/api/_users/models/PostSignIn"
-import { UserType } from "@/api/_users/models/PostSignUp"
+import { UserType } from "@/types"
 import { useToast } from "@/hooks/useToast"
 import { isAxiosError } from "@/lib/error"
 import { DistributiveOmit, RFC } from "@/types"

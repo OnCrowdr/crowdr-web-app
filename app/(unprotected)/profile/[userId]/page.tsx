@@ -192,7 +192,7 @@ const OrganizationProfilePage: React.FC = () => {
                         <img
                           src={engagement.url}
                           alt=""
-                          className="w-full h-full rounded"
+                          className="w-full h-full rounded object-cover"
                         />
                       </div>
                     ))}

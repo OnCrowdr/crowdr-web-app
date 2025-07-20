@@ -4,6 +4,7 @@ import { useFormContext } from "react-hook-form"
 import { FieldError, RegisterOptions, UseFormRegisterReturn } from "react-hook-form"
 import { RFC } from "@/types"
 import { LuEye, LuEyeOff } from "react-icons/lu"
+import _ from "lodash"
 
 const PasswordInput: RFC<PasswordInputProps> = ({
   config,
@@ -25,7 +26,7 @@ const PasswordInput: RFC<PasswordInputProps> = ({
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const {register, formState: {errors}} = useFormContext()
     config = register(name, rules)
-    error = errors[name] as FieldError
+    error = _.get(errors, name) as FieldError
   }
   const [showPassword, setShowPassword] = useState(false)
 

@@ -14,7 +14,7 @@ import { formatAmount } from "../_common/utils/currency"
 import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
 import makeRequest from "../../../../utils/makeRequest"
 import { keys } from "../_utils/queryKeys"
-import { time } from "../_utils/time"
+import { time } from "../../../../lib/time"
 
 import { Nullable, QF } from "@/types"
 // import { CampaignResponse, ICampaignStats } from "@/app/common/types/Campaign"
