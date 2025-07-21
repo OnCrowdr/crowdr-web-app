@@ -1,3 +1,5 @@
+import { UserType } from "@/types";
+
 // payload
 export interface IGetProfilePath {
   userId: string
@@ -46,7 +48,7 @@ export interface Member {
 
 export interface Individual {
   _id:             string;
-  userType:        'individual';
+  userType:        UserType.Individual;
   email:           string;
   interests:       string[];
   referrer:        string;
@@ -59,7 +61,7 @@ export interface Individual {
 }
 export interface NonProfit {
   _id:              string;
-  userType:         'non-profit';
+  userType:         UserType.NonProfit;
   email:            string;
   interests:        string[];
   referrer:         string;

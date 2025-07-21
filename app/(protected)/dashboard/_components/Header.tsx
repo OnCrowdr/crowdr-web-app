@@ -16,10 +16,7 @@ import BurgerIcon from "@/public/svg/burger-icon.svg"
 import Avatar from "@/public/assets/avatar.png"
 import CreateCampaignDropdown from "./createCampainDropdown"
 import { useAuth } from "@/contexts/AppProvider"
-import {
-  IPostSignUpResponseData,
-  UserType,
-} from "@/api/_users/models/PostSignUp"
+import { UserType } from "@/types"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
@@ -66,7 +63,10 @@ const Header = () => {
 
         {/* profile */}
         {user ? (
-          <Link href={`/profile/${user._id}`} className="group hidden md:flex items-center">
+          <Link
+            href={`/profile/${user._id}`}
+            className="group hidden md:flex items-center"
+          >
             <div className="mr-[15px]">
               <div className="rounded-full bg-[#00B964] flex flex-row items-center justify-center h-[40px] w-[40px] font-bold text-white font-satoshi">
                 {getInitials(accountName)}

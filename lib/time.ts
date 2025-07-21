@@ -1,6 +1,9 @@
 export const time = {
+  ms(noOfMilisecs = 1000) {
+    return noOfMilisecs
+  },
   secs(noOfSecs: number) {
-    return 1000 * noOfSecs
+    return this.ms() * noOfSecs
   },
   mins(noOfMins: number) {
     return this.secs(60) * noOfMins

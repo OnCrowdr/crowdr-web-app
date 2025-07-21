@@ -1,3 +1,5 @@
+import { UserType } from "@/types"
+
 // payload
 export interface IPostSignUpBody {
   fullName: string
@@ -8,11 +10,6 @@ export interface IPostSignUpBody {
   interests: string[]
   password: string
   referrer: string
-}
-
-export enum UserType {
-  Individual = "individual",
-  NonProfit = "non-profit",
 }
 
 // response

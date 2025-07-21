@@ -13,11 +13,15 @@ import { useFormContext } from "react-hook-form"
 import { ProfileFormContext } from "./Provider"
 import { profile } from "console"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/AppProvider"
 
 const IndividualForm = () => {
   const router = useRouter()
-  const { submitForm, ...form } = useFormContext() as ProfileFormContext
+  const { setFormType, submitForm, ...form } =
+    useFormContext() as ProfileFormContext
   const errors = form.formState.errors
+  const { user } = useAuth()
+  const isIndividual = form.getValues("accountType") === UserType.Individual
 
   return (
     <div>
@@ -31,26 +35,17 @@ const IndividualForm = () => {
           {/* full name / organization name */}
           <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-y-4 gap-x-[25px] mb-[25px]">
             <InputTitle
-              title={
-                form.getValues("accountType") === UserType.Individual
-                  ? "Full Name"
-                  : "Organization Name"
-              }
+              title={isIndividual ? "Full Name" : "Organization Name"}
               detail="This field can not be edited."
             />
             <div className="max-w-lg">
               <TextInput
-                name="fullName"
+                name="accountName"
                 disabled
-                // rules={{
-                //   required: "Full name is required",
-                //   minLength: {
-                //     value: 15,
-                //     message: "Full name must be at least 15 characters",
-                //   },
-                // }}
-                // error={errors.fullName}
-                ariaLabel="Full name"
+                rules={{
+                  required: "Full name is required",
+                }}
+                ariaLabel={isIndividual ? "Full name" : "Organization Name"}
               />
             </div>
           </div>
@@ -81,7 +76,7 @@ const IndividualForm = () => {
             <div className="max-w-lg">
               <TextInput
                 name="location"
-                placeholder="Magodo Phase II, Lagos"
+                placeholder="e.g. Magodo Phase II, Lagos"
                 // rules={{
                 //   required: "Location is required",
                 //   minLength: {
@@ -123,8 +118,8 @@ const IndividualForm = () => {
           {/* instagram */}
           <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-y-4 gap-x-[25px] mb-[25px]">
             <InputTitle
-              title="Social Media - Instagram"
-              detail="Please link your Instagram. This is optional!"
+              title="Instagram Handle (Optional)"
+              detail="Please link your Instagram."
             />
             <div className="max-w-lg">
               <TextInput
@@ -138,8 +133,8 @@ const IndividualForm = () => {
           {/* twitter */}
           <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-y-4 gap-x-[25px] mb-[25px]">
             <InputTitle
-              title="Social Media - Twitter"
-              detail="Please link your Twitter. This is optional!"
+              title="Twitter Handle (Optional)"
+              detail="Please link your Twitter."
             />
             <div className="max-w-lg">
               <TextInput
@@ -189,7 +184,7 @@ const IndividualForm = () => {
             </div>
           </div>
 
-          {/* prev x next */}
+          {/* prev x next/submit */}
           <div className="flex flex-col-reverse lg:flex-row lg:items-center justify-end gap-4">
             <WhiteButton
               text="Back"
@@ -202,8 +197,12 @@ const IndividualForm = () => {
             <Button
               buttonType="button"
               loading={form.formState.isSubmitting}
-              text={"Save Changes"}
-              onClick={() => submitForm()}
+              text={isIndividual ? "Save Changes" : "Next"}
+              onClick={
+                isIndividual
+                  ? submitForm
+                  : () => setFormType(UserType.NonProfit)
+              }
               className=" justify-center grow lg:max-w-[220px]"
             />
           </div>

@@ -17,7 +17,7 @@ import { formatAmount } from "../../../../_common/utils/currency"
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import { useAuth } from "@/contexts/AppProvider"
-import { UserType } from "@/api/_users/models/PostSignUp"
+import { UserType } from "@/types"
 
 const CampaignPreview = () => {
   const [hover, setHover] = useState(false)

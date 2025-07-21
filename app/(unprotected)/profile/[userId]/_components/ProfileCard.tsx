@@ -1,5 +1,13 @@
 "use client"
-import { Edit, ExternalLink, Instagram, Link as LinkIcon, Link2, Mail, Twitter } from "lucide-react"
+import {
+  Edit,
+  ExternalLink,
+  Instagram,
+  Link as LinkIcon,
+  Link2,
+  Mail,
+  Twitter,
+} from "lucide-react"
 import Image from "next/image"
 import { IGetProfileResponseData } from "../../../../../api/_profile/models/GetProfile"
 import { RFC } from "@/types"
@@ -9,32 +17,37 @@ import { RiEditLine } from "react-icons/ri"
 import Link from "next/link"
 import Text from "../../../../(protected)/dashboard/_components/Text"
 import { useAuth } from "@/contexts/AppProvider"
+import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
 
 const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
-  const {user } = useAuth()
+  const { user } = useAuth()
   const isOwnProfile = user?._id === profile.user._id
   const profileName =
     profile.user.userType === "individual"
       ? profile.user.fullName
       : profile.user.organizationName
 
-  const socials = ([
-    profile.user.email && {
-      type: "email",
-      url: `mailto:${profile.user.email}`,
-      icon: Mail,
-    },
-    profile.instagram && {
-      type: "instagram",
-      url: `https://instagram.com/${profile.instagram}`,
-      icon: Instagram,
-    },
-    profile.twitter && {
-      type: "twitter",
-      url: `https://twitter.com/${profile.twitter}`,
-      icon: Twitter,
-    },
-  ] as any[])
+  const socials = (
+    [
+      profile.user.email && {
+        type: "email",
+        url: `mailto:${profile.user.email}`,
+        icon: Mail,
+      },
+      profile.instagram && {
+        type: "instagram",
+        url: profile.instagram,
+        // url: `https://instagram.com/${profile.instagram}`,
+        icon: Instagram,
+      },
+      profile.twitter && {
+        type: "twitter",
+        url: profile.twitter,
+        // url: `https://twitter.com/${profile.twitter}`,
+        icon: Twitter,
+      },
+    ] as any[]
+  )
     .filter((social) => social !== null && social !== "")
     .map((social) => ({
       ...social,
@@ -60,10 +73,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       {/* Cover photo with logo */}
       <div className="relative h-64 w-full bg-pink-100">
         <img
-          src={
-            profile.image?.url ??
-            "https://reactplay.io/static/media/placeholder_cover.ea7b18e0704561775829.jpg"
-          }
+          src={profile.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
           alt={profileName}
           className="h-full w-full object-cover"
         />
@@ -83,10 +93,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
           <div className="flex items-start mb-4 md:mb-0">
             <div className="h-16 w-16 rounded-full bg-pink-100 mr-4 flex-shrink-0">
               <img
-                src={
-                  profile.image?.url ??
-                  "https://static.vecteezy.com/system/resources/thumbnails/004/511/281/small/default-avatar-photo-placeholder-profile-picture-vector.jpg"
-                }
+                src={profile.image?.url ?? PLACEHOLDER_PROFILE_IMAGE}
                 alt={profileName}
                 width={64}
                 height={64}
@@ -120,7 +127,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                 href={`/profile/${profile.user._id}/edit`}
                 className="flex items-center gap-2 text-[#00B964] bg-[#00b96314] hover:bg-[#00b9631f] rounded-full transition-colors h-10 px-[14px]"
               >
-                <RiEditLine size={24} fill="#00B964" /> Edit Profile
+                <RiEditLine size={24} fill="#00B964" /> Edit <span className="hidden md:inline">Profile</span>
               </Link>
             )}
 
@@ -191,5 +198,5 @@ ProfileCard.Skeleton = () => {
         </div>
       </div>
     </div>
-  );
+  )
 }

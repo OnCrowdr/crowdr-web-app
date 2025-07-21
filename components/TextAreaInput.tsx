@@ -8,6 +8,7 @@ import {
   useWatch,
 } from "react-hook-form"
 import { RFC } from "@/types"
+import _ from "lodash"
 
 const TextAreaInput: RFC<TextAreaInputProps> = ({
   config,
@@ -30,7 +31,7 @@ const TextAreaInput: RFC<TextAreaInputProps> = ({
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const {register, formState: {errors}} = useFormContext()
     config = register(name, rules)
-    error = errors[name] as FieldError
+    error = _.get(errors, name) as FieldError
   }
   
   const [charactersLeft, setCharactersLeft] = useState<number>()

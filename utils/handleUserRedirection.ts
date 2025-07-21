@@ -1,7 +1,7 @@
 import { IPostSignInResponseData } from "@/api/_users/models/PostSignIn"
 import { IUser } from "./api/user/getUser"
 import { redirect } from "next/navigation"
-import { UserType } from "@/api/_users/models/PostSignUp"
+import { UserType } from "@/types"
 
 export const handleUserRedirection = (
   user: IPostSignInResponseData | null,

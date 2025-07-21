@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios"
+import toast from "react-hot-toast"
 
 export const isAxiosError = <T = any>(
   err: Error
@@ -38,4 +39,29 @@ export function extractErrorMessages(
 
 interface Options {
   attachErrorFields?: boolean
+}
+
+export const errorHandler = (err: Error) => {
+  if (isAxiosError<any>(err)) {
+    const error = err.response.data
+    const errors = extractErrorMessages(error)
+
+    if (errors.length) {
+      for (const error of errors) {
+        toast.error(error)
+      }
+    } else {
+      if (error.error) {
+        toast.error(error.error)
+      }
+      if (error.detail) {
+        toast.error(error.detail)
+      }
+      if (error.message) {
+        toast.error(error.message)
+      }
+    }
+  } else {
+    toast.error("Something went wrong")
+  }
 }
