@@ -19,6 +19,7 @@ const Step3: RFC<Props> = ({ index, onStep, onDone }) => {
     const campaignImages = form.getValues("campaignImages")
     const isInvalid = !campaignImages
 
+
     if (!shouldValidateImage || (shouldValidateImage && !isInvalid)) {
       callback()
     } else {

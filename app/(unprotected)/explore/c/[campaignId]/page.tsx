@@ -32,7 +32,10 @@ import { Mixpanel } from "../../../../../utils/mixpanel";
 import HeartHand from "@/public/svg/hand-holding-heart.svg";
 import ShareCampaign from "@/components/ShareCampaign";
 import OldModal from "@/components/OldModal";
-import { useFetchSingleCampaign, useVerifyPaymentReference } from "@/hooks/useFetchCampaignById";
+import {
+  useFetchSingleCampaign,
+  useVerifyPaymentReference
+} from "@/hooks/useFetchCampaignById";
 import {
   CheckboxValues,
   DonationInputs,
@@ -833,6 +836,7 @@ export default function DonateOrVolunteer(props: {
                     <button
                       onClick={() => {
                         donate("apple_pay");
+                        Mixpanel.track("Apple Pay Donation Clicked");
                       }}
                       className="apple-pay-button"
                       disabled={!areAllInputsFilled(donationInputs) || loading}>

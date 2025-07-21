@@ -57,7 +57,7 @@ const ShareCampaign = (props: ShareCampaignProps) => {
   };
 
   const getButtonText = () => {
-    if (isVolunteerCampaign) return "Apply Again";
+    if (isVolunteerCampaign) return null;
     return "Donate Again";
   };
 
@@ -208,12 +208,14 @@ const ShareCampaign = (props: ShareCampaignProps) => {
       {donationSuccess && (
         <div className="mb-6">
           <div className="flex flex-col md:flex-row gap-3">
-            <button
-              onClick={handleDonateAgain}
-              className={`flex-1 ${isVolunteerCampaign ? 'bg-[#175CD3] hover:bg-[#1E40AF]' : 'bg-[#00B964] hover:bg-[#009954]'} text-white py-3 px-4 rounded-lg font-semibold text-base transition-colors shadow-sm`}
-            >
-              {getButtonText()}
-            </button>
+            {!isVolunteerCampaign && (
+              <button
+                onClick={handleDonateAgain}
+                className={`flex-1 ${isVolunteerCampaign ? 'bg-[#175CD3] hover:bg-[#1E40AF]' : 'bg-[#00B964] hover:bg-[#009954]'} text-white py-3 px-4 rounded-lg font-semibold text-base transition-colors shadow-sm`}
+              >
+                {getButtonText()}
+              </button>
+            )}
             <button
               onClick={onClose}
               className="flex-1 border border-[#D0D5DD] text-[#344054] py-3 px-4 rounded-lg font-semibold text-base hover:bg-gray-50 transition-colors"

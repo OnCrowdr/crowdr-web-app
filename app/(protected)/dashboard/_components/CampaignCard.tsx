@@ -1,34 +1,39 @@
-import Link from "next/link"
-import { mapCampaignResponseToView } from "../_common/utils/campaign"
-import ProgressBar from "./ProgressBar"
-import { GrayButton } from "../../../../components/Button"
-import { label } from "./Label"
-import { pill } from "./Pill"
+import Link from "next/link";
+import { mapCampaignResponseToView } from "../_common/utils/campaign";
+import ProgressBar from "./ProgressBar";
+import { GrayButton } from "../../../../components/Button";
+import { label } from "./Label";
+import { pill } from "./Pill";
 
-import { Nullable, QF, RFC } from "@/types"
-import { ICampaign } from "@/types/Campaign"
-import makeRequest from "../../../../utils/makeRequest"
-import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
-import { BsThreeDotsVertical } from "react-icons/bs"
-import { RiDeleteBinLine } from "react-icons/ri"
-import DropdownTrigger from "../../../../components/DropdownTrigger"
-import { useRouter } from "next/navigation"
-import { useMutation } from "react-query"
-import _my_campaign from "../../../../api/_my_campaigns"
-import { CgSpinner } from "react-icons/cg"
-import toast from "react-hot-toast"
-import { isAxiosError } from "axios"
-import { IPatchEndCampaignError } from "../../../../api/_my_campaigns/models/PatchEndCampaign"
-import SidebarModal from "./SidebarModal"
-import CompletionCard from "./CompletionCard"
+import { Nullable, QF, RFC } from "@/types";
+import { ICampaign } from "@/types/Campaign";
+import makeRequest from "../../../../utils/makeRequest";
+import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { RiDeleteBinLine } from "react-icons/ri";
+import DropdownTrigger from "../../../../components/DropdownTrigger";
+import { useRouter } from "next/navigation";
+import { useMutation } from "react-query";
+import _my_campaign from "../../../../api/_my_campaigns";
+import { CgSpinner } from "react-icons/cg";
+import toast from "react-hot-toast";
+import { isAxiosError } from "axios";
+import { IPatchEndCampaignError } from "../../../../api/_my_campaigns/models/PatchEndCampaign";
+import SidebarModal from "./SidebarModal";
+import CompletionCard from "./CompletionCard";
 import ModalTrigger, {
-  modalStoreAtom,
-} from "../../../../components/ModalTrigger"
-import { useAtomValue } from "jotai"
-import { LuEye, LuTrash2 } from "react-icons/lu"
-import { MdBlock } from "react-icons/md"
-import { isAfter, parseISO } from "date-fns"
-import { Campaign } from "@/api/_campaigns/models/GetCampaigns"
+  modalStoreAtom
+} from "../../../../components/ModalTrigger";
+import { useAtomValue } from "jotai";
+import { LuEye, LuTrash2 } from "react-icons/lu";
+import { MdBlock } from "react-icons/md";
+import { IoShareSocial } from "react-icons/io5";
+import { isAfter, parseISO } from "date-fns";
+import { Campaign } from "@/api/_campaigns/models/GetCampaigns";
+import { useState } from "react";
+import OldModal from "../../../../components/OldModal";
+import ShareCampaign from "../../../../components/ShareCampaign";
+import { Mixpanel } from "../../../../utils/mixpanel";
 
 const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
   const {
@@ -43,66 +48,83 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
     fundingGoal,
     fundsGotten,
     percentage,
-    campaignType,
-  } = mapCampaignResponseToView(campaign)
-  const router = useRouter()
-  const isVolunteerCampaign = campaignType === "volunteer"
-  const modalStore = useAtomValue(modalStoreAtom)
+    campaignType
+  } = mapCampaignResponseToView(campaign);
+  const router = useRouter();
+  const isVolunteerCampaign = campaignType === "volunteer";
+  const modalStore = useAtomValue(modalStoreAtom);
+
+  // State for share modal
+  const [shareModal, setShareModal] = useState(false);
+
+  console.log("volunteers rendered", duration);
 
   // Check if campaign has ended
-  const currentDate = new Date()
-  const campaignEndDate = campaign.campaignEndDate ? parseISO(campaign.campaignEndDate) : null
-  const hasEnded = campaignEndDate ? isAfter(currentDate, campaignEndDate) : false
+  const currentDate = new Date();
+  const campaignEndDate = campaign.campaignEndDate
+    ? parseISO(campaign.campaignEndDate)
+    : null;
+  const hasEnded = campaignEndDate
+    ? isAfter(currentDate, campaignEndDate)
+    : false;
 
   const deleteMutation = useMutation({
     mutationFn: () => _my_campaign.deleteCampaign({ id: _id }),
     onSuccess: (res) => {
-      onDelete()
-      toast.success("Campaign deleted!")
+      onDelete();
+      toast.success("Campaign deleted!");
     },
     onError: (err) => {
       if (isAxiosError<IPatchEndCampaignError>(err) && err.response) {
-        toast.error(err.response.data.message)
+        toast.error(err.response.data.message);
       } else {
-        toast.error("Failed to end campaign")
+        toast.error("Failed to end campaign");
       }
-    },
-  })
+    }
+  });
 
   const endMutation = useMutation({
     mutationFn: () => _my_campaign.endCampaign({ id: _id }),
     onSuccess: (res) => {
-      toast.success("Campaign ended!")
+      toast.success("Campaign ended!");
     },
     onError: (err) => {
       if (isAxiosError<IPatchEndCampaignError>(err) && err.response) {
-        toast.error(err.response.data.message)
+        toast.error(err.response.data.message);
       } else {
-        toast.error("Failed to end campaign")
+        toast.error("Failed to end campaign");
       }
-    },
-  })
+    }
+  });
 
   const hideConfirmationModal = (modalId: string) => {
-    const modal = modalStore.get(modalId)
-    modal?.hide()
-  }
+    const modal = modalStore.get(modalId);
+    modal?.hide();
+  };
+
+  const openShareModal = () => {
+    setShareModal(true);
+    Mixpanel.track("Clicked Share Campaign from Card");
+  };
+
+  const closeShareModal = () => {
+    setShareModal(false);
+  };
 
   const cardProps = {
     onClick: () => router.push(`/dashboard/campaigns/${_id}`),
-    onHover: () => router.prefetch(`/dashboard/campaigns/${_id}`),
-  }
+    onHover: () => router.prefetch(`/dashboard/campaigns/${_id}`)
+  };
 
   const dontPropagate = {
-    onClick: (e: any) => e.stopPropagation(),
-  }
+    onClick: (e: any) => e.stopPropagation()
+  };
 
   return (
     <>
       <div
         {...cardProps}
-        className="bg-white border border-[rgba(57, 62, 70, 0.08)] hover:cursor-pointer rounded-xl px-[10px] pt-6 pb-[10px] md:py-[26px] md:px-6"
-      >
+        className="bg-white border border-[rgba(57, 62, 70, 0.08)] hover:cursor-pointer rounded-xl px-[10px] pt-6 pb-[10px] md:py-[26px] md:px-6">
         <div className="px-[7px] md:px-0">
           <div className="flex items-center justify-between mb-2 md:mb-[10px]">
             {label(status)}
@@ -111,12 +133,10 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
               triggerId={`campaignCardOptionsBtn-${_id}`}
               targetId={`campaignCardOptions-${_id}`}
               options={{ placement: "left-start" }}
-              className="ml-auto"
-            >
+              className="ml-auto">
               <button
                 {...dontPropagate}
-                className="relative left-2 hover:bg-gray-100 rounded-full transition-colors p-2"
-              >
+                className="relative left-2 hover:bg-gray-100 rounded-full transition-colors p-2">
                 <BsThreeDotsVertical size={22} />
               </button>
             </DropdownTrigger>
@@ -149,7 +169,11 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
               <span className="text-black font-medium">
                 {!isVolunteerCampaign ? "Donors:" : "Volunteers:"}
               </span>{" "}
-              <span>{!isVolunteerCampaign ? campaign?.campaignDonors?.length : volunteers}</span>
+              <span>
+                {!isVolunteerCampaign
+                  ? campaign?.campaignDonors?.length
+                  : campaign?.campaignVolunteers?.length}
+              </span>
             </p>
             <p>
               <span className="text-black font-medium">Duration:</span>{" "}
@@ -172,14 +196,21 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
       {/* dropdown */}
       <div
         id={`campaignCardOptions-${_id}`}
-        className="hidden w-36 text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-      >
+        className="hidden w-36 text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
         <Link href={`/dashboard/campaigns/${_id}`}>
           <button className="relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 rounded-t-lg hover:bg-gray-100 text-[#61656B]">
             <LuEye size={16} />
             View
           </button>
         </Link>
+        {!hasEnded && (
+          <button
+            onClick={openShareModal}
+            className="relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 hover:bg-gray-100 text-[#61656B]">
+            <IoShareSocial size={16} />
+            Share
+          </button>
+        )}
         {!hasEnded && (
           <ModalTrigger id={`end_campaign_modal-${_id}`}>
             <button className="relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 hover:bg-gray-100 text-[#61656B]">
@@ -189,12 +220,33 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
           </ModalTrigger>
         )}
         <ModalTrigger id={`delete_campaign_modal-${_id}`}>
-          <button className={`relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 hover:bg-gray-100 text-[#FE0A2D] ${hasEnded ? 'rounded-b-lg' : ''}`}>
+          <button
+            className={`relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 hover:bg-gray-100 text-[#FE0A2D] ${
+              hasEnded ? "rounded-b-lg" : ""
+            }`}>
             <LuTrash2 stroke="#FE0A2D" size={16} />
             Delete
           </button>
         </ModalTrigger>
       </div>
+
+      {/* Share Campaign Modal */}
+      <OldModal isOpen={shareModal} onClose={closeShareModal}>
+        <div
+          className="relative p-12"
+          style={{
+            background: "rgba(76, 76, 76, 0)"
+          }}>
+          <ShareCampaign
+            onClose={closeShareModal}
+            campaignId={_id}
+            title={title}
+            // story={campaign.campaignStory?.split(" ").slice(0, 30)?.join(" ")}
+            campaignCoverImage={campaign.campaignCoverImage?.url}
+            campaignType={campaignType}
+          />
+        </div>
+      </OldModal>
 
       <SidebarModal id={`delete_campaign_modal-${_id}`}>
         <CompletionCard
@@ -204,12 +256,11 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
             label: "Delete campaign",
             bgColor: "#D92D20",
             loading: deleteMutation.isLoading,
-            onClick: () => deleteMutation.mutate(),
+            onClick: () => deleteMutation.mutate()
           }}
           secondaryButton={{
             label: "Cancel",
-            onClick: () =>
-              hideConfirmationModal(`delete_campaign_modal-${_id}`),
+            onClick: () => hideConfirmationModal(`delete_campaign_modal-${_id}`)
           }}
           clearModal={() =>
             hideConfirmationModal(`delete_campaign_modal-${_id}`)
@@ -231,13 +282,15 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
               label: "End campaign",
               bgColor: "#D92D20",
               loading: endMutation.isLoading,
-              onClick: () => endMutation.mutate(),
+              onClick: () => endMutation.mutate()
             }}
             secondaryButton={{
               label: "Cancel",
-              onClick: () => hideConfirmationModal(`end_campaign_modal-${_id}`),
+              onClick: () => hideConfirmationModal(`end_campaign_modal-${_id}`)
             }}
-            clearModal={() => hideConfirmationModal(`end_campaign_modal-${_id}`)}
+            clearModal={() =>
+              hideConfirmationModal(`end_campaign_modal-${_id}`)
+            }
             icon={
               <div className="grid place-items-center rounded-full bg-[#FEE4E2] p-3">
                 <RiDeleteBinLine fill="#D92D20" size={20} />
@@ -247,37 +300,37 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
         </SidebarModal>
       )}
     </>
-  )
-}
+  );
+};
 
-export default CampaignCard
+export default CampaignCard;
 
 type CampaignCardProps = {
-  campaign: Campaign
-  onDelete: () => void
-}
+  campaign: Campaign;
+  onDelete: () => void;
+};
 
 const endCampaign: QF<Nullable<any>, [Nullable<string>, number]> = async ({
-  queryKey,
+  queryKey
 }) => {
-  const [_, token, id] = queryKey
+  const [_, token, id] = queryKey;
 
   if (token) {
-    const endpoint = `/my-campaigns/end/${id}`
+    const endpoint = `/my-campaigns/end/${id}`;
     const headers = {
-      "x-auth-token": token,
-    }
+      "x-auth-token": token
+    };
 
     try {
       const { data } = await makeRequest<any>(endpoint, {
         headers,
-        method: "PATCH",
-      })
+        method: "PATCH"
+      });
 
-      return data
+      return data;
     } catch (error) {
-      const message = extractErrorMessage(error)
-      throw new Error(message)
+      const message = extractErrorMessage(error);
+      throw new Error(message);
     }
   }
-}
+};
