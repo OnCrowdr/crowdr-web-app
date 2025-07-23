@@ -40,7 +40,7 @@ import {
   CheckboxValues,
   DonationInputs,
   VolunteerInputs
-} from "@/app/types/campaign-types";
+} from "@/types/campaign-types";
 import DonorsModal from "@/components/DonorsModal";
 
 declare global {

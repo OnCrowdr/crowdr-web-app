@@ -14,16 +14,14 @@ import Label from "../../admin-dashboard-components/Label"
 import { Button } from "../../../../../components/Button"
 import userService from "../../common/services/user"
 
-import {
-  IGetUsersParams,
-  UserType,
-} from "../../common/services/user/models/GetUsers"
+import { IGetUsersParams } from "../../common/services/user/models/GetUsers"
 
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6"
 import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import { useAuth } from "@/contexts/AppProvider"
+import { UserType } from "@/types"
 
 const Users = () => {
   const { user } = useAuth()

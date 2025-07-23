@@ -9,7 +9,7 @@ import ProfileFormContext, { FormFields } from "../utils/useProfileForm"
 import { useEffect } from "react"
 import { useSetAtom } from "jotai"
 import { useAuth } from "@/contexts/AppProvider"
-import { UserType } from "@/api/_users/models/PostSignUp"
+import { UserType } from "@/types"
 
 const ProfileForm = () => {
   const {

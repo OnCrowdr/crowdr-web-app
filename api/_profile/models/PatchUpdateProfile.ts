@@ -9,8 +9,8 @@ export interface IPatchUpdateProfileBody {
   engagements: File[]
   membersImages?: File[]
   members?: {
-    fullname: "string"
-    position: "string"
+    fullname: string
+    position: string
   }[]
 }
 
@@ -22,6 +22,7 @@ export interface IPatchUpdateProfileResponse {
 }
 
 export interface IPatchUpdateProfileResponseData {
+  phoneNumber:     null;
   _id:             string;
   user:            string;
   location:        string;
@@ -31,9 +32,16 @@ export interface IPatchUpdateProfileResponseData {
   image:           null;
   backgroundImage: null;
   engagements:     string[];
-  members:         any[];
-  createdAt:       Date;
-  updatedAt:       Date;
+  members:         Member[];
+  createdAt:       string;
+  updatedAt:       string;
   __v:             number;
   id:              string;
 }
+
+export interface Member {
+  fullname: string;
+  position: string;
+  image:    string;
+}
+

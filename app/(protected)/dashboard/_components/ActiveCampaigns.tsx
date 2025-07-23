@@ -2,16 +2,19 @@ import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { formatCurrency } from "../../../../utils/seperateText"
-import { RFC } from "@/types"
+import { RFC, UserType } from "@/types"
 import { formatAmount } from "../_common/utils/currency"
 import {
   Campaign,
   CampaignType,
 } from "../../../../api/_campaigns/models/GetCampaigns"
 import { isFundraise } from "../_common/utils/campaign"
+import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
 
 const ActiveCampaign: RFC<Props> = ({ campaign }) => {
-  const [fundingGoalDetail] = isFundraise(campaign) ? campaign.fundraise?.fundingGoalDetails : []
+  const [fundingGoalDetail] = isFundraise(campaign)
+    ? campaign.fundraise?.fundingGoalDetails
+    : []
   const [totalAmountDonated] = campaign.totalAmountDonated
 
   const fundingGoal = fundingGoalDetail?.amount
@@ -32,12 +35,18 @@ const ActiveCampaign: RFC<Props> = ({ campaign }) => {
     ? Math.floor((totalAmountDonated.amount / fundingGoalDetail.amount) * 100)
     : 0
 
+  const accountName = campaign.user.fullName ?? campaign.user.organizationName
+
   return (
     <div className="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm">
       <div className="relative h-48 w-full">
         <Image
-          src={campaign.campaignCoverImage.url}
+          src={campaign.campaignCoverImage.url ?? PLACEHOLDER_IMAGE}
           alt={campaign.title}
+          onError={(e) => {
+            e.currentTarget.removeAttribute('srcset')
+            e.currentTarget.src = PLACEHOLDER_IMAGE
+          }}
           fill
           className="h-full w-full object-cover"
         />
@@ -47,21 +56,17 @@ const ActiveCampaign: RFC<Props> = ({ campaign }) => {
       </div>
 
       <div className="p-4">
-        {campaign.user.organizationName && (
+        {accountName && (
           <div className="flex items-center gap-2 mb-2">
             {/* TODO: use user image */}
-            {campaign.campaignCoverImage && (
-              <Image
-                src={campaign.campaignCoverImage.url}
-                alt={campaign.user.organizationName}
-                width={24}
-                height={24}
-                className="rounded-full h-6 w-6"
-              />
-            )}
-            <span className="text-xs text-gray-600">
-              {campaign.user.organizationName ?? campaign.user.fullName}
-            </span>
+            <Image
+              src={PLACEHOLDER_PROFILE_IMAGE}
+              alt={accountName}
+              width={24}
+              height={24}
+              className="rounded-full h-6 w-6"
+            />
+            <span className="text-xs text-gray-600">{accountName}</span>
           </div>
         )}
 

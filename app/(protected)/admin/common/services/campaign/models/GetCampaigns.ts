@@ -1,3 +1,5 @@
+import { UserType } from "@/types";
+
 // query
 export interface IGetCampaignsParams {
   page:   number;
@@ -137,11 +139,6 @@ export interface User {
   fullName?:         string;
   gender?:           string;
   email: string
-}
-
-export enum UserType {
-  Individual = "individual",
-  NonProfit = "non-profit",
 }
 
 export interface Pagination {

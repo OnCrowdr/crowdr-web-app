@@ -1,23 +1,14 @@
-import { PropsWithChildren, useEffect } from "react"
+import { PropsWithChildren } from "react"
 import type { Metadata } from "next"
-import Script from "next/script"
 import { Public_Sans } from "next/font/google"
 import localFont from "next/font/local"
 import "@/styles/globals.css"
 import "@/styles/button.css"
 import "react-loading-skeleton/dist/skeleton.css"
 
-import { isProd } from "../config"
-import GoogleAnalyticsComponents from "./_components/GoogleAnalyticsComponents"
-import { QueryClient, QueryClientProvider } from "react-query"
-import { PostHogProvider } from "posthog-js/react"
-import posthog from "posthog-js"
-import PostHogPageView from "./_components/PostHogPageView"
-import ModalProvider from "../hooks/useModal"
-import { Toaster } from "react-hot-toast"
-import mixpanel from "mixpanel-browser"
 import App from "./app"
-import { ElfSightApp, ElfSightScript } from "./_components/ElfSightComponent"
+import GoogleAnalyticsSetup from "./_components/GoogleAnalyticsSetup"
+import ElfSight from "./_components/ElfSight"
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -29,12 +20,12 @@ export default function RootLayout({ children }: PropsWithChildren) {
         />
       </head>
 
-      <GoogleAnalyticsComponents />
-      <ElfSightScript />
+      <GoogleAnalyticsSetup />
+      <ElfSight.Script />
 
       <body className={`${satoshi.variable} ${inter.className}`}>
         <App children={children} />
-        <ElfSightApp />
+        <ElfSight.Body />
       </body>
     </html>
   )

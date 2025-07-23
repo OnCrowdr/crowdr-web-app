@@ -3,7 +3,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { UseFormReturn } from "react-hook-form/dist/types";
 
 import { RFC } from "@/types";
-import { UserType } from "@/api/_users/models/PostSignUp";
+import { UserType } from "@/types";
 
 const RegisterFormContext: RFC = ({ children }) => {
   const [formPage, setFormPage] = useState<FormPage>("intro")

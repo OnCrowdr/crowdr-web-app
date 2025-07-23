@@ -1,7 +1,6 @@
 import {
   IPostSignUpResponse,
   IPostSignUpResponseData,
-  UserType,
 } from "./PostSignUp"
 
 // payload
