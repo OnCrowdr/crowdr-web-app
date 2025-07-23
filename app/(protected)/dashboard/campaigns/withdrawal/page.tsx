@@ -253,7 +253,7 @@ const Withdrawal = () => {
                   campaign.campaignType === "fundraiseAndVolunteer"
               )
               .map((campaign) => (
-                <Detail key={campaign._id} {...mapCampaignToView(campaign)} />
+                <Detail key={campaign._id} {...mapCampaignToView(campaign)} campaignType={campaign.campaignType} />
               ))}
           </div>
 

@@ -1,8 +1,9 @@
-import Label from "./Label"
-import { RFC } from "@/types"
-import { ReactElement } from "react"
-import { FaChevronDown, FaChevronUp } from "react-icons/fa6"
-import { regex } from "regex"
+import { CampaignType } from "@/api/_campaigns/models/GetCampaigns";
+import Label from "./Label";
+import { RFC } from "@/types";
+import { ReactElement } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { regex } from "regex";
 
 const Detail: RFC<DetailProps> = ({
   title,
@@ -11,6 +12,7 @@ const Detail: RFC<DetailProps> = ({
   status,
   label,
   button,
+  campaignType
 }) => {
   return (
     <details className="group border-b border-[#DDD] mb-5">
@@ -30,13 +32,22 @@ const Detail: RFC<DetailProps> = ({
         </div>
 
         <div className="hidden group-open:flex justify-between">
-          <div className="flex flex-col gap-2">
-            <p className="text-[#555]">Gender: {detail}</p>
-            <p className="text-[#555]">Status: {status}</p>
-            <p className="text-sm text-[#667085]">{date}</p>
-          </div>
+          {campaignType === "volunteer" && (
+            <div className="flex flex-col gap-2">
+              <p className="text-[#555]">Gender: {detail}</p>
+              <p className="text-[#555]">Status: {status}</p>
+              <p className="text-sm text-[#667085]">{date}</p>
+            </div>
+          )}
 
-          {status &&
+          {campaignType !== "volunteer" && (
+            <div className="flex flex-col gap-2">
+              <p className="text-[#555]">Amount: {detail}</p>
+            </div>
+          )}
+
+          {campaignType === "volunteer" &&
+            status &&
             !button &&
             (status.match(/success/i) ? (
               <Label text={status} />
@@ -48,16 +59,17 @@ const Detail: RFC<DetailProps> = ({
         </div>
       </summary>
     </details>
-  )
-}
+  );
+};
 
-export default Detail
+export default Detail;
 
 type DetailProps = {
-  title: string
-  detail: string
-  date: string
-  status?: string
-  label?: string
-  button?: ReactElement<any>
-}
+  title: string;
+  detail: string;
+  date: string;
+  status?: string;
+  label?: string;
+  button?: ReactElement<any>;
+  campaignType?: CampaignType;
+};
