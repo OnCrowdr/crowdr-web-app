@@ -118,8 +118,10 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
             </div>
             <div className="text-gray-600">|</div>
             <div className="text-gray-600">
-              Active Campaign
-              {stats?.campaignCountByStatus?.active !== 1 ? "s" : ""}
+              Active{" "}
+              <span className="hidden md:inline">
+                Campaign{stats?.campaignCountByStatus?.active !== 1 ? "s" : ""}
+              </span>
             </div>
           </div>
 
@@ -128,7 +130,9 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
               {stats?.totalNoOfCampaigns}
             </div>
             <div className="text-gray-600">|</div>
-            <div className="text-gray-600">Total Campaigns</div>
+            <div className="text-gray-600">
+              Total <span className="hidden md:inline">Campaigns</span>
+            </div>
           </div>
         </div>
       </div>

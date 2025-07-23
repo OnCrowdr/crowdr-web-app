@@ -3,7 +3,7 @@
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google"
 import { ErrorBoundary } from "../../components/ErrorBoundary"
 
-const GoogleAnalyticsComponents = () => {
+const GoogleAnalyticsSetup = () => {
   return (
     <>
       <ErrorBoundary>
@@ -14,4 +14,4 @@ const GoogleAnalyticsComponents = () => {
   )
 }
 
-export default GoogleAnalyticsComponents
+export default GoogleAnalyticsSetup

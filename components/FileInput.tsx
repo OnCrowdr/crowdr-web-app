@@ -21,6 +21,7 @@ import UploadIcon from "@/public/svg/upload-cloud.svg"
 import AttentionIcon from "@/public/assets/warning-circle.png"
 import LoadingCircle from "@/public/svg/loading-circle.svg"
 import { atom, useAtomValue, useSetAtom } from "jotai"
+import _ from "lodash"
 
 // const previewImageAtom = atom<string | null>(null)
 
@@ -53,7 +54,7 @@ const FileInput: RFC<FileInputProps> = ({
       /*eslint-disable*/
     } = useFormContext()
     config = register(name, rules)
-    error = errors[name] as FieldError
+    error = _.get(errors, name) as FieldError
   }
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -380,7 +381,7 @@ const FileDetail: RFC<FileDetailProps> = ({ name, size, removeFile }) => {
       </div>
       <div className="grow bg-white rounded-r-lg p-4">
         {/* <Image src={LoadingCircle} alt="spinner icon" className="block ml-auto" /> */}
-        <HiMiniXCircle size={32} className="ml-auto" onClick={removeFile} />
+        <HiMiniXCircle size={32} className="cursor-pointer ml-auto" onClick={removeFile} />
       </div>
     </div>
   )

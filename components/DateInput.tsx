@@ -13,6 +13,7 @@ import { RFC } from "@/types"
 import { Instance as Flatpickr } from "flatpickr/dist/types/instance"
 import "flatpickr/dist/flatpickr.min.css"
 import { Options } from "flatpickr/dist/types/options"
+import _ from "lodash"
 
 // TODO: INTERNATIONALIZE DATE VALUES; CONVERT TO AND FROM UTC WHEN SENDING AND RECEIVING DATE TO AND FROM SERVER
 // TODO: MAKE DATE PICKER LOOK LIKE FIGMA UI
@@ -44,7 +45,7 @@ const DateInput: RFC<DateInputProps> = ({
       setError,
     } = useFormContext()
     config = register(name, rules)
-    error = errors[name] as FieldError
+    error = _.get(errors, name) as FieldError
   }
 
   if (config) {

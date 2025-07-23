@@ -15,8 +15,11 @@ import {
   IGetCampaignsResponseData,
   RunningStatus,
 } from "../../../../api/_campaigns/models/GetCampaigns"
+import { PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
+import MemberCard from "./_components/MemberCard"
+import MediaCard from "./_components/MediaCard"
 
-const OrganizationProfilePage: React.FC = () => {
+const ProfilePage: React.FC = () => {
   const { userId } = useParams() as { userId: string }
   const [activeTab, setActiveTab] = useState<string>("Campaigns")
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
@@ -52,7 +55,6 @@ const OrganizationProfilePage: React.FC = () => {
     }
   }, [activeCampaignsQuery.data])
 
-
   // const fundingGoal = selectedCampaign?.fundraise
   // const amountDonated = selectedCampaign?.totalAmountDonated
 
@@ -75,9 +77,9 @@ const OrganizationProfilePage: React.FC = () => {
           )}
 
           {profile && (
-            <>
+            <div className="bg-white rounded-xl p-6 border border-[#0000001A] mt-8">
               {/* Tabs */}
-              <div className="mt-8 mb-6 flex space-x-2">
+              <div className="mb-6 flex space-x-2">
                 <Tab
                   label="Campaigns"
                   isActive={activeTab === "Campaigns"}
@@ -183,32 +185,37 @@ const OrganizationProfilePage: React.FC = () => {
                     effectively
                   </p>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {profile.engagements.map((engagement) => (
-                      <div
-                        key={engagement._id}
-                        className="bg-gray-200 rounded aspect-square h-auto"
-                      >
-                        <img
-                          src={engagement.url}
-                          alt=""
-                          className="w-full h-full rounded"
-                        />
-                      </div>
+                      <MediaCard key={engagement._id} engagement={engagement} />
                     ))}
                   </div>
                 </div>
               )}
 
-              {activeTab === "Members" && (
-                <div className="bg-white p-6 rounded-lg border border-gray-200">
-                  <h3 className="font-medium mb-2">Team Members</h3>
-                  <p className="text-gray-600">
-                    No team members information available at this time.
-                  </p>
-                </div>
-              )}
-            </>
+              {activeTab === "Members" &&
+                (profile.members.length ? (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-2">Members</h2>
+                    <p className="text-gray-600 mb-4">
+                      Here are the amazing individuals behind this initiative!
+                    </p>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                      {profile.members.map((member, index) => (
+                        <MemberCard key={index} member={member} />
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <h3 className="font-medium mb-2">Team Members</h3>
+                    <p className="text-gray-600">
+                      No team members information available at this time.
+                    </p>
+                  </div>
+                ))}
+            </div>
           )}
         </div>
 
@@ -243,143 +250,7 @@ const OrganizationProfilePage: React.FC = () => {
   )
 }
 
-export default OrganizationProfilePage
-
-// Types
-interface OrganizationProfile {
-  id: string
-  name: string
-  type: string
-  logo: string
-  coverImage: string
-  bio: string
-  isVerified: boolean
-  profileLink: string
-  stats: {
-    totalRaised: number
-    totalRaisedFormatted: string
-    livesImpacted: number
-    activeCampaigns: number
-    totalCampaigns: number
-    currency: string
-  }
-  socials: {
-    email?: string
-    instagram?: string
-    twitter?: string
-  }
-}
-
-// interface Campaign {
-//   id: string
-//   title: string
-//   image: string
-//   category: string
-//   description: string
-//   goal: {
-//     amount: number
-//     raised: number
-//     currency: string
-//   }
-//   donationCount: number
-//   percentComplete: number
-//   status: "active" | "completed" | "ongoing"
-// }
-
-interface Donor {
-  id: string
-  name: string
-  amount: number
-  currency: string
-  timeAgo: string
-  isAnonymous: boolean
-}
-
-// const campaignsData: Campaign[] = [
-//   {
-//     id: "mirabel-centre",
-//     title: "Support Mirabel Centre",
-//     image: "/images/mirabel-centre.jpg",
-//     category: "Education",
-//     description:
-//       "Every survivor of sexual and gender-based violence (SGBV) deserves a chance to heal, rebuild and thrive. That's why Mirabel Centre has been a beacon of hope in Lagos since 2013. As the leading Sexual Assault Referral Centre (SARC), they provide free, compassionate support to survivors through medical care, counseling, medications, skills training, and so much more.",
-//     goal: {
-//       amount: 5200,
-//       raised: 3640,
-//       currency: "£",
-//     },
-//     donationCount: 32,
-//     percentComplete: 70,
-//     status: "ongoing",
-//   },
-//   {
-//     id: "nicholas-college",
-//     title: "Help Nicholas go back to college",
-//     image: "/images/nicholas.jpg",
-//     category: "Education",
-//     description:
-//       "Nicholas is a brilliant student who needs support to continue his education.",
-//     goal: {
-//       amount: 10000,
-//       raised: 10000,
-//       currency: "NGN",
-//     },
-//     donationCount: 145,
-//     percentComplete: 100,
-//     status: "completed",
-//   },
-//   {
-//     id: "nicholas-college-2",
-//     title: "Help Nicholas go back to college",
-//     image: "/images/nicholas.jpg",
-//     category: "Education",
-//     description:
-//       "Nicholas is continuing his masters degree and needs additional support.",
-//     goal: {
-//       amount: 15000,
-//       raised: 15000,
-//       currency: "NGN",
-//     },
-//     donationCount: 210,
-//     percentComplete: 100,
-//     status: "completed",
-//   },
-// ]
-
-const donorsData: Donor[] = [
-  {
-    id: "donor-1",
-    name: "Nimat Craig",
-    amount: 5400,
-    currency: "N",
-    timeAgo: "5 hours ago",
-    isAnonymous: false,
-  },
-  {
-    id: "donor-2",
-    name: "Akintomiwa Ajayi",
-    amount: 5400,
-    currency: "N",
-    timeAgo: "6 hours ago",
-    isAnonymous: false,
-  },
-  {
-    id: "donor-3",
-    name: "Ade Ayegbo",
-    amount: 5400,
-    currency: "N",
-    timeAgo: "6 hours ago",
-    isAnonymous: false,
-  },
-  {
-    id: "donor-4",
-    name: "Nathaniel Hide",
-    amount: 5400,
-    currency: "N",
-    timeAgo: "6 hours ago",
-    isAnonymous: true,
-  },
-]
+export default ProfilePage
 
 interface TabProps {
   label: string
@@ -394,38 +265,13 @@ const Tab: React.FC<TabProps> = ({ label, isActive, onClick }) => {
       onClick={onClick}
       className={`px-4 py-2 rounded-full text-sm ${
         isActive
-          ? "bg-white text-black border border-gray-200"
+          ? "bg-white text-primary border border-primary"
           : "text-gray-600 hover:bg-gray-100"
       }`}
     >
       {label}
     </button>
   )
-}
-
-// Sample Data
-const organizationData: OrganizationProfile = {
-  id: "beauty-hut",
-  name: "Beauty Hut",
-  type: "Organization",
-  logo: "/images/beauty-hut-logo.svg",
-  coverImage: "/images/beauty-hut-cover.jpg",
-  bio: "At Beauty Hut, we're a female-founded brand with a deep commitment to supporting women. We believe in ensuring survivors have access to the care they need to reclaim their strength and dignity. This is where you come in...",
-  isVerified: true,
-  profileLink: "beautyhut.org",
-  stats: {
-    totalRaised: 200000,
-    totalRaisedFormatted: "$200,000",
-    livesImpacted: 2000,
-    activeCampaigns: 1,
-    totalCampaigns: 10,
-    currency: "$",
-  },
-  socials: {
-    email: "info@beautyhut.org",
-    instagram: "beautyhut",
-    twitter: "beautyhut",
-  },
 }
 
 // ProfileCard.Skeleton = () => {

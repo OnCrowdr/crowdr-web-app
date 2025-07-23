@@ -6,6 +6,7 @@ import {
   Controller,
 } from "react-hook-form"
 import { RFC } from "@/types"
+import _ from "lodash"
 
 const SelectInput: RFC<SelectInputProps> = ({
   options,
@@ -33,7 +34,7 @@ const SelectInput: RFC<SelectInputProps> = ({
       formState: { errors },
     } = formContext
     control = control_
-    error = errors[name] as FieldError
+    error = _.get(errors, name) as FieldError
   }
 
   const props = {

@@ -7,6 +7,7 @@ import {
   RegisterOptions,
   UseFormRegisterReturn,
 } from "react-hook-form"
+import _ from "lodash"
 
 const TextInput: RFC<TextInputProps> = ({
   config,
@@ -35,7 +36,7 @@ const TextInput: RFC<TextInputProps> = ({
       // eslint-disable-next-line react-hooks/rules-of-hooks
     } = useFormContext()
     config = register(name, rules)
-    error = errors[name] as FieldError
+    error = _.get(errors, name) as FieldError
   }
   const inputStyle = props.icon ? "pl-9" : iconUrl ? "pl-10" : ""
 

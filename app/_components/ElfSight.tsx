@@ -1,7 +1,7 @@
 import { isProd } from "@/config"
 import Script from "next/script"
 
-export const ElfSightScript = () => {
+const ElfSightScript = () => {
   return (
     isProd && (
       <Script
@@ -13,7 +13,7 @@ export const ElfSightScript = () => {
   )
 }
 
-export const ElfSightApp = () => {
+const ElfSightBody = () => {
   return (
     isProd && (
       <div
@@ -22,4 +22,9 @@ export const ElfSightApp = () => {
       />
     )
   )
+}
+
+export default {
+  Body: ElfSightBody,
+  Script: ElfSightScript,
 }

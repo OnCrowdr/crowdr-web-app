@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { RFC } from "@/types"
+import _ from "lodash"
 import { ChangeEvent, ClipboardEvent, KeyboardEvent } from "react"
 import CurrencyInput from "react-currency-input-field"
 import {
@@ -32,7 +33,7 @@ const NumberInput: RFC<NumberInputProps> = ({
       formState: { errors },
     } = useFormContext()
     config = register(name, rules)
-    error = errors[name] as FieldError
+    error = _.get(errors, name) as FieldError
   }
 
   if (config) {
