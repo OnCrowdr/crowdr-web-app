@@ -1,78 +1,86 @@
-import InputTitle from "../../../../../../../../components/InputTitle"
-import TextInput from "../../../../../../../../components/TextInput"
-import Link from "next/link"
-import { Controller, useFormContext } from "react-hook-form"
-import { CampaignFormContext } from "../useCampaignForm"
-import SelectInput from "../../../../../../../../components/SelectInput"
-import { Option } from "../../../../../_common/utils/form"
-import { campaignCategories } from "../../../../../../../../utils/campaignCategory"
-import DateInput from "../../../../../../../../components/DateInput"
-import TextAreaInput from "../../../../../../../../components/TextAreaInput"
-import { WhiteButton, Button } from "../../../../../../../../components/Button"
-import { RFC } from "@/types"
-import OptionInput from "../../../../../../../../components/OptionInput"
-import { IoChevronBack } from "react-icons/io5"
-import PhoneNumberInput from "../../../../../../../../components/PhoneNumberInput"
-import { useEffect, useState } from "react"
-import moment from "moment"
+import InputTitle from "../../../../../../../../components/InputTitle";
+import TextInput from "../../../../../../../../components/TextInput";
+import Link from "next/link";
+import { Controller, useFormContext } from "react-hook-form";
+import { CampaignFormContext } from "../useCampaignForm";
+import SelectInput from "../../../../../../../../components/SelectInput";
+import { Option } from "../../../../../_common/utils/form";
+import { campaignCategories } from "../../../../../../../../utils/campaignCategory";
+import DateInput from "../../../../../../../../components/DateInput";
+import TextAreaInput from "../../../../../../../../components/TextAreaInput";
+import { WhiteButton, Button } from "../../../../../../../../components/Button";
+import { RFC } from "@/types";
+import OptionInput from "../../../../../../../../components/OptionInput";
+import { IoChevronBack } from "react-icons/io5";
+import PhoneNumberInput from "../../../../../../../../components/PhoneNumberInput";
+import { useEffect, useState } from "react";
+import moment from "moment";
 
 const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
   const { campaignType, setShowPreview, ...form } =
-    useFormContext() as CampaignFormContext
-  const errors = form.formState.errors
-  const timeCommitment = form.getValues("timeCommitment")
+    useFormContext() as CampaignFormContext;
+  const errors = form.formState.errors;
+  const timeCommitment = form.getValues("timeCommitment");
   const [timeNeeded, setTimeNeeded] = useState(() =>
     // it's an array because the flatpickr takes its values as an array
     timeCommitment ? [moment(timeCommitment[0]).format("hh:mm A")] : undefined
-  )
+  );
 
   // once time is changed, updated selected commitment date with time picked
   useEffect(() => {
     if (timeCommitment && timeNeeded) {
-      const dateWithTime0 = setDateWithTime(timeCommitment[0], timeNeeded[0])
-      const dateWithTime1 = setDateWithTime(timeCommitment[1], timeNeeded[0])
-      form.setValue('timeCommitment', [dateWithTime0, dateWithTime1] as any)
-
+      const dateWithTime0 = setDateWithTime(timeCommitment[0], timeNeeded[0]);
+      const dateWithTime1 = setDateWithTime(timeCommitment[1], timeNeeded[0]);
+      form.setValue("timeCommitment", [dateWithTime0, dateWithTime1] as any);
     }
-  }, [timeNeeded])
+  }, [timeNeeded]);
 
   const nextStep = (callback: () => void) => {
-    const title = form.getValues("title")
-    const story = form.getValues("story")
-    const category = form.getValues("category")
-    const campaignDuration = form.getValues("campaignDuration")
-    const ageRange = form.getValues("ageRange")
-    const genderPreference = form.getValues("genderPreference")
-    const timeCommitment = form.getValues("timeCommitment")
-    const volunteerCommitment = form.getValues("volunteerCommitment")
+    const title = form.getValues("title");
+    const story = form.getValues("story");
+    const category = form.getValues("category");
+    const campaignDuration = form.getValues("campaignDuration");
+    const ageRange = form.getValues("ageRange");
+    const genderPreference = form.getValues("genderPreference");
+    const timeCommitment = form.getValues("timeCommitment");
+    const volunteerCommitment = form.getValues("volunteerCommitment");
+    const campaignAddress = form.getValues("campaignAddress");
+    const phoneNumber = form.getValues("phoneNumber");
+    const contactEmail = form.getValues("contactEmail");
     const isInvalid =
       !ageRange ||
       !genderPreference ||
       !timeCommitment ||
       !volunteerCommitment ||
+      !campaignAddress ||
+      !phoneNumber ||
+      !contactEmail ||
       (campaignType !== "fundraiseAndVolunteer" &&
-        (!title || !story || !category || !campaignDuration))
+        (!title || !story || !category || !campaignDuration));
 
     if (!isInvalid) {
-      callback()
+      callback();
     } else {
-      form.trigger("ageRange")
-      form.trigger("genderPreference")
-      form.trigger("timeCommitment")
-      form.trigger("volunteerCommitment")
+      form.trigger("ageRange");
+      form.trigger("genderPreference");
+      form.trigger("timeCommitment");
+      form.trigger("volunteerCommitment");
+      form.trigger("campaignAddress");
+      form.trigger("phoneNumber");
+      form.trigger("contactEmail");
 
       if (campaignType !== "fundraiseAndVolunteer") {
-        form.trigger("title")
-        form.trigger("story")
-        form.trigger("category")
-        form.trigger("campaignDuration")
+        form.trigger("title");
+        form.trigger("story");
+        form.trigger("category");
+        form.trigger("campaignDuration");
       }
     }
-  }
+  };
 
   const handlePhoneChange = (value: string) => {
-    form.setValue("phoneNumber", value, { shouldValidate: true })
-  }
+    form.setValue("phoneNumber", value, { shouldValidate: true });
+  };
 
   return (
     <div className="pt-10 pb-6">
@@ -93,8 +101,8 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                     required: "Title is required",
                     minLength: {
                       value: 15,
-                      message: "Title must be at least 15 characters",
-                    },
+                      message: "Title must be at least 15 characters"
+                    }
                   }}
                   error={errors.title}
                   ariaLabel="Title"
@@ -115,8 +123,8 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                     required: "Story is required",
                     minLength: {
                       value: 60,
-                      message: "Story must be at least 60 characters",
-                    },
+                      message: "Story must be at least 60 characters"
+                    }
                   }}
                   characterLimit={5000}
                   additionalCharacterInfo="  (must be between 60 - 5000 characters)"
@@ -137,7 +145,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                   name="campaignAddress"
                   placeholder="123 Main St, City, State"
                   rules={{
-                    required: "Campaign address is required",
+                    required: "Campaign address is required"
                   }}
                   characterLimit={5000}
                   error={errors.campaignAddress}
@@ -157,7 +165,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                   name="category"
                   options={categories}
                   rules={{
-                    required: "Category is required",
+                    required: "Category is required"
                   }}
                   error={errors.category}
                   ariaLabel="Category"
@@ -175,7 +183,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
               <div className="max-w-lg">
                 <DateInput
                   config={form.register("campaignDuration", {
-                    required: "Campaign duration is required",
+                    required: "Campaign duration is required"
                   })}
                   error={errors.campaignDuration as any}
                   mode="range"
@@ -200,7 +208,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                 label={ageRange.label}
                 name="ageRange"
                 rules={{
-                  required: "Age needed is required",
+                  required: "Age needed is required"
                 }}
               />
             ))}
@@ -225,7 +233,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                 label={genderPreference.label}
                 name="genderPreference"
                 rules={{
-                  required: "Gender preference is required",
+                  required: "Gender preference is required"
                 }}
               />
             ))}
@@ -246,7 +254,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
               <DateInput
                 name="timeCommitment"
                 rules={{
-                  required: "Time commitment is required",
+                  required: "Time commitment is required"
                 }}
                 error={errors.timeCommitment as any}
                 mode="range"
@@ -258,15 +266,15 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
               <DateInput
                 value={timeNeeded}
                 onChange={(value) => setTimeNeeded([value.dateString])}
-                classNames={{root: 'max-w-[90px]'}}
+                classNames={{ root: "max-w-[90px]" }}
                 datepickerOptions={{
                   enableTime: true,
                   noCalendar: true,
                   disableMobile: true,
                   dateFormat: "h:i K",
                   position: (self, customElement) => {
-                    self.calendarContainer.style.right = "0px"
-                  },
+                    self.calendarContainer.style.right = "0px";
+                  }
                 }}
               />
             </div>
@@ -286,7 +294,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                 label={commitment.label}
                 name="volunteerCommitment"
                 rules={{
-                  required: "Volunteer commitment is required",
+                  required: "Volunteer commitment is required"
                 }}
               />
             ))}
@@ -308,7 +316,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
               control={form.control}
               defaultValue=""
               rules={{
-                required: "Phone number is required",
+                required: "Phone number is required"
               }}
               render={({ field }) => (
                 <PhoneNumberInput
@@ -326,6 +334,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
           </div>
         </div>
 
+
         {/* contact email */}
         <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-y-4 gap-x-[25px] mb-[25px]">
           <InputTitle title="Contact email address" />
@@ -339,8 +348,8 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
                 required: "Contact email is required",
                 pattern: {
                   value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Invalid email address",
-                },
+                  message: "Invalid email address"
+                }
               }}
             />
           </div>
@@ -383,8 +392,7 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
           <div className="flex flex-col-reverse lg:flex-row lg:items-center justify-end gap-4">
             <button
               onClick={() => onStep(index - 1)}
-              className="flex items-center gap-1 text-[#00B964] hover:underline mr-auto"
-            >
+              className="flex items-center gap-1 text-[#00B964] hover:underline mr-auto">
               <IoChevronBack size={24} stroke="#00B964" /> Back to previous page
             </button>
 
@@ -407,20 +415,20 @@ const Step2: RFC<Props> = ({ index, onStep, onDone }) => {
       </div>
     </div>
   );
-}
+};
 
-export default Step2
+export default Step2;
 
 interface Props {
-  index: number
-  onStep: (step: number) => void
-  onDone: () => void
+  index: number;
+  onStep: (step: number) => void;
+  onDone: () => void;
 }
 
 const categories = [
   Option("", "Select a category...", true),
-  ...campaignCategories,
-]
+  ...campaignCategories
+];
 
 const ageRanges = [
   Option("18 - 25", "18 - 25"),
@@ -428,21 +436,21 @@ const ageRanges = [
   Option("36 - 45", "36 - 45"),
   Option("46 - 55", "46 - 55"),
   Option("56 and above", "56 and above"),
-  Option("no preference", "No preference"),
-]
+  Option("no preference", "No preference")
+];
 
 const genderPreferences = [
   Option("female", "Female"),
   Option("male", "Male"),
-  Option("no preference", "No preference"),
-]
+  Option("no preference", "No preference")
+];
 
 const volunteerCommitment = [
   Option("one-time event", "One-time event"),
   Option("weekly commitment", "Weekly commitment"),
   Option("monthly commitment", "Monthly commitment"),
-  Option("flexible schedule", "Flexible schedule"),
-]
+  Option("flexible schedule", "Flexible schedule")
+];
 
 function setDateWithTime(date: string | Date, time: string): Date {
   // Parse the date argument into a moment object
@@ -456,7 +464,7 @@ function setDateWithTime(date: string | Date, time: string): Date {
     hour: timeMoment.hour(),
     minute: timeMoment.minute(),
     second: 0,
-    millisecond: 0,
+    millisecond: 0
   });
 
   // Return the updated date as a JavaScript Date object
