@@ -323,7 +323,12 @@ const FileInput: RFC<FileInputProps> = ({
       )}
 
       {showFileList &&
-        files?.map((file) => (
+        (Array.isArray(files)
+          ? files
+          : files != undefined
+          ? [files as any as File]
+          : undefined
+        )?.map((file) => (
           <FileDetail
             key={file.name}
             name={file.name}
@@ -381,7 +386,11 @@ const FileDetail: RFC<FileDetailProps> = ({ name, size, removeFile }) => {
       </div>
       <div className="grow bg-white rounded-r-lg p-4">
         {/* <Image src={LoadingCircle} alt="spinner icon" className="block ml-auto" /> */}
-        <HiMiniXCircle size={32} className="cursor-pointer ml-auto" onClick={removeFile} />
+        <HiMiniXCircle
+          size={32}
+          className="cursor-pointer ml-auto"
+          onClick={removeFile}
+        />
       </div>
     </div>
   )
