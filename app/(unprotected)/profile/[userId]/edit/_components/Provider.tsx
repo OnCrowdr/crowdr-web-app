@@ -109,8 +109,8 @@ const Provider: RFC<Props> = ({ userId = "", children }) => {
       await profileMutation.mutateAsync({
         location: form.location,
         bio: form.bio,
-        twitter: `https://twitter.com/${form.twitter}`,
-        instagram: `https://instagram.com/${form.instagram}`,
+        twitter: form.twitter,
+        instagram: form.instagram,
         engagements: form.engagingMedia,
         membersImages: form.members.flatMap((m) => m.photo!),
         members: form.members.map((m) => ({

@@ -39,7 +39,7 @@ const OrganizationForm = () => {
 
   return (
     <>
-      <div>
+      <div className="flex-1 max-w-[883px]">
         <hgroup className="border-b border-b-[#E3E3E3] pb-4 mb-10">
           <h1 className="text-2xl mb-0.5">Edit Profile - Team</h1>
           <p className="text-sm text-[#61656B]">
@@ -47,7 +47,7 @@ const OrganizationForm = () => {
           </p>
         </hgroup>
 
-        <div className="pt-10 pb-6">
+        <div className="pb-6">
           <div className="max-w-[883px]">
             {fields.map((field, index) => {
               const position = index + 1
@@ -124,16 +124,20 @@ const OrganizationForm = () => {
                   </div>
 
                   {/* remove team member */}
-                  <div className="flex justify-end">
-                    <button
-                      id={`member-${position}`}
-                      type="button"
-                      onClick={() => setMemberToRemoveIndex(index)}
-                      className="inline-flex items-center gap-1.5 text-[#D92D20] hover:bg-[#FEE4E2] transition-colors rounded-md p-1 px-2 mb-10"
-                    >
-                      <CircleMinus color="#D92D20" size={20} />
-                      Remove team member
-                    </button>
+                  <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-x-[25px] mb-10">
+                    <div />
+
+                    <div className="flex justify-end max-w-lg">
+                      <button
+                        id={`member-${position}`}
+                        type="button"
+                        onClick={() => setMemberToRemoveIndex(index)}
+                        className="inline-flex items-center gap-1.5 text-[#D92D20] hover:bg-[#FEE4E2] transition-colors rounded-md p-1 px-2"
+                      >
+                        <CircleMinus color="#D92D20" size={20} />
+                        Delete team member
+                      </button>
+                    </div>
                   </div>
                 </Fragment>
               )
@@ -141,15 +145,19 @@ const OrganizationForm = () => {
 
             {/* add team member */}
             {!hasReachedLimit && (
-              <div className="flex justify-end mb-14 lg:mb-[60px]">
-                <button
-                  type="button"
-                  onClick={addMember}
-                  className="inline-flex items-center gap-1.5 text-primary hover:bg-[#DCFAE6] transition-colors rounded-md p-1 px-2 -mt-6"
-                >
-                  <CirclePlus color="#00b964" size={20} />
-                  Add team member
-                </button>
+              <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-x-[25px] -mt-6">
+                <div />
+
+                <div className="flex justify-end max-w-lg mb-14 lg:mb-[60px]">
+                  <button
+                    type="button"
+                    onClick={addMember}
+                    className="inline-flex items-center gap-1.5 text-primary hover:bg-[#DCFAE6] transition-colors rounded-md p-1 px-2"
+                  >
+                    <CirclePlus color="#00b964" size={20} />
+                    Add team member
+                  </button>
+                </div>
               </div>
             )}
 
@@ -186,10 +194,10 @@ const OrganizationForm = () => {
         onClose={closeModal}
       >
         <CompletionCard
-          title="Remove Team Member"
-          text="Are you sure you want to remove team member?"
+          title="Delete Team Member"
+          text="Are you sure you want to delete team member?"
           primaryButton={{
-            label: "Yes, remove",
+            label: "Yes, delete",
             bgColor: "#D92D20",
             onClick: () => {
               remove(memberToRemoveIndex)
@@ -203,7 +211,7 @@ const OrganizationForm = () => {
           clearModal={closeModal}
           icon={
             <div className="grid place-items-center rounded-full bg-[#FEE4E2] p-3">
-              <Trash2 />
+              <Trash2 color="#D92D20" />
             </div>
           }
         />

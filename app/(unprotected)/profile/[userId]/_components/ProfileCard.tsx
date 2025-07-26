@@ -137,6 +137,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   key={index}
                   href={social.url}
                   className="h-10 w-10 flex items-center justify-center rounded-full border border-gray-200"
+                  target="_blank"
                 >
                   <social.icon size={20} />
                 </a>

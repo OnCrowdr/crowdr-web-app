@@ -24,7 +24,7 @@ const IndividualForm = () => {
   const isIndividual = form.getValues("accountType") === UserType.Individual
 
   return (
-    <div>
+    <div className="flex-1 max-w-[883px]">
       <hgroup className="border-b border-b-[#E3E3E3] pb-4 mb-10">
         <h1 className="text-2xl mb-0.5">Edit Profile</h1>
         <p className="text-sm text-[#61656B]">Be sure to save your changes.</p>
@@ -122,7 +122,7 @@ const IndividualForm = () => {
             {/* instagram */}
             <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-y-4 gap-x-[25px]">
               <InputTitle
-                title="Instagram Handle (Optional)"
+                title="Instagram Profile Url (Optional)"
                 detail="Please link your Instagram."
               />
               <div className="max-w-lg">
@@ -137,7 +137,7 @@ const IndividualForm = () => {
             {/* twitter */}
             <div className="grid md:grid-cols-[minmax(200px,_350px)_minmax(210px,_1fr)] gap-y-4 gap-x-[25px]">
               <InputTitle
-                title="Twitter Handle (Optional)"
+                title="Twitter Profile Url (Optional)"
                 detail="Please link your Twitter."
               />
               <div className="max-w-lg">
@@ -253,11 +253,6 @@ const IndividualForm = () => {
 }
 
 export default IndividualForm
-
-const categories = [
-  Option("", "Select a category...", true),
-  ...campaignCategories,
-]
 
 const accountTypes = [
   Option(UserType.Individual, "Individual"),
