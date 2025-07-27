@@ -1,6 +1,6 @@
 "use client"
 import { useSet } from "@mantine/hooks"
-import { Option } from "../../../../../(protected)/dashboard/_common/utils/form"
+import { Option } from "../../../_common/utils/form"
 import { Button, WhiteButton } from "@/components/Button"
 import DateInput from "@/components/DateInput"
 import FileInput from "@/components/FileInput"
@@ -19,9 +19,12 @@ import MediaCard from "../../_components/MediaCard"
 
 const IndividualForm = () => {
   const router = useRouter()
+  const { isAuthenticated } = useAuth()
   const { profile, deletedMedia, setFormType, submitForm, ...form } =
     useFormContext() as ProfileFormContext
   const isIndividual = form.getValues("accountType") === UserType.Individual
+
+  if (!profile) return null
 
   return (
     <div className="flex-1 max-w-[883px]">
@@ -224,7 +227,11 @@ const IndividualForm = () => {
               text="Back"
               buttonType="button"
               shadow
-              onClick={() => router.back()}
+              onClick={() =>
+                isAuthenticated
+                  ? router.push(`/dashboard/profile`)
+                  : router.push(`/profile/${profile._id}`)
+              }
               className="!bg-[#C2C3C6] !text-white justify-center grow lg:max-w-[220px]"
             />
 

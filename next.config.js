@@ -62,7 +62,7 @@ const nextConfig = {
       },
       {
         source: "/dashboard",
-        destination: "/dashboard/campaigns",
+        destination: "/dashboard/profile",
         permanent: true,
       },
       {

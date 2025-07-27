@@ -1,7 +1,7 @@
 import { Modal } from "flowbite-react"
 import { useFormContext } from "react-hook-form"
 import { CampaignFormContext } from "./useCampaignForm"
-import { getInitials } from "../../../../_components/Header"
+import { getInitials } from "../../../../_components/layout/Header"
 import { useUser } from "../../../../../../../contexts/UserProvider"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"

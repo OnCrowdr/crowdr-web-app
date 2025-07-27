@@ -15,7 +15,7 @@ import toast from "react-hot-toast"
 import { useUser } from "../../../../../contexts/UserProvider"
 import { RiEditLine } from "react-icons/ri"
 import Link from "next/link"
-import Text from "../../../../(protected)/dashboard/_components/Text"
+import Text from "../../_components/Text"
 import { useAuth } from "@/contexts/AppProvider"
 import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
 
@@ -71,7 +71,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
   return (
     <div className="bg-white rounded-xl overflow-hidden border border-[#0000001A] mb-8">
       {/* Cover photo with logo */}
-      <div className="relative h-64 w-full bg-pink-100">
+      <div className="relative h-64 w-full bg-gray-200">
         <img
           src={profile.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
           alt={profileName}
@@ -91,7 +91,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       <div className="p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between">
           <div className="flex items-start mb-4 md:mb-0">
-            <div className="h-16 w-16 rounded-full bg-pink-100 mr-4 flex-shrink-0">
+            <div className="h-16 w-16 rounded-full bg-gray-200 mr-4 flex-shrink-0">
               <img
                 src={profile.image?.url ?? PLACEHOLDER_PROFILE_IMAGE}
                 alt={profileName}
@@ -124,10 +124,10 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
           <div className="flex items-center gap-[14px]">
             {isOwnProfile && (
               <Link
-                href={`/profile/${profile.user._id}/edit`}
+                href={`/dashboard/profile/edit`}
                 className="flex items-center gap-2 text-[#00B964] bg-[#00b96314] hover:bg-[#00b9631f] rounded-full transition-colors h-10 px-[14px]"
               >
-                <RiEditLine size={24} fill="#00B964" /> Edit <span className="hidden md:inline text-inherit">Profile</span>
+                <RiEditLine size={24} fill="#00B964" /> Edit<span className="hidden md:inline text-inherit">Profile</span>
               </Link>
             )}
 

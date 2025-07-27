@@ -1,20 +1,20 @@
 "use client"
 import Image from "next/image"
-import { useUser } from "../../../../contexts/UserProvider"
-import { Button, GrayButton } from "../../../../components/Button"
-import Label from "./Label"
-import DrawerTrigger from "../../../../components/DrawerTrigger"
-import DropdownTrigger from "../../../../components/DropdownTrigger"
-import Drawer from "../../../../components/Drawer"
-import Dropdown from "../../../../components/Dropdown"
+import { useUser } from "../../../../../contexts/UserProvider"
+import { Button, GrayButton } from "../../../../../components/Button"
+import Label from "../Label"
+import DrawerTrigger from "../../../../../components/DrawerTrigger"
+import DropdownTrigger from "../../../../../components/DropdownTrigger"
+import Drawer from "../../../../../components/Drawer"
+import Dropdown from "../../../../../components/Dropdown"
 import Sidebar from "./Sidebar"
-import ProfileSkeleton from "./skeletons/ProfileSkeleton"
+import ProfileSkeleton from "../skeletons/ProfileSkeleton"
 
 import CrowdrLogo from "@/public/images/brand/crowdr-logo.svg"
 import PuzzleIcon from "@/public/svg/environment-puzzle.svg"
 import BurgerIcon from "@/public/svg/burger-icon.svg"
 import Avatar from "@/public/assets/avatar.png"
-import CreateCampaignDropdown from "./createCampainDropdown"
+import CreateCampaignDropdown from "../createCampainDropdown"
 import { useAuth } from "@/contexts/AppProvider"
 import { UserType } from "@/types"
 import { useRouter } from "next/navigation"
@@ -64,7 +64,7 @@ const Header = () => {
         {/* profile */}
         {user ? (
           <Link
-            href={`/profile/${user._id}`}
+            href={`/dashboard/profile/${user._id}`}
             className="group hidden md:flex items-center"
           >
             <div className="mr-[15px]">

@@ -10,7 +10,7 @@ import {
 import { HeadlessService, IMessage } from "@novu/headless"
 import { useUser } from "../../../../../contexts/UserProvider"
 import { useSetAtom } from "jotai"
-import { pageDrawerAtom } from "../../_components/Sidebar"
+import { pageDrawerAtom } from "../../_components/layout/Sidebar"
 import { useAuth } from "@/contexts/AppProvider"
 
 interface NotificationContextType {
