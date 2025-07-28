@@ -10,8 +10,11 @@ import {
 } from "../../../../api/_campaigns/models/GetCampaigns"
 import { isFundraise } from "../_common/utils/campaign"
 import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
+import { useAuth } from "@/contexts/AppProvider"
 
 const ActiveCampaign: RFC<Props> = ({ campaign }) => {
+  const { isAuthenticated, user } = useAuth()
+
   const [fundingGoalDetail] = isFundraise(campaign)
     ? campaign.fundraise?.fundingGoalDetails
     : []
@@ -44,7 +47,7 @@ const ActiveCampaign: RFC<Props> = ({ campaign }) => {
           src={campaign.campaignCoverImage.url ?? PLACEHOLDER_IMAGE}
           alt={campaign.title}
           onError={(e) => {
-            e.currentTarget.removeAttribute('srcset')
+            e.currentTarget.removeAttribute("srcset")
             e.currentTarget.src = PLACEHOLDER_IMAGE
           }}
           fill
@@ -70,7 +73,13 @@ const ActiveCampaign: RFC<Props> = ({ campaign }) => {
           </div>
         )}
 
-        <Link href={`/campaigns/${campaign._id}`}>
+        <Link
+          href={
+            user && user._id === campaign.userId
+              ? `/dashboard/campaigns/${campaign._id}`
+              : `/campaigns/${campaign._id}`
+          }
+        >
           <h3 className="font-medium text-base truncate mb-2 hover:text-green-600 transition-colors">
             {campaign.title}
           </h3>

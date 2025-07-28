@@ -14,6 +14,8 @@ import { Mixpanel } from "../../../../utils/mixpanel"
 import { formatAmount } from "../_common/utils/currency"
 import { Campaign } from "../../../../api/_campaigns/models/GetCampaigns"
 import { isFundraise } from "../_common/utils/campaign"
+import Text from "./Text"
+import { PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
 // import { Campaign } from '@/app/api/campaigns/getCampaigns';
 
 // interface OngoingCampaignProps {
@@ -322,7 +324,7 @@ const OngoingCampaign: React.FC<Props> = ({ campaign }) => {
       <div className="flex gap-3 mb-4 pt-4">
         <div className="w-10 h-10 rounded-md overflow-hidden flex-shrink-0">
           <Image
-            src={campaign.photo?.url || "/placeholder-logo.png"}
+            src={campaign.photo?.url || PLACEHOLDER_PROFILE_IMAGE}
             alt={organizationName || "Campaign"}
             width={40}
             height={40}
@@ -336,12 +338,7 @@ const OngoingCampaign: React.FC<Props> = ({ campaign }) => {
       </div>
 
       <div className="mb-6">
-        <p className="text-sm text-gray-700 mb-4">
-          {campaign.story?.length > 100
-            ? `${campaign.story.substring(0, 100)}...`
-            : campaign.story}
-          <button className="text-green-600 ml-1 font-medium">view more</button>
-        </p>
+        <Text className="text-sm text-gray-700 mb-4">{campaign.story}</Text>
       </div>
 
       {/* Campaign Type Tabs (if both options are available) */}

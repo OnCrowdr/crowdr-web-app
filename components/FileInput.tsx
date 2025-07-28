@@ -22,6 +22,7 @@ import AttentionIcon from "@/public/assets/warning-circle.png"
 import LoadingCircle from "@/public/svg/loading-circle.svg"
 import { atom, useAtomValue, useSetAtom } from "jotai"
 import _ from "lodash"
+import { toMB } from "@/utils/file"
 
 // const previewImageAtom = atom<string | null>(null)
 
@@ -323,7 +324,12 @@ const FileInput: RFC<FileInputProps> = ({
       )}
 
       {showFileList &&
-        files?.map((file) => (
+        (Array.isArray(files)
+          ? files
+          : files != undefined
+          ? [files as any as File]
+          : undefined
+        )?.map((file) => (
           <FileDetail
             key={file.name}
             name={file.name}
@@ -366,10 +372,6 @@ function blobToFile(blob: Blob): FileList {
   return dataTransfer.files
 }
 
-function toMB(bytes: number) {
-  return (bytes / 1024 / 1024).toFixed(2)
-}
-
 const FileDetail: RFC<FileDetailProps> = ({ name, size, removeFile }) => {
   return (
     <div className="flex rounded-lg border border-[#D0D5DD] w-full mt-4">
@@ -381,7 +383,11 @@ const FileDetail: RFC<FileDetailProps> = ({ name, size, removeFile }) => {
       </div>
       <div className="grow bg-white rounded-r-lg p-4">
         {/* <Image src={LoadingCircle} alt="spinner icon" className="block ml-auto" /> */}
-        <HiMiniXCircle size={32} className="cursor-pointer ml-auto" onClick={removeFile} />
+        <HiMiniXCircle
+          size={32}
+          className="cursor-pointer ml-auto"
+          onClick={removeFile}
+        />
       </div>
     </div>
   )

@@ -16,5 +16,8 @@ export const handleUserRedirection = (
   if (user.userType === UserType.NonProfit && !user.organizationId) {
     return redirectFn("/register-organization")
   }
-  return redirectFn("/dashboard/campaigns")
+  if (user.isAdmin) {
+    return redirectFn("/admin")
+  }
+  return redirectFn("/dashboard")
 }

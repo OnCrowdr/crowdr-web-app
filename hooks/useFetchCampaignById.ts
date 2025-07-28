@@ -79,6 +79,7 @@ export type Campaign = {
     fullName: string;
     userId: string;
   };
+  userId: string
 };
 
 type SingleCampaignResponse = {

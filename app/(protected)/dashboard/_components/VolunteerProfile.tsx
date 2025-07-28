@@ -1,6 +1,6 @@
 import ModalTrigger from "../../../../components/ModalTrigger";
 import { useSetAtom } from "jotai";
-import { pageDrawerAtom } from "./Sidebar";
+import { pageDrawerAtom } from "./layout/Sidebar";
 import { HiMiniXMark } from "react-icons/hi2";
 import { IVolunteerProfile } from "../campaigns/[campaignId]/page";
 import { RFC } from "@/types";
