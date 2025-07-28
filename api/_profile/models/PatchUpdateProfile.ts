@@ -1,12 +1,12 @@
 // payload
 export interface IPatchUpdateProfileBody {
-  location: string
-  bio: string
-  twitter: string
-  instagram: string
+  location?: string
+  bio?: string
+  twitter?: string
+  instagram?: string
   image?: File
   backgroundImage?: File
-  engagements: File[]
+  engagements?: File[]
   membersImages?: File[]
   members?: {
     fullname: string

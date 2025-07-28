@@ -21,10 +21,16 @@ const updateProfile = async (body: IPatchUpdateProfileBody) => {
   const url = `/profile`
 
   const formData = new FormData()
-  formData.append("location", body.location)
-  formData.append("bio", body.bio)
-  formData.append("twitter", body.twitter)
-  formData.append("instagram", body.instagram)
+  body.location && formData.append("location", body.location)
+  body.bio && formData.append("bio", body.bio)
+  body.twitter && formData.append("twitter", body.twitter)
+  body.instagram && formData.append("instagram", body.instagram)
+  if (body.image) {
+    formData.append("image", body.image)
+  }
+  if (body.backgroundImage) {
+    formData.append("backgroundImage", body.backgroundImage)
+  }
   for (let image of body.engagements ?? []) {
     formData.append("engagements", image)
   }

@@ -1,94 +1,94 @@
-"use client";
+"use client"
 
-import { useState, useEffect, use, useCallback, useMemo } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { FaApplePay } from "react-icons/fa";
+import { useState, useEffect, use, useCallback, useMemo } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { FaApplePay } from "react-icons/fa"
 
 // Components
-import ProgressBar from "../../../../(protected)/dashboard/_components/ProgressBar";
-import ExploreCard from "../../../../(protected)/dashboard/_components/ExploreCard";
-import Filter from "../../../../(protected)/dashboard/_components/Filter";
-import Input from "../../../../(protected)/dashboard/_components/Input";
-import Checkbox from "../../../../(protected)/dashboard/_components/Checkbox";
-import Select from "../../../../(protected)/dashboard/_components/Select";
-import { Button } from "@/components/Button";
-import Footer from "@/app/(homepage)/_components/layout/Footer";
-import NavBar from "../../components/NavBar";
-import Loading from "../../../../loading";
-import NotFound from "../../../../not-found";
-import PhoneNumberInput from "@/components/PhoneNumberInput";
+import ProgressBar from "../../../../(protected)/dashboard/_components/ProgressBar"
+import ExploreCard from "../../../../(protected)/dashboard/_components/ExploreCard"
+import Filter from "../../../../(protected)/dashboard/_components/Filter"
+import Input from "../../../../(protected)/dashboard/_components/Input"
+import Checkbox from "../../../../(protected)/dashboard/_components/Checkbox"
+import Select from "../../../../(protected)/dashboard/_components/Select"
+import { Button } from "@/components/Button"
+import Footer from "@/app/(homepage)/_components/layout/Footer"
+import NavBar from "../../components/NavBar"
+import Loading from "../../../../loading"
+import NotFound from "../../../../not-found"
+import PhoneNumberInput from "@/components/PhoneNumberInput"
 
 // Hooks and utilities
-import { useToast } from "@/hooks/useToast";
-import makeRequest from "../../../../../utils/makeRequest";
-import { extractErrorMessage } from "../../../../../utils/extractErrorMessage";
-import { formatAmount } from "../../../../(protected)/dashboard/_common/utils/currency";
-import { calculateTransactionFee } from "../../../../../utils/seperateText";
-import { presetAmounts } from "../../../../../utils/constants";
-import { Mixpanel } from "../../../../../utils/mixpanel";
+import { useToast } from "@/hooks/useToast"
+import makeRequest from "../../../../../utils/makeRequest"
+import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
+import { formatAmount } from "../../../../(protected)/dashboard/_common/utils/currency"
+import { calculateTransactionFee } from "../../../../../utils/seperateText"
+import { presetAmounts } from "../../../../../utils/constants"
+import { Mixpanel } from "../../../../../utils/mixpanel"
 
 // Assets
-import HeartHand from "@/public/svg/hand-holding-heart.svg";
-import ShareCampaign from "@/components/ShareCampaign";
-import OldModal from "@/components/OldModal";
+import HeartHand from "@/public/svg/hand-holding-heart.svg"
+import ShareCampaign from "@/components/ShareCampaign"
+import OldModal from "@/components/OldModal"
 import {
   useFetchSingleCampaign,
-  useVerifyPaymentReference
-} from "@/hooks/useFetchCampaignById";
+  useVerifyPaymentReference,
+} from "@/hooks/useFetchCampaignById"
 import {
   CheckboxValues,
   DonationInputs,
-  VolunteerInputs
-} from "@/types/campaign-types";
-import DonorsModal from "@/components/DonorsModal";
+  VolunteerInputs,
+} from "@/types/campaign-types"
+import DonorsModal from "@/components/DonorsModal"
 
 declare global {
   interface Window {
-    PaystackPop: any;
+    PaystackPop: any
   }
 }
 
 export default function DonateOrVolunteer(props: {
-  params: Promise<{ campaignId: string }>;
+  params: Promise<{ campaignId: string }>
 }) {
-  const params = use(props.params);
-  const toast = useToast();
+  const params = use(props.params)
+  const toast = useToast()
 
   // Check for payment reference in URL
-  const [trxRef, setTrxRef] = useState<string | null>(null);
-  const [volunteerSuccess, setVolunteerSuccess] = useState<boolean>(false);
+  const [trxRef, setTrxRef] = useState<string | null>(null)
+  const [volunteerSuccess, setVolunteerSuccess] = useState<boolean>(false)
 
   // React Query for campaign data
   const {
     data: campaign,
     isLoading: loadingCampaign,
     error: campaignError,
-    refetch: refetchCampaign
-  } = useFetchSingleCampaign(params.campaignId, true);
+    refetch: refetchCampaign,
+  } = useFetchSingleCampaign(params.campaignId, true)
 
   // React Query for payment verification
   const {
     data: paymentVerification,
     isLoading: verifyingPayment,
-    error: paymentVerificationError
-  } = useVerifyPaymentReference(trxRef);
+    error: paymentVerificationError,
+  } = useVerifyPaymentReference(trxRef)
 
   // State
-  const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("");
-  const [paystackLoaded, setPaystackLoaded] = useState(false);
-  const [applePaySupported, setApplePaySupported] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState<string>("");
-  const [shareModal, setShareModal] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [tab, setTab] = useState("")
+  const [paystackLoaded, setPaystackLoaded] = useState(false)
+  const [applePaySupported, setApplePaySupported] = useState(false)
+  const [selectedAmount, setSelectedAmount] = useState<string>("")
+  const [shareModal, setShareModal] = useState(false)
 
-  const [donorsModal, setDonorsModal] = useState(false);
+  const [donorsModal, setDonorsModal] = useState(false)
 
   const [donationInputs, setDonationInputs] = useState<DonationInputs>({
     amount: "",
     fullName: "",
-    email: ""
-  });
+    email: "",
+  })
 
   const [volunteerInputs, setVolunteerInputs] = useState<VolunteerInputs>({
     fullName: "",
@@ -97,14 +97,14 @@ export default function DonateOrVolunteer(props: {
     gender: "",
     ageRange: "",
     address: "",
-    about: ""
-  });
+    about: "",
+  })
 
   const [checkboxValues, setCheckboxValues] = useState<CheckboxValues>({
     isAnonymous: false,
     shouldShareDetails: false,
-    isSubscribedToPromo: false
-  });
+    isSubscribedToPromo: false,
+  })
 
   // Memoized values
   const campaignImages = useMemo(() => {
@@ -112,129 +112,129 @@ export default function DonateOrVolunteer(props: {
       campaign?.campaignAdditionalImages?.map(
         (item: { url: string }) => item.url
       ) || []
-    );
-  }, [campaign?.campaignAdditionalImages]);
+    )
+  }, [campaign?.campaignAdditionalImages])
 
   const totalDonationAmount = useMemo(() => {
     return (
       campaign?.fundraise?.fundingGoalDetails?.reduce(
         (accumulator: number, current: { amount: number }) => {
-          return accumulator + current.amount;
+          return accumulator + current.amount
         },
         0
       ) || 0
-    );
-  }, [campaign?.fundraise?.fundingGoalDetails]);
+    )
+  }, [campaign?.fundraise?.fundingGoalDetails])
 
   const donatedAmount = useMemo(() => {
-    return campaign?.totalAmountDonated?.[0]?.amount || 0;
-  }, [campaign?.totalAmountDonated]);
+    return campaign?.totalAmountDonated?.[0]?.amount || 0
+  }, [campaign?.totalAmountDonated])
 
   const currency = useMemo(() => {
-    return campaign?.fundraise?.fundingGoalDetails?.[0]?.currency || "NGN";
-  }, [campaign?.fundraise?.fundingGoalDetails]);
+    return campaign?.fundraise?.fundingGoalDetails?.[0]?.currency || "NGN"
+  }, [campaign?.fundraise?.fundingGoalDetails])
 
   const userDetails = useMemo(() => {
-    return campaign?.user;
-  }, [campaign?.user]);
+    return campaign?.user
+  }, [campaign?.user])
 
   const donationProgressPercent = useMemo(() => {
     return totalDonationAmount > 0
       ? (donatedAmount / totalDonationAmount) * 100
-      : 0;
-  }, [donatedAmount, totalDonationAmount]);
+      : 0
+  }, [donatedAmount, totalDonationAmount])
 
   const campaignVolunteersNeeded = useMemo(() => {
-    return campaign?.volunteer?.volunteersNeeded || 0;
-  }, [campaign?.volunteer?.volunteersNeeded]);
+    return campaign?.volunteer?.volunteersNeeded || 0
+  }, [campaign?.volunteer?.volunteersNeeded])
 
   const campaignTotalVolunteers = useMemo(() => {
-    return campaign?.totalNoOfCampaignVolunteers || 0;
-  }, [campaign?.totalNoOfCampaignVolunteers]);
+    return campaign?.totalNoOfCampaignVolunteers || 0
+  }, [campaign?.totalNoOfCampaignVolunteers])
 
   const volunteerProgressPercent = useMemo(() => {
     return campaignVolunteersNeeded > 0
       ? (campaignTotalVolunteers / campaignVolunteersNeeded) * 100
-      : 0;
-  }, [campaignTotalVolunteers, campaignVolunteersNeeded]);
+      : 0
+  }, [campaignTotalVolunteers, campaignVolunteersNeeded])
 
   // Memoized functions
   const updateDonationInputs = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = event.target;
+      const { name, value } = event.target
 
       if (name === "amount") {
-        setSelectedAmount(value);
+        setSelectedAmount(value)
       }
 
       setDonationInputs((prev) => ({
         ...prev,
-        [name]: value
-      }));
+        [name]: value,
+      }))
     },
     []
-  );
+  )
 
   const updateVolunteerInputs = useCallback(
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const { name, value } = event.target;
+      const { name, value } = event.target
       setVolunteerInputs((prev) => ({
         ...prev,
-        [name]: value
-      }));
+        [name]: value,
+      }))
     },
     []
-  );
+  )
 
   const updateCheckbox = useCallback(
     (key: keyof CheckboxValues, value: boolean) => {
       setCheckboxValues((prev) => ({
         ...prev,
-        [key]: value
-      }));
+        [key]: value,
+      }))
     },
     []
-  );
+  )
 
   const onAmountSelect = useCallback((amount: string) => {
-    setSelectedAmount(amount);
+    setSelectedAmount(amount)
     setDonationInputs((prev) => ({
       ...prev,
-      amount: amount
-    }));
-  }, []);
+      amount: amount,
+    }))
+  }, [])
 
   const areAllInputsFilled = useCallback((inputs: Record<string, any>) => {
-    return Object.values(inputs).every((value) => value !== "");
-  }, []);
+    return Object.values(inputs).every((value) => value !== "")
+  }, [])
 
   // Share modal handlers
   const closeShareModal = useCallback(() => {
-    setShareModal(false);
+    setShareModal(false)
 
     // Clean up URL parameters when modal is closed
     if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("trxref");
-      url.searchParams.delete("volref");
-      window.history.replaceState({}, document.title, url.toString());
-      setTrxRef(null);
-      setVolunteerSuccess(false);
+      const url = new URL(window.location.href)
+      url.searchParams.delete("trxref")
+      url.searchParams.delete("volref")
+      window.history.replaceState({}, document.title, url.toString())
+      setTrxRef(null)
+      setVolunteerSuccess(false)
     }
-  }, []);
+  }, [])
 
   const handleDonateAgain = useCallback(() => {
     // Close the modal and clean up URL
-    setShareModal(false);
+    setShareModal(false)
 
     // Clean up URL parameters
     if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.delete("trxref");
-      url.searchParams.delete("volref");
-      window.history.replaceState({}, document.title, url.toString());
-      setTrxRef(null);
-      setVolunteerSuccess(false);
+      const url = new URL(window.location.href)
+      url.searchParams.delete("trxref")
+      url.searchParams.delete("volref")
+      window.history.replaceState({}, document.title, url.toString())
+      setTrxRef(null)
+      setVolunteerSuccess(false)
     }
 
     if (campaign?.campaignType === "volunteer" || volunteerSuccess) {
@@ -246,53 +246,53 @@ export default function DonateOrVolunteer(props: {
         gender: "",
         ageRange: "",
         address: "",
-        about: ""
-      });
-      setTab("volunteer");
+        about: "",
+      })
+      setTab("volunteer")
       Mixpanel.track(
         "User wants to apply again after successful volunteer application"
-      );
+      )
     } else {
       // Reset donation form to allow new donation
       setDonationInputs({
         amount: "",
         fullName: "",
-        email: ""
-      });
-      setSelectedAmount("");
-      setTab("donate");
-      Mixpanel.track("User wants to donate again after successful donation");
+        email: "",
+      })
+      setSelectedAmount("")
+      setTab("donate")
+      Mixpanel.track("User wants to donate again after successful donation")
     }
-  }, [campaign?.campaignType, volunteerSuccess]);
+  }, [campaign?.campaignType, volunteerSuccess])
 
   // Apple Pay detection
   const checkApplePaySupport = useCallback(() => {
-    if (typeof window === "undefined") return false;
+    if (typeof window === "undefined") return false
 
     try {
       const isSafari =
         /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
         navigator.userAgent.includes("iPhone") ||
         navigator.userAgent.includes("iPad") ||
-        navigator.userAgent.includes("Mac");
+        navigator.userAgent.includes("Mac")
 
       const mightSupportApplePay =
         isSafari &&
         window.PaymentRequest &&
-        !navigator.userAgent.includes("Chrome");
+        !navigator.userAgent.includes("Chrome")
 
-      return mightSupportApplePay;
+      return mightSupportApplePay
     } catch (error) {
-      console.error("Error checking Apple Pay support:", error);
-      return false;
+      console.error("Error checking Apple Pay support:", error)
+      return false
     }
-  }, []);
+  }, [])
 
   // API calls
   const donate = useCallback(
     async (paymentMethod: "card" | "apple_pay") => {
-      setLoading(true);
-      const endpoint = "/payments/initiate";
+      setLoading(true)
+      const endpoint = "/payments/initiate"
 
       const payload = {
         campaignId: params.campaignId,
@@ -305,67 +305,67 @@ export default function DonateOrVolunteer(props: {
         isSubscribedToPromo: checkboxValues.isSubscribedToPromo,
         payment_method: paymentMethod,
         callback_url: window.location.href,
-        cancel_url: `${window.location.href}?cancelled=true`
-      };
+        cancel_url: `${window.location.href}?cancelled=true`,
+      }
 
       if (checkboxValues.isAnonymous) {
-        Mixpanel.track("Anonymous Donation");
+        Mixpanel.track("Anonymous Donation")
       }
 
       try {
         const { data } = await makeRequest(endpoint, {
           method: "POST",
-          payload: JSON.stringify(payload)
-        });
+          payload: JSON.stringify(payload),
+        })
 
-        Mixpanel.track("Routes to Paystack Gateway");
+        Mixpanel.track("Routes to Paystack Gateway")
 
-        const paymentWindow = window.open(data.authorization_url, "_blank");
+        const paymentWindow = window.open(data.authorization_url, "_blank")
 
         if (
           !paymentWindow ||
           paymentWindow.closed ||
           typeof paymentWindow.closed == "undefined"
         ) {
-          window.location.href = data.authorization_url;
-          return;
+          window.location.href = data.authorization_url
+          return
         }
 
-        paymentWindow.focus();
-        setLoading(false);
+        paymentWindow.focus()
+        setLoading(false)
       } catch (error) {
-        Mixpanel.track("Error completing donation");
-        const message = extractErrorMessage(error);
-        toast({ title: "Oops!", body: message, type: "error" });
+        Mixpanel.track("Error completing donation")
+        const message = extractErrorMessage(error)
+        toast({ title: "Oops!", body: message, type: "error" })
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     },
     [donationInputs, checkboxValues, currency, params.campaignId, toast]
-  );
+  )
 
   const volunteer = useCallback(async () => {
-    setLoading(true);
-    const endpoint = `/campaigns/${params.campaignId}/volunteer`;
+    setLoading(true)
+    const endpoint = `/campaigns/${params.campaignId}/volunteer`
 
     try {
       const { data } = await makeRequest(endpoint, {
         method: "POST",
-        payload: JSON.stringify(volunteerInputs)
-      });
+        payload: JSON.stringify(volunteerInputs),
+      })
 
-      toast({ title: "Success!", body: data.message, type: "success" });
-      refetchCampaign();
+      toast({ title: "Success!", body: data.message, type: "success" })
+      refetchCampaign()
 
       // Set volunteer success and show share modal
-      setVolunteerSuccess(true);
-      setShareModal(true);
+      setVolunteerSuccess(true)
+      setShareModal(true)
 
       // Add volref to URL for tracking
       if (typeof window !== "undefined") {
-        const url = new URL(window.location.href);
-        url.searchParams.set("volref", "success");
-        window.history.replaceState({}, document.title, url.toString());
+        const url = new URL(window.location.href)
+        url.searchParams.set("volref", "success")
+        window.history.replaceState({}, document.title, url.toString())
       }
 
       setVolunteerInputs({
@@ -375,16 +375,16 @@ export default function DonateOrVolunteer(props: {
         gender: "",
         ageRange: "",
         address: "",
-        about: ""
-      });
-      window.scroll({ top: 0, left: 0, behavior: "smooth" });
+        about: "",
+      })
+      window.scroll({ top: 0, left: 0, behavior: "smooth" })
     } catch (error) {
-      const message = extractErrorMessage(error);
-      toast({ title: "Oops!", body: message, type: "error" });
+      const message = extractErrorMessage(error)
+      toast({ title: "Oops!", body: message, type: "error" })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [volunteerInputs, params.campaignId, toast, refetchCampaign]);
+  }, [volunteerInputs, params.campaignId, toast, refetchCampaign])
 
   // Effects
   useEffect(() => {
@@ -394,57 +394,57 @@ export default function DonateOrVolunteer(props: {
           ? "donate"
           : campaign.campaignType === "fundraise"
           ? "donate"
-          : "volunteer";
+          : "volunteer"
 
-      setTab(newTab);
+      setTab(newTab)
 
       const eventName =
         campaign.campaignType === "fundraiseAndVolunteer"
           ? "Donation campaign viewed"
-          : "Volunteer campaign viewed";
+          : "Volunteer campaign viewed"
 
-      Mixpanel.track(eventName);
+      Mixpanel.track(eventName)
     }
-  }, [campaign?.campaignType]);
+  }, [campaign?.campaignType])
 
   // Handle URL parameters for payment completion and volunteer success
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const reference = urlParams.get("reference");
-    const cancelled = urlParams.get("cancelled");
-    const trxReference = urlParams.get("trxref");
-    const volReference = urlParams.get("volref");
+    const urlParams = new URLSearchParams(window.location.search)
+    const reference = urlParams.get("reference")
+    const cancelled = urlParams.get("cancelled")
+    const trxReference = urlParams.get("trxref")
+    const volReference = urlParams.get("volref")
 
     // Handle successful payment with reference
     if (reference || trxReference) {
-      Mixpanel.track("Successful Donation");
+      Mixpanel.track("Successful Donation")
       toast({
         title: "Success",
         body: "Donation successful",
-        type: "success"
-      });
-      refetchCampaign();
+        type: "success",
+      })
+      refetchCampaign()
 
       if (reference) {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("reference");
-        window.history.replaceState({}, document.title, url.toString());
+        const url = new URL(window.location.href)
+        url.searchParams.delete("reference")
+        window.history.replaceState({}, document.title, url.toString())
       }
     }
 
     // Handle successful volunteer application
     if (volReference) {
-      Mixpanel.track("Successful Volunteer Application");
+      Mixpanel.track("Successful Volunteer Application")
       toast({
         title: "Success",
         body: "Volunteer application submitted successfully",
-        type: "success"
-      });
-      setVolunteerSuccess(true);
-      setShareModal(true);
-      refetchCampaign();
+        type: "success",
+      })
+      setVolunteerSuccess(true)
+      setShareModal(true)
+      refetchCampaign()
     }
 
     // Handle cancelled payment
@@ -452,38 +452,38 @@ export default function DonateOrVolunteer(props: {
       toast({
         title: "Payment Cancelled",
         body: "Your donation was not completed",
-        type: "info"
-      });
+        type: "info",
+      })
 
-      const url = new URL(window.location.href);
-      url.searchParams.delete("cancelled");
-      window.history.replaceState({}, document.title, url.toString());
+      const url = new URL(window.location.href)
+      url.searchParams.delete("cancelled")
+      window.history.replaceState({}, document.title, url.toString())
     }
 
     // Handle trxref - show share modal for donation success
     if (trxReference) {
-      setTrxRef(trxReference);
-      setShareModal(true);
+      setTrxRef(trxReference)
+      setShareModal(true)
     }
-  }, [toast, refetchCampaign]);
+  }, [toast, refetchCampaign])
 
   // Load Paystack script
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://js.paystack.co/v2/inline.js";
-    script.async = true;
+    const script = document.createElement("script")
+    script.src = "https://js.paystack.co/v2/inline.js"
+    script.async = true
     script.onload = () => {
-      setPaystackLoaded(true);
-      setApplePaySupported(checkApplePaySupport());
-    };
-    document.body.appendChild(script);
+      setPaystackLoaded(true)
+      setApplePaySupported(checkApplePaySupport())
+    }
+    document.body.appendChild(script)
 
     return () => {
       if (document.body.contains(script)) {
-        document.body.removeChild(script);
+        document.body.removeChild(script)
       }
-    };
-  }, [checkApplePaySupport]);
+    }
+  }, [checkApplePaySupport])
 
   // Handle error state
   useEffect(() => {
@@ -491,23 +491,23 @@ export default function DonateOrVolunteer(props: {
       toast({
         title: "Error loading campaign",
         body: "There was a problem loading this campaign. Please try again later.",
-        type: "error"
-      });
+        type: "error",
+      })
       Mixpanel.track("Error loading campaign", {
-        campaignId: params.campaignId
-      });
+        campaignId: params.campaignId,
+      })
     }
-  }, [campaignError, params.campaignId, toast]);
+  }, [campaignError, params.campaignId, toast])
 
   // Loading and error states
-  if (loadingCampaign) return <Loading />;
+  if (loadingCampaign) return <Loading />
   if (!campaign) {
     return (
       <NotFound
         errorTitle="Campaign not found"
         errorMessage="The campaign you are looking for does not exist, has ended or has been removed. Please check the URL or return to the homepage."
       />
-    );
+    )
   }
 
   return (
@@ -529,7 +529,7 @@ export default function DonateOrVolunteer(props: {
         <div className="grid grid-cols-1 gap-12 min-w-full md:grid-cols-2">
           <ExploreCard
             id={campaign._id}
-            userId={campaign.user.userId}
+            userId={userDetails?._id ?? campaign.userId}
             name={
               userDetails?.userType === "individual"
                 ? userDetails?.fullName
@@ -561,14 +561,16 @@ export default function DonateOrVolunteer(props: {
                     className={`text-sm p-3 cursor-pointer ${
                       tab === "donate" ? activeTabStyle : inActiveTabStyle
                     }`}
-                    onClick={() => setTab("donate")}>
+                    onClick={() => setTab("donate")}
+                  >
                     Donate
                   </span>
                   <span
                     className={`text-sm p-3 ml-4 cursor-pointer ${
                       tab === "volunteer" ? activeTabStyle : inActiveTabStyle
                     }`}
-                    onClick={() => setTab("volunteer")}>
+                    onClick={() => setTab("volunteer")}
+                  >
                     Volunteer
                   </span>
                 </>
@@ -577,7 +579,8 @@ export default function DonateOrVolunteer(props: {
                   className={`text-sm p-3 cursor-pointer ${
                     tab === "donate" ? activeTabStyle : inActiveTabStyle
                   }`}
-                  onClick={() => setTab("donate")}>
+                  onClick={() => setTab("donate")}
+                >
                   Donate
                 </span>
               ) : (
@@ -585,7 +588,8 @@ export default function DonateOrVolunteer(props: {
                   className={`text-sm p-3 ml-4 cursor-pointer ${
                     tab === "volunteer" ? activeTabStyle : inActiveTabStyle
                   }`}
-                  onClick={() => setTab("volunteer")}>
+                  onClick={() => setTab("volunteer")}
+                >
                   Volunteer
                 </span>
               )}
@@ -638,8 +642,8 @@ export default function DonateOrVolunteer(props: {
                     onChange={(value) => {
                       setVolunteerInputs((prev) => ({
                         ...prev,
-                        phoneNumber: value
-                      }));
+                        phoneNumber: value,
+                      }))
                     }}
                     required={true}
                     error=""
@@ -675,7 +679,8 @@ export default function DonateOrVolunteer(props: {
                   <div className="flex flex-col items-start w-full">
                     <label
                       htmlFor="about"
-                      className="text-[14px] text-[#344054] mb-[6px]">
+                      className="text-[14px] text-[#344054] mb-[6px]"
+                    >
                       Tell us a bit about yourself and why you're interested in
                       this project!
                     </label>
@@ -740,7 +745,8 @@ export default function DonateOrVolunteer(props: {
                             ? "border-[#00B964] bg-[#00B964]/5 text-[#00B964]"
                             : "border-[#D0D5DD] bg-white text-[#344054] hover:border-[#00B964]/50"
                         }
-                      `}>
+                      `}
+                    >
                       {amount.display}
                     </button>
                   ))}
@@ -835,11 +841,12 @@ export default function DonateOrVolunteer(props: {
                   {paystackLoaded && applePaySupported && (
                     <button
                       onClick={() => {
-                        donate("apple_pay");
-                        Mixpanel.track("Apple Pay Donation Clicked");
+                        donate("apple_pay")
+                        Mixpanel.track("Apple Pay Donation Clicked")
                       }}
                       className="apple-pay-button"
-                      disabled={!areAllInputsFilled(donationInputs) || loading}>
+                      disabled={!areAllInputsFilled(donationInputs) || loading}
+                    >
                       <span className="apple-pay-text">Donate with</span>
                       <FaApplePay
                         className="mt-1"
@@ -867,15 +874,16 @@ export default function DonateOrVolunteer(props: {
                   <div className="flex items-start flex-col gap-5 mb-8">
                     {campaign.campaignDonors
                       ?.sort((a, b) => {
-                        const amountA = parseInt(a.amount) || 0;
-                        const amountB = parseInt(b.amount) || 0;
-                        return amountB - amountA;
+                        const amountA = parseInt(a.amount) || 0
+                        const amountB = parseInt(b.amount) || 0
+                        return amountB - amountA
                       })
                       .slice(0, 5)
                       .map((donor, index) => (
                         <div
                           className="flex items-center flex-row justify-start"
-                          key={index}>
+                          key={index}
+                        >
                           <div className="p-2 bg-[#F8F8F8] rounded-full">
                             <Image
                               src={HeartHand}
@@ -900,7 +908,8 @@ export default function DonateOrVolunteer(props: {
                   {campaign.totalNoOfCampaignDonors > 0 && (
                     <div
                       className="cursor-pointer p-4 bg-[#F8F8F8] text-[#344054] w-fit mt-8 rounded-lg"
-                      onClick={() => setDonorsModal(true)}>
+                      onClick={() => setDonorsModal(true)}
+                    >
                       See all
                     </div>
                   )}
@@ -916,8 +925,9 @@ export default function DonateOrVolunteer(props: {
         <div
           className="relative p-12"
           style={{
-            background: "rgba(76, 76, 76, 0)"
-          }}>
+            background: "rgba(76, 76, 76, 0)",
+          }}
+        >
           <ShareCampaign
             onClose={closeShareModal}
             campaignId={campaign._id}
@@ -942,22 +952,22 @@ export default function DonateOrVolunteer(props: {
 
       <Footer />
     </div>
-  );
+  )
 }
 
 // Constants
-const activeTabStyle = "text-[#00B964] border-b-2 border-[#00B964]";
-const inActiveTabStyle = "text-[#667085]";
+const activeTabStyle = "text-[#00B964] border-b-2 border-[#00B964]"
+const inActiveTabStyle = "text-[#667085]"
 
 const genderOptions = [
   { name: "Male", value: "male" },
-  { name: "Female", value: "female" }
-];
+  { name: "Female", value: "female" },
+]
 
 const ageRange = [
   { name: "18 - 25", value: "18 - 25" },
   { name: "26 - 35", value: "26 - 35" },
   { name: "36 - 45", value: "36 - 45" },
   { name: "46 - 55", value: "46 - 55" },
-  { name: "56 and above", value: "56 and above" }
-];
+  { name: "56 and above", value: "56 and above" },
+]

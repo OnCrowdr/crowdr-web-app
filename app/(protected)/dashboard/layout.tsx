@@ -1,7 +1,7 @@
 "use client"
-import Header from "./_components/Header"
-import Sidebar from "./_components/Sidebar"
-import Page from "./_components/Page"
+import Header from "./_components/layout/Header"
+import Sidebar from "./_components/layout/Sidebar"
+import Page from "./_components/layout/Page"
 import UserProvider from "../../../contexts/UserProvider"
 import { NotificationProvider } from "./_common/hooks/useNotification"
 

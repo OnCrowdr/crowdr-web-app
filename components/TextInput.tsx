@@ -8,6 +8,7 @@ import {
   UseFormRegisterReturn,
 } from "react-hook-form"
 import _ from "lodash"
+import { cn } from "@/utils/style"
 
 const TextInput: RFC<TextInputProps> = ({
   config,
@@ -80,11 +81,12 @@ const TextInput: RFC<TextInputProps> = ({
           style={{ boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)" }}
           aria-label={ariaLabel}
           aria-labelledby={ariaLabelledBy}
-          className={
-            inputStyle +
-            " text-[13px] rounded-lg border border-[#D0D5DD] w-full py-[10px] px-[14px] " +
-            styles?.input
-          }
+          className={cn(
+            inputStyle,
+            "text-[13px] rounded-lg border border-[#D0D5DD] w-full py-[10px] px-[14px]",
+            styles?.input,
+            disabled && "!bg-[#f2f2f2] !text-[#999]"
+          )}
           disabled={disabled}
         />
       </div>
@@ -107,7 +109,7 @@ type TextInputProps = {
   showOptionalLabel?: boolean
   ariaLabel?: string
   ariaLabelledBy?: string
-  type?: string;
+  type?: string
   icon?: any
   iconUrl?: string
   name?: string

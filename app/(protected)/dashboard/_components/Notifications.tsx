@@ -7,7 +7,7 @@ import ModalTrigger from "../../../../components/ModalTrigger"
 import Dot from "./Dot"
 
 import { formatAmount } from "../_common/utils/currency"
-import { pageDrawerAtom } from "./Sidebar"
+import { pageDrawerAtom } from "./layout/Sidebar"
 
 import { RFC } from "@/types"
 import { IMessage } from "@novu/headless"

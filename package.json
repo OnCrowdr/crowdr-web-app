@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
+    "@mantine/hooks": "^8.2.1",
     "@next/third-parties": "^15.3.3",
     "@novu/headless": "^0.20.0",
     "@opentelemetry/exporter-trace-otlp-http": "^0.51.1",
@@ -31,6 +32,7 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.7.2",
     "browser-image-compression": "^2.0.2",
+    "clsx": "^2.1.1",
     "color": "^4.2.3",
     "date-fns": "^4.1.0",
     "eslint": "8.43.0",

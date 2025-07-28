@@ -14,7 +14,7 @@ import ArrowRight from "@/public/svg/new-arrow.svg";
 import OldModal from "../../../../components/OldModal";
 import { formatAmount } from "../_common/utils/currency";
 import { camelCaseToSeparated } from "../../../../utils/seperateText";
-import { getInitials } from "./Header";
+import { getInitials } from "./layout/Header";
 import useClipboard from "../../../../hooks/useClipboard";
 import { IoMdClose } from "react-icons/io";
 import { IoShareSocial } from "react-icons/io5";
@@ -211,7 +211,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     <div className="p-6 rounded-xl border-[#393e4614] border h-fit bg-white">
       <div className="flex items-center justify-between ">
         <Link
-          href={`/profile/${user?._id}`}
+          href={`/profile/${user?._id ?? userId}`}
           className="group flex items-center">
           {avatar ? (
             <Image
