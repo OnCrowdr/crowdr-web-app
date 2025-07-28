@@ -3,8 +3,8 @@ export const isProd = process.env.NEXT_PUBLIC_CUSTOM_NODE_ENV === "prod";
 // Base url
 const API_BASE_URL = isProd
   ? "https://api.oncrowdr.com"
-  // : "https://test-api.oncrowdr.com";
-  : "http://localhost:3500";
+  : "https://test-api.oncrowdr.com";
+  // : "http://localhost:3500";
 
 // if you should ever change the jwt expiration time in the backedn also remember to change this
 // this value should always be sligtly less than the jwt expiration time on the server

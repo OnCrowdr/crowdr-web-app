@@ -5,12 +5,10 @@ import NavBar from "../../explore/components/NavBar"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
 
 const Profile = () => {
-  const { userId } = useParams() as { userId: string }
-
   return (
     <div className="font-satoshi">
       <NavBar />
-      <ProfilePage userId={userId} />
+      <ProfilePage />
       <Footer />
     </div>
   )

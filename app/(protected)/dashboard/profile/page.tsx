@@ -19,12 +19,13 @@ import { PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
 import MemberCard from "./_components/MemberCard"
 import MediaCard from "./_components/MediaCard"
 import { cn } from "@/utils/style"
-import { UserType } from "@/types"
+import { RFC, UserType } from "@/types"
 import { useAuth } from "@/contexts/AppProvider"
 
-const ProfilePage: React.FC<Props> = ({ userId: passedUserId }) => {
+const ProfilePage = () => {
   const pathname = usePathname()
   const { user } = useAuth()
+  const { userId: passedUserId } = useParams() as { userId: string }
   const userId = passedUserId ?? user?._id ?? ""
   const [activeTab, setActiveTab] = useState<string>("Campaigns")
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
@@ -263,10 +264,6 @@ const ProfilePage: React.FC<Props> = ({ userId: passedUserId }) => {
 }
 
 export default ProfilePage
-
-interface Props {
-  userId?: string
-}
 
 interface TabProps {
   label: string
