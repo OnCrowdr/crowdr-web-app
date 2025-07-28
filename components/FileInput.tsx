@@ -22,6 +22,7 @@ import AttentionIcon from "@/public/assets/warning-circle.png"
 import LoadingCircle from "@/public/svg/loading-circle.svg"
 import { atom, useAtomValue, useSetAtom } from "jotai"
 import _ from "lodash"
+import { toMB } from "@/utils/file"
 
 // const previewImageAtom = atom<string | null>(null)
 
@@ -369,10 +370,6 @@ function blobToFile(blob: Blob): FileList {
   const dataTransfer = new DataTransfer()
   dataTransfer.items.add(file)
   return dataTransfer.files
-}
-
-function toMB(bytes: number) {
-  return (bytes / 1024 / 1024).toFixed(2)
 }
 
 const FileDetail: RFC<FileDetailProps> = ({ name, size, removeFile }) => {

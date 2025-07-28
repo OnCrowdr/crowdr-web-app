@@ -2,7 +2,12 @@ import React, { Fragment } from "react"
 import ReactModal, { Styles } from "react-modal"
 import "./styles.css"
 
-const OldModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const OldModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  children,
+  shouldCloseOnOverlayClick = true,
+}) => {
   return (
     <ReactModal
       isOpen={isOpen}
@@ -13,6 +18,7 @@ const OldModal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       ariaHideApp={false}
       // appElement={typeof window !== 'undefined' ? document.getElementById('__next')! : undefined}
       style={customStyles}
+      shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
     >
       <Fragment>{children}</Fragment>
     </ReactModal>
@@ -27,6 +33,7 @@ interface ModalProps {
   isOpen: boolean
   onClose: () => void
   children: React.ReactNode
+  shouldCloseOnOverlayClick?: boolean
 }
 
 const customStyles: Styles = {
