@@ -232,7 +232,7 @@ const ProfilePage: React.FC<Props> = ({ userId: passedUserId }) => {
         </div>
 
         {/* Right column (1/3) - Ongoing Campaign */}
-        <div className="sticky top-0.5 lg:col-span-1 max-h-fit border border-[#0000001A] rounded-[20px] px-[22px] py-6">
+        <div className="lg:col-span-1 max-h-fit border border-[#0000001A] rounded-[20px] px-[22px] py-6">
           <p className="font-semibold text-xl text-[#00B964]">
             Ongoing Campaign
           </p>

@@ -145,7 +145,7 @@ const UploadModal: RFC<Props> = ({ file, opened, onClose }) => {
             }`}
           >
             <p className="text-sm font-medium">
-              {isComplete ? "✨ Your image uploaded!" : "🚀 Uploading image..."}
+              {isComplete ? "✨ Your photo is uploaded!" : "🚀 Uploading photo..."}
             </p>
           </div>
         </div>
