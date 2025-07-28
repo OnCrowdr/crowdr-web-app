@@ -73,14 +73,15 @@ const AppProvider: RFC = ({ children }) => {
       if (isAxiosError<IPostSignInError>(error)) {
         const err = error.response.data
 
+
         if (err.error === "EMAIL_NOT_VERIFIED") {
           router.push(`/confirmation?email=${err.email}`)
           toast({ title: err.message, body: err.solution, type: "error" })
         } else {
-          toast({ title: "Something unexpected happened", type: "error" })
+          toast({ title: err.message, type: "error" })
         }
       } else {
-        toast({ title: "Something unexpected happened", type: "error" })
+        toast({ title: error.response.data.message, type: "error" })
       }
     }
   }
