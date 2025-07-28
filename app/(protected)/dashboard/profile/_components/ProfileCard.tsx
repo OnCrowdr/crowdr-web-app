@@ -82,7 +82,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       navigator.clipboard.writeText(
         `https://oncrowdr.com/profile/${profile?.user?._id}`
       )
-      toast.success("Copied")
+      toast.success("Copied", {position: "top-center"})
     } catch (error) {
       toast.error("Failed to copy")
     }
@@ -114,10 +114,12 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
             className="h-full w-full object-cover"
           />
 
-          <PhotoButton
-            onSelect={(file) => uploadPhoto("backgroundImage", file)}
-            className="absolute top-[12px] right-[13px] md:top-[17px] md:right-[18px]"
-          />
+          {isOwnProfile && (
+            <PhotoButton
+              onSelect={(file) => uploadPhoto("backgroundImage", file)}
+              className="absolute top-[12px] right-[13px] md:top-[17px] md:right-[18px]"
+            />
+          )}
         </div>
 
         {/* Profile section */}
@@ -133,10 +135,12 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   className="w-full h-full rounded-full border-2 md:border-4 border-white object-cover"
                 />
 
-                <PhotoButton
-                  onSelect={(file) => uploadPhoto("image", file)}
-                  className="absolute -bottom-[4px] -right-[5px] md:bottom-[4px] md:right-[5px]"
-                />
+                {isOwnProfile && (
+                  <PhotoButton
+                    onSelect={(file) => uploadPhoto("image", file)}
+                    className="absolute -bottom-[4px] -right-[5px] md:bottom-[4px] md:right-[5px]"
+                  />
+                )}
               </div>
 
               <div>

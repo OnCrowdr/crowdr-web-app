@@ -22,7 +22,7 @@ export const pageGroups = [
     new Page({ route: "profile" }, "Profile", user),
     new Page({ route: "campaigns" }, "My Campaigns", megaphone),
     new Page({ route: "donations" }, "My Donations", dollar),
-    new Page({ route: "explore" }, "Discover/Explore", heart),
+    new Page({ route: "#/explore" }, "Discover/Explore", heart),
   ],
   // [],
   [

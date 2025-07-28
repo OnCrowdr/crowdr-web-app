@@ -211,7 +211,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     <div className="p-6 rounded-xl border-[#393e4614] border h-fit bg-white">
       <div className="flex items-center justify-between ">
         <Link
-          href={`/profile/${user?._id}`}
+          href={`/profile/${user?._id ?? userId}`}
           className="group flex items-center">
           {avatar ? (
             <Image
