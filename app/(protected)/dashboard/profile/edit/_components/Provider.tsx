@@ -119,7 +119,7 @@ const Provider: RFC<Props> = ({ userId = "", children }) => {
         })),
       })
 
-      router.push(`/profile/${userId}`)
+      router.push(`/dashboard/profile`)
     } catch (error: any) {
       errorHandler(error)
       console.error(error)
@@ -137,7 +137,7 @@ const Provider: RFC<Props> = ({ userId = "", children }) => {
 
   if (!profile) {
     return (
-      <div className="p-4 md:p-8">
+      <div>
         <hgroup className="border-b border-b-[#E3E3E3] pb-4 mb-10">
           <h1 className="text-2xl mb-0.5">Edit Profile</h1>
           <p className="text-sm text-[#61656B]">
