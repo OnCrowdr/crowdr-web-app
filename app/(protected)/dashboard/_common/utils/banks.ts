@@ -601,7 +601,7 @@ export default [
   },
   {
     "id": 1857,
-    "code": "090110",
+    "code": "566",
     "name": "VFD Micro Finance Bank"
   },
   {
@@ -2616,7 +2616,7 @@ export default [
   },
   {
     "id": 2260,
-    "code": "100004",
+    "code": "999992",
     "name": "Opay"
   },
   {
