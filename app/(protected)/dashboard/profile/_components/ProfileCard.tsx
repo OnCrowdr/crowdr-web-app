@@ -198,7 +198,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
           </div>
 
           {/* Bio section */}
-          {/* {profile.bio && (
+          {profile.bio && (
             <div className="mt-8">
               <h2 className="text-sm md:text-base font-semibold mb-2">Bio</h2>
               <Text
@@ -209,7 +209,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                 {profile.bio}
               </Text>
             </div>
-          )} */}
+          )}
         </div>
       </div>
 
