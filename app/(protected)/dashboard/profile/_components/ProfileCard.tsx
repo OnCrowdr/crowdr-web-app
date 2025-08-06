@@ -1,15 +1,12 @@
 "use client"
 import {
-  Edit,
-  ExternalLink,
   Instagram,
   Link as LinkIcon,
-  Link2,
   Mail,
   Twitter,
   Camera,
 } from "lucide-react"
-import { IGetProfileResponseData } from "../../../../../api/_profile/models/GetProfile"
+import { IGetProfileResponseData } from "@/api/_profile/models/GetProfile"
 import { RFC, UserType } from "@/types"
 import toast from "react-hot-toast"
 import { RiEditLine } from "react-icons/ri"
@@ -17,6 +14,7 @@ import Link from "next/link"
 import Text from "../../_components/Text"
 import { useAuth } from "@/contexts/AppProvider"
 import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
+import UploadModal from "./UploadModal"
 import { useFileDialog } from "@mantine/hooks"
 import { useEffect, useState } from "react"
 import { cn } from "@/utils/style"
@@ -24,7 +22,6 @@ import { useMutation, useQueryClient } from "react-query"
 import _profile from "@/api/_profile"
 import { errorHandler } from "@/lib/error"
 import query from "@/api/query"
-import UploadModal from "./UploadModal"
 
 const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
   const queryClient = useQueryClient()
