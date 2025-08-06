@@ -123,7 +123,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
         <div className="p-3 md:p-6">
           <div className="flex flex-col sm:flex-row md:items-center justify-between flex-wrap">
             <div className="flex items-start mb-4 md:mb-0">
-              <div
+              {/* <div
                 className={cn(
                   "relative rounded-full bg-gray-200 mr-4 flex-shrink-0",
                   "-mt-[30px] h-[80px] w-[80px]",
@@ -152,10 +152,6 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   <h1 className="text-[12.5px] md:text-xl font-bold mr-2">
                     {profileName}
                   </h1>
-                  {/* TODO: uncomment when country feature is added */}
-                  {/* <span className="text-sm bg-gray-100 text-gray-800 px-1 py-0.5 rounded">
-                        🇺🇸
-                      </span> */}
                 </div>
                 <p className="text-[11.25px] md:text-sm text-gray-600 md:mb-2 capitalize">
                   {profile.user.userType === UserType.Individual
@@ -169,10 +165,10 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   Profile Link
                   <LinkIcon size={14} color="#00B964" className="ml-1" />
                 </button>
-              </div>
+              </div> */}
             </div>
 
-            <div className="flex items-center gap-[14px]">
+            {/* <div className="flex items-center gap-[14px]">
               {isOwnProfile && (
                 <Link
                   href={`/dashboard/profile/edit`}
@@ -183,7 +179,6 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                     className="h-[18px] w-[18px] md:h-6 md:w-6"
                   />
                   Edit Profile
-                  {/* <span className="hidden md:inline text-inherit">Profile</span> */}
                 </Link>
               )}
 
@@ -199,11 +194,11 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   </a>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Bio section */}
-          {profile.bio && (
+          {/* {profile.bio && (
             <div className="mt-8">
               <h2 className="text-sm md:text-base font-semibold mb-2">Bio</h2>
               <Text
@@ -214,7 +209,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                 {profile.bio}
               </Text>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
