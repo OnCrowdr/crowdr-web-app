@@ -1,12 +1,12 @@
-import user from "@/public/svg/user-03.svg"
-import heart from "@/public/svg/heart.svg"
-import megaphone from "@/public/svg/megaphone.svg"
-import dollar from "@/public/svg/dollar.svg"
-import globe from "@/public/svg/globe.svg"
-import envelope from "@/public/svg/envelope.svg"
-import bell from "@/public/svg/bell.svg"
-import settings from "@/public/svg/settings.svg"
-import logout from "@/public/svg/logout.svg"
+import user from "@/public/svg/user-03.svg";
+import heart from "@/public/svg/heart.svg";
+import megaphone from "@/public/svg/megaphone.svg";
+import dollar from "@/public/svg/dollar.svg";
+import globe from "@/public/svg/globe.svg";
+import envelope from "@/public/svg/envelope.svg";
+import bell from "@/public/svg/bell.svg";
+import settings from "@/public/svg/settings.svg";
+import logout from "@/public/svg/logout.svg";
 
 export class Page {
   constructor(
@@ -19,10 +19,10 @@ export class Page {
 
 export const pageGroups = [
   [
-    new Page({ route: "profile" }, "Profile", user),
     new Page({ route: "campaigns" }, "My Campaigns", megaphone),
+    new Page({ route: "profile" }, "Profile", user),
     new Page({ route: "donations" }, "My Donations", dollar),
-    new Page({ route: "#/explore" }, "Discover/Explore", heart),
+    new Page({ route: "#/explore" }, "Discover/Explore", heart)
   ],
   // [],
   [
@@ -33,7 +33,7 @@ export const pageGroups = [
       "Notifications",
       bell
     ),
-    new Page({ route: "settings/profile" }, "Settings", settings),
+    new Page({ route: "settings/profile" }, "Settings", settings)
   ],
-  [new Page({ modalId: "logout-modal", noHighlight: true }, "Log out", logout)],
-]
+  [new Page({ modalId: "logout-modal", noHighlight: true }, "Log out", logout)]
+];
