@@ -15,9 +15,7 @@ const ProfileDetails = () => {
     formType === UserType.Individual ? IndividualForm : OrganizationForm
 
   return (
-    <div
-      className={cn("flex", !pathname.startsWith("/dashboard") && "p-4 md:p-8")}
-    >
+    <div>
       <Form />
       {/* <ProfileTips /> */}
     </div>

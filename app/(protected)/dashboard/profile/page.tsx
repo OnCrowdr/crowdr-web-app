@@ -35,15 +35,18 @@ const ProfilePage = () => {
   const profileQuery = useQuery({
     queryKey: [query.keys.PROFILE, userId],
     queryFn: () => _profile.getProfile({ userId }),
+    enabled: !!userId
   })
   const profile = profileQuery.data
 
   const campaignStatsQuery = useCampaignSummaryQuery({
     params: { userId },
+    enableQuery: !!userId,
   })
 
   const activeCampaignsQuery = useCampaignsQuery({
     params: { perPage: 1000000, runningStatus: RunningStatus.Active, userId },
+    enableQuery: !!userId,
   })
 
   const previousCampaignsQuery = useCampaignsQuery({
@@ -52,6 +55,7 @@ const ProfilePage = () => {
       runningStatus: RunningStatus.Completed,
       userId,
     },
+    enableQuery: !!userId,
   })
 
   useEffect(() => {
