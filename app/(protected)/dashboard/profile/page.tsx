@@ -32,63 +32,7 @@ const ProfilePage = () => {
     null
   )
 
-  const profileQuery = useQuery({
-    queryKey: [query.keys.PROFILE, userId],
-    queryFn: () => _profile.getProfile({ userId }),
-    enabled: !!userId
-  })
-  const profile = profileQuery.data
-
-  const campaignStatsQuery = useCampaignSummaryQuery({
-    params: { userId },
-    enableQuery: !!userId,
-  })
-
-  const activeCampaignsQuery = useCampaignsQuery({
-    params: { perPage: 1000000, runningStatus: RunningStatus.Active, userId },
-    enableQuery: !!userId,
-  })
-
-  const previousCampaignsQuery = useCampaignsQuery({
-    params: {
-      perPage: 1000000,
-      runningStatus: RunningStatus.Completed,
-      userId,
-    },
-    enableQuery: !!userId,
-  })
-
-  useEffect(() => {
-    const [ongoingCampaign] = activeCampaignsQuery.data?.campaigns ?? []
-    if (ongoingCampaign) {
-      setSelectedCampaign(ongoingCampaign)
-    }
-  }, [activeCampaignsQuery.data])
-
-  // const fundingGoal = selectedCampaign?.fundraise
-  // const amountDonated = selectedCampaign?.totalAmountDonated
-
-  return (
-    <div
-      className={cn(
-        !pathname.startsWith("/dashboard") && "max-w-[1140px] p-4 mx-auto py-10"
-      )}
-    >
-      {/* Two-column layout for the entire page */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        {/* Left column (2/3) */}
-        <div className="lg:col-span-2">
-          {/* Main card with cover photo and organization info */}
-          {profileQuery.data ? (
-            <ProfileCard profile={profileQuery.data} />
-          ) : (
-            <ProfileCard.Skeleton />
-          )}
-        </div>
-
-      </div>
-    </div>
-  )
+return null
 }
 
 export default ProfilePage
