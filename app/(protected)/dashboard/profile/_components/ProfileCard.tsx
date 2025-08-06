@@ -82,7 +82,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       navigator.clipboard.writeText(
         `https://oncrowdr.com/profile/${profile?.user?._id}`
       )
-      toast.success("Copied", {position: "top-center"})
+      toast.success("Copied", { position: "top-center" })
     } catch (error) {
       toast.error("Failed to copy")
     }
@@ -107,7 +107,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
     <>
       <div className="bg-white rounded-xl overflow-hidden border border-[#0000001A] mb-8">
         {/* Cover photo */}
-        <div className="relative h-[93px] md:h-64 w-full bg-gray-200">
+        <div className="relative h-[93px] sm:h-36 md:h-64 w-full bg-gray-200">
           <img
             src={profile.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
             alt={profileName}
@@ -124,15 +124,22 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
 
         {/* Profile section */}
         <div className="p-3 md:p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between">
+          <div className="flex flex-col sm:flex-row md:items-center justify-between flex-wrap">
             <div className="flex items-start mb-4 md:mb-0">
-              <div className="relative -mt-[10%] md:-mt-[20%] h-[70px] w-[70px] md:h-[140px] md:w-[140px] aspect-1 rounded-full bg-gray-200 mr-4 flex-shrink-0">
+              <div
+                className={cn(
+                  "relative rounded-full bg-gray-200 mr-4 flex-shrink-0",
+                  "-mt-[30px] h-[80px] w-[80px]",
+                  "sm:-mt-[40px] sm:h-[105px] sm:w-[105px]",
+                  "md:-mt-[50px] md:h-[140px] md:w-[140px]"
+                )}
+              >
                 <img
                   src={profile.image?.url ?? PLACEHOLDER_PROFILE_IMAGE}
                   alt={profileName}
                   width={64}
                   height={64}
-                  className="w-full h-full rounded-full border-2 md:border-4 border-white object-cover"
+                  className="w-full h-full rounded-full border-2 sm:border-[3px] md:border-4 border-white object-cover"
                 />
 
                 {isOwnProfile && (
