@@ -12,7 +12,7 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
         Campaign Progress
       </h2>
 
-      <div className="grid grid-cols-3 divide-x divide-gray-200">
+      <div className="grid grid-cols-2 divide-x divide-gray-200">
         {/* Total Money Raised */}
         <div className="flex flex-col items-center justify-center pr-4">
           <div className="w-10 h-10 mb-2">
@@ -112,17 +112,15 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
         </div> */}
 
         {/* Campaign Count */}
-        <div className="flex flex-col justify-center pl-4">
+        <div className="flex flex-col items-center justify-center pl-4">
           <div className="flex items-center space-x-2 mb-3">
             <div className="text-[#46AF7B] text-2xl font-bold">
               {stats?.campaignCountByStatus?.active ?? 0}
             </div>
             <div className="text-gray-600">|</div>
             <div className="text-gray-600">
-              Active{" "}
-              <span className="hidden md:inline">
-                Campaign{stats?.campaignCountByStatus?.active !== 1 ? "s" : ""}
-              </span>
+              Active Campaign
+              {stats?.campaignCountByStatus?.active !== 1 ? "s" : ""}
             </div>
           </div>
 
@@ -131,9 +129,7 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
               {stats?.totalNoOfCampaigns}
             </div>
             <div className="text-gray-600">|</div>
-            <div className="text-gray-600">
-              Total <span className="hidden md:inline">Campaigns</span>
-            </div>
+            <div className="text-gray-600">Total Campaigns</div>
           </div>
         </div>
       </div>

@@ -75,11 +75,11 @@ const ProfilePage = () => {
         {/* Left column (2/3) */}
         <div className="lg:col-span-2">
           {/* Main card with cover photo and organization info */}
-          {/* {profileQuery.data ? (
+          {profileQuery.data ? (
             <ProfileCard profile={profileQuery.data} />
           ) : (
             <ProfileCard.Skeleton />
-          )} */}
+          )}
 
           {/* Campaign stats */}
           {campaignStatsQuery.data && (
