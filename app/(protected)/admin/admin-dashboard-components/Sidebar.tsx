@@ -46,7 +46,7 @@ const Sidebar = () => {
     <nav className="flex flex-col justify-between overflow-x-hidden overflow-y-auto max-w-[280px] shrink-0 h-full bg-white py-8">
       <div className="flex flex-col gap-y-6">
         {/* logo */}
-        <Link href="/dashboard/explore" className="flex items-center px-6">
+        <Link href="/dashboard/profile" className="flex items-center px-6">
           <Image src={CrowdrLogo} alt="crowdr logo" className="w-[50px]" />
           <Image
             src={CrowdrLogoType}
