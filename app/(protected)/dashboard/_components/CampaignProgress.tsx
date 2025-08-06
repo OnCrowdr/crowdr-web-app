@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import Image from "next/image"
 import { RFC } from "@/types"
@@ -52,12 +53,12 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
             })}
           </div>
           <div className="text-gray-600 text-sm text-center">
-            Total money raised
+            Total raised funds
           </div>
         </div>
 
         {/* Lives Impacted */}
-        <div className="flex flex-col items-center justify-center px-4">
+        {/* <div className="flex flex-col items-center justify-center px-4">
           <div className="w-10 h-10 mb-2">
             <svg
               width="40"
@@ -108,7 +109,7 @@ const CampaignProgress: RFC<Props> = ({ stats }) => {
           <div className="text-gray-600 text-sm text-center">
             Lives Impacted
           </div>
-        </div>
+        </div> */}
 
         {/* Campaign Count */}
         <div className="flex flex-col justify-center pl-4">

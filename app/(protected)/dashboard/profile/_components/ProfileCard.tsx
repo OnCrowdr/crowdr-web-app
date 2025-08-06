@@ -10,7 +10,7 @@ import {
   Camera,
 } from "lucide-react"
 import { IGetProfileResponseData } from "../../../../../api/_profile/models/GetProfile"
-import { RFC } from "@/types"
+import { RFC, UserType } from "@/types"
 import toast from "react-hot-toast"
 import { RiEditLine } from "react-icons/ri"
 import Link from "next/link"
@@ -161,7 +161,9 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                       </span> */}
                 </div>
                 <p className="text-[11.25px] md:text-sm text-gray-600 md:mb-2 capitalize">
-                  {profile.user.userType}
+                  {profile.user.userType === UserType.Individual
+                    ? "Individual"
+                    : "Organization"}
                 </p>
                 <button
                   onClick={handleCopyLink}
