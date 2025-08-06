@@ -104,7 +104,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
     <>
       <div className="bg-white rounded-xl overflow-hidden border border-[#0000001A] mb-8">
         {/* Cover photo */}
-        <div className="relative h-[93px] sm:h-36 md:h-64 w-full bg-gray-200">
+        {/* <div className="relative h-[93px] sm:h-36 md:h-64 w-full bg-gray-200">
           <img
             src={profile.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
             alt={profileName}
@@ -117,7 +117,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
               className="absolute top-[12px] right-[13px] md:top-[17px] md:right-[18px]"
             />
           )}
-        </div>
+        </div> */}
 
         {/* Profile section */}
         <div className="p-3 md:p-6">
