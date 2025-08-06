@@ -44,27 +44,25 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       ? profile.user.fullName
       : profile.user.organizationName
 
-  const socials = (
-    [
-      profile.user.email && {
-        type: "email",
-        url: `mailto:${profile.user.email}`,
-        icon: Mail,
-      },
-      profile.instagram && {
-        type: "instagram",
-        url: profile.instagram,
-        // url: `https://instagram.com/${profile.instagram}`,
-        icon: Instagram,
-      },
-      profile.twitter && {
-        type: "twitter",
-        url: profile.twitter,
-        // url: `https://twitter.com/${profile.twitter}`,
-        icon: Twitter,
-      },
-    ]
-  )
+  const socials = [
+    profile.user.email && {
+      type: "email",
+      url: `mailto:${profile.user.email}`,
+      icon: Mail,
+    },
+    profile.instagram && {
+      type: "instagram",
+      url: profile.instagram,
+      // url: `https://instagram.com/${profile.instagram}`,
+      icon: Instagram,
+    },
+    profile.twitter && {
+      type: "twitter",
+      url: profile.twitter,
+      // url: `https://twitter.com/${profile.twitter}`,
+      icon: Twitter,
+    },
+  ]
     .filter((social) => social !== null && social !== "")
     .map((social) => ({
       ...social,
@@ -191,6 +189,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                     target="_blank"
                   >
                     {/* <social.icon className="h-4 w-4 md:h-5 md:w-5" /> */}
+                    {social.icon({ className: "h-4 w-4 md:h-5 md:w-5" })}
                   </a>
                 ))}
               </div>
