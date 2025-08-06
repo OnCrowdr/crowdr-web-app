@@ -168,7 +168,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
               </div> */}
             </div>
 
-            {/* <div className="flex items-center gap-[14px]">
+            <div className="flex items-center gap-[14px]">
               {isOwnProfile && (
                 <Link
                   href={`/dashboard/profile/edit`}
@@ -194,7 +194,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   </a>
                 ))}
               </div>
-            </div> */}
+            </div>
           </div>
 
           {/* Bio section */}
