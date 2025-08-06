@@ -104,7 +104,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
     <>
       <div className="bg-white rounded-xl overflow-hidden border border-[#0000001A] mb-8">
         {/* Cover photo */}
-        {/* <div className="relative h-[93px] sm:h-36 md:h-64 w-full bg-gray-200">
+        <div className="relative h-[93px] sm:h-36 md:h-64 w-full bg-gray-200">
           <img
             src={profile.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
             alt={profileName}
@@ -117,13 +117,13 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
               className="absolute top-[12px] right-[13px] md:top-[17px] md:right-[18px]"
             />
           )}
-        </div> */}
+        </div>
 
         {/* Profile section */}
         <div className="p-3 md:p-6">
           <div className="flex flex-col sm:flex-row md:items-center justify-between flex-wrap">
             <div className="flex items-start mb-4 md:mb-0">
-              {/* <div
+              <div
                 className={cn(
                   "relative rounded-full bg-gray-200 mr-4 flex-shrink-0",
                   "-mt-[30px] h-[80px] w-[80px]",
@@ -165,10 +165,10 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   Profile Link
                   <LinkIcon size={14} color="#00B964" className="ml-1" />
                 </button>
-              </div> */}
+              </div>
             </div>
 
-            <div className="flex items-center gap-[14px]">
+            {/* <div className="flex items-center gap-[14px]">
               {isOwnProfile && (
                 <Link
                   href={`/dashboard/profile/edit`}
@@ -194,7 +194,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   </a>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Bio section */}
