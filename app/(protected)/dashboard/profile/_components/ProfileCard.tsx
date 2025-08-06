@@ -213,14 +213,14 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
         </div>
       </div>
 
-      {/* <UploadModal
+      <UploadModal
         file={coverPhoto || profilePhoto}
         opened={profileMutation.isLoading}
         onClose={() => {
           setCoverPhoto(undefined)
           setProfilePhoto(undefined)
         }}
-      /> */}
+      />
     </>
   )
 }
