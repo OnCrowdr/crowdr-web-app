@@ -63,7 +63,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
         // url: `https://twitter.com/${profile.twitter}`,
         icon: Twitter,
       },
-    ] as any[]
+    ]
   )
     .filter((social) => social !== null && social !== "")
     .map((social) => ({
@@ -168,7 +168,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
               </div>
             </div>
 
-            {/* <div className="flex items-center gap-[14px]">
+            <div className="flex items-center gap-[14px]">
               {isOwnProfile && (
                 <Link
                   href={`/dashboard/profile/edit`}
@@ -190,11 +190,11 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                     className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-gray-200"
                     target="_blank"
                   >
-                    <social.icon className="h-4 w-4 md:h-5 md:w-5" />
+                    {/* <social.icon className="h-4 w-4 md:h-5 md:w-5" /> */}
                   </a>
                 ))}
               </div>
-            </div> */}
+            </div>
           </div>
 
           {/* Bio section */}
