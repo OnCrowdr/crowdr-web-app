@@ -64,7 +64,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       // url: `https://twitter.com/${profile.twitter}`,
       icon: Twitter,
     },
-  ].filter((social) => social !== null && social !== "")
+  ].filter((social) => social != null && social != "")
 
   const handleCopyLink = () => {
     try {
