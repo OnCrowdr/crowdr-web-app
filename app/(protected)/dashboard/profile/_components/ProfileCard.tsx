@@ -49,6 +49,8 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       type: "email",
       url: `mailto:${profile.user.email}`,
       icon: Mail,
+      target: "_blank",
+      rel: "noopener noreferrer",
     },
     profile.instagram && {
       type: "instagram",
@@ -62,15 +64,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       // url: `https://twitter.com/${profile.twitter}`,
       icon: Twitter,
     },
-  ]
-    .filter((social) => social !== null && social !== "")
-    .map((social) => ({
-      ...social,
-      ...(social?.type !== "email" && {
-        target: "_blank",
-        rel: "noopener noreferrer",
-      }),
-    }))
+  ].filter((social) => social !== null && social !== "")
 
   const handleCopyLink = () => {
     try {
@@ -188,8 +182,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                     className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-gray-200"
                     target="_blank"
                   >
-                    {/* <social.icon className="h-4 w-4 md:h-5 md:w-5" /> */}
-                    {social.icon({ className: "h-4 w-4 md:h-5 md:w-5" })}
+                    <social.icon className="h-4 w-4 md:h-5 md:w-5" />
                   </a>
                 ))}
               </div>
