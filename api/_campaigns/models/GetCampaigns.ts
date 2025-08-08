@@ -1,31 +1,31 @@
-import { Pagination, PaginationParams } from "@/api/types"
+import { Pagination, PaginationParams } from "@/api/types";
 
 // payload
 export interface IGetCampaignsParams extends PaginationParams {
-  campaignStatus?: CampaignStatus
-  runningStatus?: RunningStatus
-  title?: string
-  type?: CampaignType
-  category?: CampaignCategory
-  userId?: string
+  campaignStatus?: CampaignStatus;
+  runningStatus?: RunningStatus;
+  title?: string;
+  type?: CampaignType;
+  category?: CampaignCategory;
+  userId?: string;
 }
 
 export enum CampaignStatus {
   Approved = "approved",
   InReview = "in-review",
-  Declined = "declined",
+  Declined = "declined"
 }
 
 export enum RunningStatus {
   Upcoming = "upcoming",
   Active = "active",
-  Completed = "completed",
+  Completed = "completed"
 }
 
 export enum CampaignType {
   Fundraise = "fundraise",
   Volunteer = "volunteer",
-  FundraiseVolunteer = "fundraiseAndVolunteer",
+  FundraiseVolunteer = "fundraiseAndVolunteer"
 }
 
 export enum CampaignCategory {
@@ -40,19 +40,30 @@ export enum CampaignCategory {
   Music = "music",
   Legal = "legal",
   Politics = "politics",
-  Others = "others",
+  Others = "others"
 }
 
 // response
 export interface IGetCampaignsResponse {
   success: boolean;
   message: string;
-  data:    IGetCampaignsResponseData;
+  data: IGetCampaignsResponseData;
 }
 
 export interface IGetCampaignsResponseData {
-  campaigns:  Campaign[];
+  campaigns: Campaign[];
   pagination: Pagination;
+}
+
+export interface WithdrawalAmount {
+  currency: string;
+  amount: number;
+  breakdown: {
+    totalDonated: number;
+    serviceFee: number;
+    totalWithdrawn: number;
+    netAvailable: number;
+  };
 }
 
 // export interface Campaign {
@@ -84,64 +95,70 @@ export interface IGetCampaignsResponseData {
 // }
 
 export interface BaseCampaign {
-  campaignAdditionalImages:    CampaignImage[];
-  campaignCoverImage:          CampaignImage;
-  campaignDonors:              any[];
-  campaignEndDate:             string;
-  campaignStartDate:           string;
-  campaignStatus:              CampaignStatus;
-  campaignViews:               number;
-  campaignVolunteers:          CampaignVolunteer[];
-  category:                    CampaignCategory;
-  deletedAt?:                  null;
-  isCompleted:                 boolean;
-  photo:                       CampaignImage;
-  sortAmount?:                 number;
-  story:                       string;
-  tipsEmailSent:               boolean;
-  title:                       string;
-  totalAmountDonated:          TotalAmountDonated[];
-  totalNoOfCampaignDonors:     number;
+  campaignAdditionalImages: CampaignImage[];
+  campaignCoverImage: CampaignImage;
+  campaignDonors: any[];
+  campaignEndDate: string;
+  campaignStartDate: string;
+  campaignStatus: CampaignStatus;
+  campaignViews: number;
+  campaignVolunteers: CampaignVolunteer[];
+  category: CampaignCategory;
+  deletedAt?: null;
+  isCompleted: boolean;
+  photo: CampaignImage;
+  sortAmount?: number;
+  story: string;
+  tipsEmailSent: boolean;
+  title: string;
+  withdrawableAmounts: WithdrawalAmount[];
+  totalAmountDonated: TotalAmountDonated[];
+  totalNoOfCampaignDonors: number;
   totalNoOfCampaignVolunteers: number;
-  user:                        User;
-  userId:                      string;
-  _id:                         string;
+  user: User;
+  userId: string;
+  _id: string;
 }
 
 export interface FundraiseCampaign extends BaseCampaign {
-  campaignType:                CampaignType.Fundraise;
-  fundraise:                   Fundraise;
+  campaignType: CampaignType.Fundraise;
+  fundraise: Fundraise;
 }
 
 export interface VolunteerCampaign extends BaseCampaign {
-  campaignType:                CampaignType.Volunteer;
-  volunteer:                   Volunteer;
+  campaignType: CampaignType.Volunteer;
+  volunteer: Volunteer;
 }
 
-export interface FundraiseAndVolunteerCampaign extends Omit<FundraiseCampaign, 'campaignType'>, Omit<VolunteerCampaign, 'campaignType'> {
-  campaignType:                CampaignType.FundraiseVolunteer;
+export interface FundraiseAndVolunteerCampaign
+  extends Omit<FundraiseCampaign, "campaignType">,
+    Omit<VolunteerCampaign, "campaignType"> {
+  campaignType: CampaignType.FundraiseVolunteer;
 }
 
-export type Campaign = FundraiseCampaign | VolunteerCampaign | FundraiseAndVolunteerCampaign
+export type Campaign =
+  | FundraiseCampaign
+  | VolunteerCampaign
+  | FundraiseAndVolunteerCampaign;
 
 export interface CampaignImage {
-  _id:       string;
-  url:       string;
+  _id: string;
+  url: string;
   public_id: string;
-  tags:      string[];
+  tags: string[];
 }
 
 export interface CampaignVolunteer {
-  _id:         string;
-  campaignId:  string;
-  fullName:    string;
-  email:       string;
-  status:      string;
-  gender:      string;
-  ageRange:    string;
-  address:     string;
-  about:       string;
-  userId:      string;
+  _id: string;
+  campaignId: string;
+  fullName: string;
+  email: string;
+  status: string;
+  gender: string;
+  ageRange: string;
+  address: string;
+  about: string;
+  userId: string;
   phoneNumber: string;
 }
 
@@ -150,45 +167,45 @@ export interface Fundraise {
 }
 
 export interface FundingGoalDetail {
-  amount:   number;
+  amount: number;
   currency: Currency;
 }
 
 export enum Currency {
   Dollar = "dollar",
-  Naira = "naira",
+  Naira = "naira"
 }
 
 export interface TotalAmountDonated {
-  currency:      Currency;
-  amount:        number;
-  serviceFee:    number;
+  currency: Currency;
+  amount: number;
+  serviceFee: number;
   payableAmount: number;
 }
 
 export interface User {
-  _id:               string;
-  userType:          string;
-  email:             string;
-  interests:         string[];
-  isAdmin:           boolean;
-  fullName?:         string;
-  gender?:           string;
-  tipsEmailSent?:    boolean;
+  _id: string;
+  userType: string;
+  email: string;
+  interests: string[];
+  isAdmin: boolean;
+  fullName?: string;
+  gender?: string;
+  tipsEmailSent?: boolean;
   organizationName?: string;
-  organizationId?:   string;
+  organizationId?: string;
 }
 
 export interface Volunteer {
-  skillsNeeded:         string[];
-  ageRange:             string;
-  genderPreference:     string;
+  skillsNeeded: string[];
+  ageRange: string;
+  genderPreference: string;
   commitementStartDate: string;
-  commitementEndDate:   string;
-  requiredCommitment:   string;
-  additonalNotes:       string;
-  volunteersNeeded?:    number;
-  email?:               string;
-  phoneNumber?:         string;
-  address?:             string;
+  commitementEndDate: string;
+  requiredCommitment: string;
+  additonalNotes: string;
+  volunteersNeeded?: number;
+  email?: string;
+  phoneNumber?: string;
+  address?: string;
 }

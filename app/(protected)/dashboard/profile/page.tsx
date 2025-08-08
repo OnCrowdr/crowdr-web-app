@@ -83,7 +83,7 @@ const ProfilePage = () => {
 
           {/* Campaign stats */}
           {campaignStatsQuery.data && (
-            <CampaignProgress stats={campaignStatsQuery.data} />
+            <CampaignProgress stats={campaignStatsQuery.data} campaignCount={activeCampaignsQuery?.data?.campaigns?.length}/>
           )}
 
           {profile && (

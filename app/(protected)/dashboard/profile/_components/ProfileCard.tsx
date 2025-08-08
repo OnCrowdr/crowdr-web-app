@@ -47,31 +47,29 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       ? profile.user.fullName
       : profile.user.organizationName
 
-  const socials = (
-    [
-      profile.user.email && {
-        type: "email",
-        url: `mailto:${profile.user.email}`,
-        icon: Mail,
-      },
-      profile.instagram && {
-        type: "instagram",
-        url: profile.instagram,
-        // url: `https://instagram.com/${profile.instagram}`,
-        icon: Instagram,
-      },
-      profile.twitter && {
-        type: "twitter",
-        url: profile.twitter,
-        // url: `https://twitter.com/${profile.twitter}`,
-        icon: Twitter,
-      },
-    ] as any[]
-  )
-    .filter((social) => social !== null && social !== "")
+  const socials = [
+    profile.user.email ? {
+      type: "email" as const,
+      url: `mailto:${profile.user.email}`,
+      icon: Mail,
+    } : null,
+    profile.instagram ? {
+      type: "instagram" as const,
+      url: profile.instagram,
+      // url: `https://instagram.com/${profile.instagram}`,
+      icon: Instagram,
+    } : null,
+    profile.twitter ? {
+      type: "twitter" as const,
+      url: profile.twitter,
+      // url: `https://twitter.com/${profile.twitter}`,
+      icon: Twitter,
+    } : null,
+  ]
+    .filter((social): social is NonNullable<typeof social> => social !== null)
     .map((social) => ({
       ...social,
-      ...(social?.type !== "email" && {
+      ...(social.type !== "email" && {
         target: "_blank",
         rel: "noopener noreferrer",
       }),
@@ -109,7 +107,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
         {/* Cover photo */}
         <div className="relative h-[93px] md:h-64 w-full bg-gray-200">
           <img
-            src={profile.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
+            src={profile?.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
             alt={profileName}
             className="h-full w-full object-cover"
           />
@@ -182,16 +180,19 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
               )}
 
               <div className="flex space-x-2">
-                {socials.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.url}
-                    className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-gray-200"
-                    target="_blank"
-                  >
-                    <social.icon className="h-4 w-4 md:h-5 md:w-5" />
-                  </a>
-                ))}
+                {socials.map((social, index) => {
+                  const IconComponent = social.icon;
+                  return (
+                    <a
+                      key={index}
+                      href={social.url}
+                      className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-gray-200"
+                      target="_blank"
+                    >
+                      <IconComponent className="h-4 w-4 md:h-5 md:w-5" />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
