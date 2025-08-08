@@ -1,22 +1,20 @@
 "use client"
 import {
-  Edit,
-  ExternalLink,
   Instagram,
   Link as LinkIcon,
-  Link2,
   Mail,
   Twitter,
   Camera,
 } from "lucide-react"
-import { IGetProfileResponseData } from "../../../../../api/_profile/models/GetProfile"
-import { RFC } from "@/types"
+import { IGetProfileResponseData } from "@/api/_profile/models/GetProfile"
+import { RFC, UserType } from "@/types"
 import toast from "react-hot-toast"
 import { RiEditLine } from "react-icons/ri"
 import Link from "next/link"
 import Text from "../../_components/Text"
 import { useAuth } from "@/contexts/AppProvider"
 import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
+import UploadModal from "./UploadModal"
 import { useFileDialog } from "@mantine/hooks"
 import { useEffect, useState } from "react"
 import { cn } from "@/utils/style"
@@ -24,7 +22,6 @@ import { useMutation, useQueryClient } from "react-query"
 import _profile from "@/api/_profile"
 import { errorHandler } from "@/lib/error"
 import query from "@/api/query"
-import UploadModal from "./UploadModal"
 
 const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
   const queryClient = useQueryClient()
@@ -47,35 +44,27 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       ? profile.user.fullName
       : profile.user.organizationName
 
-  const socials = (
-    [
-      profile.user.email && {
-        type: "email",
-        url: `mailto:${profile.user.email}`,
-        icon: Mail,
-      },
-      profile.instagram && {
-        type: "instagram",
-        url: profile.instagram,
-        // url: `https://instagram.com/${profile.instagram}`,
-        icon: Instagram,
-      },
-      profile.twitter && {
-        type: "twitter",
-        url: profile.twitter,
-        // url: `https://twitter.com/${profile.twitter}`,
-        icon: Twitter,
-      },
-    ] as any[]
-  )
-    .filter((social) => social !== null && social !== "")
-    .map((social) => ({
-      ...social,
-      ...(social?.type !== "email" && {
-        target: "_blank",
-        rel: "noopener noreferrer",
-      }),
-    }))
+  const socials = [
+    profile.user.email && {
+      type: "email",
+      url: `mailto:${profile.user.email}`,
+      icon: Mail,
+      target: "_blank",
+      rel: "noopener noreferrer",
+    },
+    profile.instagram && {
+      type: "instagram",
+      url: profile.instagram,
+      // url: `https://instagram.com/${profile.instagram}`,
+      icon: Instagram,
+    },
+    profile.twitter && {
+      type: "twitter",
+      url: profile.twitter,
+      // url: `https://twitter.com/${profile.twitter}`,
+      icon: Twitter,
+    },
+  ].filter((social) => social != null && social != "")
 
   const handleCopyLink = () => {
     try {
@@ -109,7 +98,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
         {/* Cover photo */}
         <div className="relative h-[93px] sm:h-36 md:h-64 w-full bg-gray-200">
           <img
-            src={profile.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
+            src={profile?.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
             alt={profileName}
             className="h-full w-full object-cover"
           />
@@ -155,13 +144,11 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   <h1 className="text-[12.5px] md:text-xl font-bold mr-2">
                     {profileName}
                   </h1>
-                  {/* TODO: uncomment when country feature is added */}
-                  {/* <span className="text-sm bg-gray-100 text-gray-800 px-1 py-0.5 rounded">
-                        🇺🇸
-                      </span> */}
                 </div>
                 <p className="text-[11.25px] md:text-sm text-gray-600 md:mb-2 capitalize">
-                  {profile.user.userType}
+                  {profile.user.userType === UserType.Individual
+                    ? "Individual"
+                    : "Organization"}
                 </p>
                 <button
                   onClick={handleCopyLink}
@@ -184,21 +171,23 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                     className="h-[18px] w-[18px] md:h-6 md:w-6"
                   />
                   Edit Profile
-                  {/* <span className="hidden md:inline text-inherit">Profile</span> */}
                 </Link>
               )}
 
               <div className="flex space-x-2">
-                {socials.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.url}
-                    className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-gray-200"
-                    target="_blank"
-                  >
-                    <social.icon className="h-4 w-4 md:h-5 md:w-5" />
-                  </a>
-                ))}
+                {socials.map((social, index) => {
+                  const IconComponent = social.icon;
+                  return (
+                    <a
+                      key={index}
+                      href={social.url}
+                      className="h-8 w-8 md:h-10 md:w-10 flex items-center justify-center rounded-full border border-gray-200"
+                      target="_blank"
+                    >
+                      <IconComponent className="h-4 w-4 md:h-5 md:w-5" />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>

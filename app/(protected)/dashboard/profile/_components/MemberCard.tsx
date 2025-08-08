@@ -1,3 +1,4 @@
+"use client"
 import { Member } from "@/api/_profile/models/GetProfile"
 import { PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
 import { RFC } from "@/types"

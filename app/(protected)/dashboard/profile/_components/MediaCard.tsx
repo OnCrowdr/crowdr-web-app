@@ -1,7 +1,8 @@
+"use client"
 import { Image } from "@/api/_profile/models/GetProfile"
 import { RFC } from "@/types"
 import { cn } from "@/utils/style"
-import { DeleteIcon, Trash, Trash2, Undo2 } from "lucide-react"
+import { Trash2, Undo2 } from "lucide-react"
 
 const MediaCard: RFC<Props> = ({ engagement, removed, toggleRemoval }) => {
   const isEdit = toggleRemoval !== undefined

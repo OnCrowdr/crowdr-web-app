@@ -1,13 +1,10 @@
+"use client"
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { formatCurrency } from "../../../../utils/seperateText"
-import { RFC, UserType } from "@/types"
+import { RFC } from "@/types"
 import { formatAmount } from "../_common/utils/currency"
-import {
-  Campaign,
-  CampaignType,
-} from "../../../../api/_campaigns/models/GetCampaigns"
+import { Campaign, CampaignType } from "@/api/_campaigns/models/GetCampaigns"
 import { isFundraise } from "../_common/utils/campaign"
 import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
 import { useAuth } from "@/contexts/AppProvider"
