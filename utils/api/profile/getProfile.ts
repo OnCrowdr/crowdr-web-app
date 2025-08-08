@@ -21,9 +21,8 @@ export const getSingleProfile = async (userId: string, noAuth?: boolean) => {
 
     const { data: profile } = await makeRequest<{ data: IGetProfileResponseData }>(endpoint, {
       headers,
-      next: {
-        revalidate: 300, // Revalidate every 5 minutes for SEO
-      },
+      cache: 'force-cache', // Cache for SSR/SEO
+      tags: [`profile-${userId}`], // Cache tag for revalidation
     });
 
     return profile;
