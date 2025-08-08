@@ -3,7 +3,11 @@ import type { Metadata } from 'next'
 import { ResolvingMetadata } from 'next'
 import { getSingleProfile } from '../../../../utils/api/profile/getProfile'
 
-export async function generateMetadata(props: any, parent: ResolvingMetadata): Promise<Metadata> {
+interface MetadataProps {
+  params: Promise<{ userId: string }>
+}
+
+export async function generateMetadata(props: MetadataProps, parent: ResolvingMetadata): Promise<Metadata> {
   const params = await props.params;
   // read route params
   const userId = params.userId
@@ -111,6 +115,11 @@ export async function generateMetadata(props: any, parent: ResolvingMetadata): P
   }
 }
 
-export default function Layout(props: any) {
+interface LayoutProps {
+  children: React.ReactNode
+  params: Promise<{ userId: string }>
+}
+
+export default function Layout(props: LayoutProps) {
   return <Fragment>{props.children}</Fragment>
 }
