@@ -71,7 +71,7 @@ const ProfilePage = () => {
       )}
     >
       {/* Two-column layout for the entire page */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-3">
         {/* Left column (2/3) */}
         <div className="lg:col-span-2">
           {/* Main card with cover photo and organization info */}
@@ -83,7 +83,7 @@ const ProfilePage = () => {
 
           {/* Campaign stats */}
           {campaignStatsQuery.data && (
-            <CampaignProgress stats={campaignStatsQuery.data} />
+            <CampaignProgress stats={campaignStatsQuery.data} campaignCount={activeCampaignsQuery?.data?.campaigns?.length}/>
           )}
 
           {profile && (
@@ -233,7 +233,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Right column (1/3) - Ongoing Campaign */}
-        <div className="lg:col-span-1 max-h-fit border border-[#0000001A] rounded-[20px] px-[22px] py-6">
+        {/* <div className="lg:col-span-1 max-h-fit border border-[#0000001A] rounded-[20px] px-[22px] py-6">
           <p className="font-semibold text-xl text-[#00B964]">
             Ongoing Campaign
           </p>
@@ -244,20 +244,18 @@ const ProfilePage = () => {
             />
           )}
 
-          {/* Donors list */}
           {/* {selectedCampaign && (
             <RecentDonors
               donors={donorsData}
               totalDonors={32}
               campaignId={selectedCampaign._id}
             />
-          )} */}
+          )} 
 
-          {/* No active campaign */}
           {!selectedCampaign && (
             <p className="text-xs text-[#667085]">No active campaign</p>
           )}
-        </div>
+        </div>*/}
       </div>
     </div>
   )

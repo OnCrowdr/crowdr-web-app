@@ -77,7 +77,7 @@ const Campaigns = () => {
       </div>
 
       {/* stats */}
-      <div className="grid md:grid-cols-[repeat(3,_minmax(0,_350px))] 2xl:grid-cols-3 gap-4 md:gap-5 mb-[23px] md:mb-[44px]">
+      <div className="grid md:grid-cols-[repeat(4,_minmax(0,_350px))] 2xl:grid-cols-4 gap-4 md:gap-5 mb-[23px] md:mb-[44px]">
         {summary ? (
           <>
             <StatCard
@@ -91,18 +91,18 @@ const Campaigns = () => {
               // time="yesterday"
               pattern
             />
-            {/* <StatCard
+            <StatCard
               title="Withdrawable Amount"
               text={formatAmount(
-                stats.totalWithdrawableAmount[0].amount,
-                stats.totalWithdrawableAmount[0].currency,
+                summary.totalWithdrawableAmount[0].amount,
+                summary.totalWithdrawableAmount[0].currency,
                 { minimumFractionDigits: 2 }
               )}
               // percentage={100}
               // time="yesterday"
               // colorScheme="light"
               pattern
-            /> */}
+            />
             <StatCard
               title="Total Campaigns"
               text={summary.totalNoOfCampaigns}
@@ -119,7 +119,7 @@ const Campaigns = () => {
             />
           </>
         ) : (
-          Array.from({ length: 3 }).map((_, index) => (
+          Array.from({ length: 4 }).map((_, index) => (
             <StatCardSkeleton key={index} />
           ))
         )}
