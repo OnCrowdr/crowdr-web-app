@@ -1,22 +1,20 @@
 "use client"
 import {
-  Edit,
-  ExternalLink,
   Instagram,
   Link as LinkIcon,
-  Link2,
   Mail,
   Twitter,
   Camera,
 } from "lucide-react"
-import { IGetProfileResponseData } from "../../../../../api/_profile/models/GetProfile"
-import { RFC } from "@/types"
+import { IGetProfileResponseData } from "@/api/_profile/models/GetProfile"
+import { RFC, UserType } from "@/types"
 import toast from "react-hot-toast"
 import { RiEditLine } from "react-icons/ri"
 import Link from "next/link"
 import Text from "../../_components/Text"
 import { useAuth } from "@/contexts/AppProvider"
 import { PLACEHOLDER_IMAGE, PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
+import UploadModal from "./UploadModal"
 import { useFileDialog } from "@mantine/hooks"
 import { useEffect, useState } from "react"
 import { cn } from "@/utils/style"
@@ -24,7 +22,6 @@ import { useMutation, useQueryClient } from "react-query"
 import _profile from "@/api/_profile"
 import { errorHandler } from "@/lib/error"
 import query from "@/api/query"
-import UploadModal from "./UploadModal"
 
 const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
   const queryClient = useQueryClient()
@@ -48,39 +45,33 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
       : profile.user.organizationName
 
   const socials = [
-    profile.user.email ? {
-      type: "email" as const,
+    profile.user.email && {
+      type: "email",
       url: `mailto:${profile.user.email}`,
       icon: Mail,
-    } : null,
-    profile.instagram ? {
-      type: "instagram" as const,
+      target: "_blank",
+      rel: "noopener noreferrer",
+    },
+    profile.instagram && {
+      type: "instagram",
       url: profile.instagram,
       // url: `https://instagram.com/${profile.instagram}`,
       icon: Instagram,
-    } : null,
-    profile.twitter ? {
-      type: "twitter" as const,
+    },
+    profile.twitter && {
+      type: "twitter",
       url: profile.twitter,
       // url: `https://twitter.com/${profile.twitter}`,
       icon: Twitter,
-    } : null,
-  ]
-    .filter((social): social is NonNullable<typeof social> => social !== null)
-    .map((social) => ({
-      ...social,
-      ...(social.type !== "email" && {
-        target: "_blank",
-        rel: "noopener noreferrer",
-      }),
-    }))
+    },
+  ].filter((social) => social != null && social != "")
 
   const handleCopyLink = () => {
     try {
       navigator.clipboard.writeText(
         `https://oncrowdr.com/profile/${profile?.user?._id}`
       )
-      toast.success("Copied", {position: "top-center"})
+      toast.success("Copied", { position: "top-center" })
     } catch (error) {
       toast.error("Failed to copy")
     }
@@ -105,7 +96,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
     <>
       <div className="bg-white rounded-xl overflow-hidden border border-[#0000001A] mb-8">
         {/* Cover photo */}
-        <div className="relative h-[93px] md:h-64 w-full bg-gray-200">
+        <div className="relative h-[93px] sm:h-36 md:h-64 w-full bg-gray-200">
           <img
             src={profile?.backgroundImage?.url ?? PLACEHOLDER_IMAGE}
             alt={profileName}
@@ -122,15 +113,22 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
 
         {/* Profile section */}
         <div className="p-3 md:p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between">
+          <div className="flex flex-col sm:flex-row md:items-center justify-between flex-wrap">
             <div className="flex items-start mb-4 md:mb-0">
-              <div className="relative -mt-[10%] md:-mt-[20%] h-[70px] w-[70px] md:h-[140px] md:w-[140px] aspect-1 rounded-full bg-gray-200 mr-4 flex-shrink-0">
+              <div
+                className={cn(
+                  "relative rounded-full bg-gray-200 mr-4 flex-shrink-0",
+                  "-mt-[30px] h-[80px] w-[80px]",
+                  "sm:-mt-[40px] sm:h-[105px] sm:w-[105px]",
+                  "md:-mt-[50px] md:h-[140px] md:w-[140px]"
+                )}
+              >
                 <img
                   src={profile.image?.url ?? PLACEHOLDER_PROFILE_IMAGE}
                   alt={profileName}
                   width={64}
                   height={64}
-                  className="w-full h-full rounded-full border-2 md:border-4 border-white object-cover"
+                  className="w-full h-full rounded-full border-2 sm:border-[3px] md:border-4 border-white object-cover"
                 />
 
                 {isOwnProfile && (
@@ -146,13 +144,11 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                   <h1 className="text-[12.5px] md:text-xl font-bold mr-2">
                     {profileName}
                   </h1>
-                  {/* TODO: uncomment when country feature is added */}
-                  {/* <span className="text-sm bg-gray-100 text-gray-800 px-1 py-0.5 rounded">
-                        🇺🇸
-                      </span> */}
                 </div>
                 <p className="text-[11.25px] md:text-sm text-gray-600 md:mb-2 capitalize">
-                  {profile.user.userType}
+                  {profile.user.userType === UserType.Individual
+                    ? "Individual"
+                    : "Organization"}
                 </p>
                 <button
                   onClick={handleCopyLink}
@@ -175,7 +171,6 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
                     className="h-[18px] w-[18px] md:h-6 md:w-6"
                   />
                   Edit Profile
-                  {/* <span className="hidden md:inline text-inherit">Profile</span> */}
                 </Link>
               )}
 

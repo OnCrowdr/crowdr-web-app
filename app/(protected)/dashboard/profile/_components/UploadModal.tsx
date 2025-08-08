@@ -2,7 +2,7 @@
 import OldModal from "@/components/OldModal"
 import { RFC } from "@/types"
 import { toMB } from "@/utils/file"
-import { Check, Upload, X } from "lucide-react"
+import { Upload } from "lucide-react"
 import { useEffect, useState } from "react"
 
 const UploadModal: RFC<Props> = ({ file, opened, onClose }) => {
@@ -145,7 +145,9 @@ const UploadModal: RFC<Props> = ({ file, opened, onClose }) => {
             }`}
           >
             <p className="text-sm font-medium">
-              {isComplete ? "✨ Your photo is uploaded!" : "🚀 Uploading photo..."}
+              {isComplete
+                ? "✨ Your photo is uploaded!"
+                : "🚀 Uploading photo..."}
             </p>
           </div>
         </div>

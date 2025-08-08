@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import Image from "next/image"
 import { RFC } from "@/types"
@@ -25,7 +26,7 @@ const CampaignProgress: RFC<Props> = ({ stats, campaignCount }) => {
             })}
           </div>
           <div className="text-gray-600 text-sm text-center">
-            Total money raised
+            Total raised funds
           </div>
         </div>
 
@@ -84,17 +85,15 @@ const CampaignProgress: RFC<Props> = ({ stats, campaignCount }) => {
         </div> */}
 
         {/* Campaign Count */}
-        <div className="flex flex-col justify-center pl-4">
+        <div className="flex flex-col items-center justify-center pl-4">
           <div className="flex items-center space-x-2 mb-3">
             <div className="text-[#46AF7B] text-2xl font-bold">
               {campaignCount ?? 0}
             </div>
             <div className="text-gray-600">|</div>
             <div className="text-gray-600">
-              Active{" "}
-              <span className="hidden md:inline">
-                Campaign{stats?.campaignCountByStatus?.active !== 1 ? "s" : ""}
-              </span>
+              Active Campaign
+              {stats?.campaignCountByStatus?.active !== 1 ? "s" : ""}
             </div>
           </div>
 
@@ -103,9 +102,7 @@ const CampaignProgress: RFC<Props> = ({ stats, campaignCount }) => {
               {stats?.totalNoOfCampaigns}
             </div>
             <div className="text-gray-600">|</div>
-            <div className="text-gray-600">
-              Total <span className="hidden md:inline">Campaigns</span>
-            </div>
+            <div className="text-gray-600">Total Campaigns</div>
           </div>
         </div>
       </div>

@@ -1,26 +1,22 @@
 "use client"
 import React, { useState, useEffect } from "react"
+import { useParams, usePathname } from "next/navigation"
+import { useQuery } from "react-query"
+import { useAuth } from "@/contexts/AppProvider"
+import useCampaignSummaryQuery from "@/api/query/useCampaignSummaryQuery"
+import useCampaignsQuery from "@/api/query/useCampaignsQuery"
+import MemberCard from "./_components/MemberCard"
+import ProfileCard from "./_components/ProfileCard"
+import MediaCard from "./_components/MediaCard"
 import CampaignProgress from "../_components/CampaignProgress"
 import OngoingCampaign from "../_components/OngoingCampaign"
 import ActiveCampaign from "../_components/ActiveCampaigns"
-import { useParams, usePathname } from "next/navigation"
-import { useQuery } from "react-query"
-import query from "../../../../api/query"
-import _profile from "../../../../api/_profile"
-import ProfileCard from "./_components/ProfileCard"
-import useCampaignSummaryQuery from "../../../../api/query/useCampaignSummaryQuery"
-import useCampaignsQuery from "../../../../api/query/useCampaignsQuery"
-import {
-  Campaign,
-  IGetCampaignsResponseData,
-  RunningStatus,
-} from "../../../../api/_campaigns/models/GetCampaigns"
-import { PLACEHOLDER_PROFILE_IMAGE } from "@/lib/constants"
-import MemberCard from "./_components/MemberCard"
-import MediaCard from "./_components/MediaCard"
 import { cn } from "@/utils/style"
-import { RFC, UserType } from "@/types"
-import { useAuth } from "@/contexts/AppProvider"
+import query from "@/api/query"
+import _profile from "@/api/_profile"
+
+import { UserType } from "@/types"
+import { Campaign, RunningStatus } from "@/api/_campaigns/models/GetCampaigns"
 
 const ProfilePage = () => {
   const pathname = usePathname()
@@ -35,15 +31,18 @@ const ProfilePage = () => {
   const profileQuery = useQuery({
     queryKey: [query.keys.PROFILE, userId],
     queryFn: () => _profile.getProfile({ userId }),
+    enabled: !!userId,
   })
   const profile = profileQuery.data
 
   const campaignStatsQuery = useCampaignSummaryQuery({
     params: { userId },
+    enableQuery: !!userId,
   })
 
   const activeCampaignsQuery = useCampaignsQuery({
     params: { perPage: 1000000, runningStatus: RunningStatus.Active, userId },
+    enableQuery: !!userId,
   })
 
   const previousCampaignsQuery = useCampaignsQuery({
@@ -52,6 +51,7 @@ const ProfilePage = () => {
       runningStatus: RunningStatus.Completed,
       userId,
     },
+    enableQuery: !!userId,
   })
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const ProfilePage = () => {
       )}
     >
       {/* Two-column layout for the entire page */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-3">
         {/* Left column (2/3) */}
         <div className="lg:col-span-2">
           {/* Main card with cover photo and organization info */}
@@ -233,7 +233,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Right column (1/3) - Ongoing Campaign */}
-        <div className="lg:col-span-1 max-h-fit border border-[#0000001A] rounded-[20px] px-[22px] py-6">
+        {/* <div className="lg:col-span-1 max-h-fit border border-[#0000001A] rounded-[20px] px-[22px] py-6">
           <p className="font-semibold text-xl text-[#00B964]">
             Ongoing Campaign
           </p>
@@ -244,20 +244,18 @@ const ProfilePage = () => {
             />
           )}
 
-          {/* Donors list */}
           {/* {selectedCampaign && (
             <RecentDonors
               donors={donorsData}
               totalDonors={32}
               campaignId={selectedCampaign._id}
             />
-          )} */}
+          )} 
 
-          {/* No active campaign */}
           {!selectedCampaign && (
             <p className="text-xs text-[#667085]">No active campaign</p>
           )}
-        </div>
+        </div>*/}
       </div>
     </div>
   )
