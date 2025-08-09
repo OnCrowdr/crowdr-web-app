@@ -83,7 +83,10 @@ const ProfilePage = () => {
 
           {/* Campaign stats */}
           {campaignStatsQuery.data && (
-            <CampaignProgress stats={campaignStatsQuery.data} campaignCount={activeCampaignsQuery?.data?.campaigns?.length}/>
+            <CampaignProgress
+              stats={campaignStatsQuery.data}
+              campaignCount={activeCampaignsQuery?.data?.campaigns?.length}
+            />
           )}
 
           {profile && (
@@ -123,11 +126,8 @@ const ProfilePage = () => {
                       activeCampaignsQuery.data.pagination.total !== 0 ? (
                         <>
                           <p className="text-gray-600 mb-4">
-                            View all present and active campaigns of{" "}
-                            {profile.user.userType === "individual"
-                              ? profile.user.fullName
-                              : profile.user.organizationName}{" "}
-                            and feel free to donate.
+                            Real stories. Real needs. Explore active campaigns
+                            and support one that speaks to you.
                           </p>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -189,12 +189,10 @@ const ProfilePage = () => {
 
               {activeTab === "Media" && (
                 <div>
-                  <h2 className="text-lg font-semibold mb-2">
-                    Outreaches/Campaign Media
-                  </h2>
+                  <h2 className="text-lg font-semibold mb-2">Media</h2>
                   <p className="text-gray-600 mb-4">
                     {profile.engagements.length
-                      ? "Here are images to show every penny is being used effectively"
+                      ? "Here’s a glimpse into the impact made possible by your generosity!"
                       : "No media available at this time."}
                   </p>
 
@@ -211,7 +209,7 @@ const ProfilePage = () => {
                   <div>
                     <h2 className="text-lg font-semibold mb-2">Members</h2>
                     <p className="text-gray-600 mb-4">
-                      Here are the amazing individuals behind this initiative!
+                      Meet the crew making it all happen. 💥
                     </p>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">

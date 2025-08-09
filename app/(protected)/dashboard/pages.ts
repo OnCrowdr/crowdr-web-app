@@ -31,7 +31,7 @@ export const pageGroups = [
       bell
     ),
     new Page({ route: "settings/profile" }, "Settings", settings),
-    new Page({ route: "" }, "Manage Website Page", globe, "COMING SOON"),
+    // new Page({ route: "" }, "Manage Website Page", globe, "COMING SOON"),
     new Page({ route: "" }, "Inbox", envelope, "COMING SOON"),
   ],
   [new Page({ modalId: "logout-modal", noHighlight: true }, "Log out", logout)]
