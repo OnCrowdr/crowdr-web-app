@@ -1,31 +1,37 @@
 // payload
 export interface IGetCampaignsSummaryParams {
-  userId: string
-  startDate?: string
-  endDate?: string
+  userId: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 // response
 export interface IGetCampaignsSummaryResponse {
   success: boolean;
   message: string;
-  data:    IGetCampaignsSummaryResponseData;
+  data: IGetCampaignsSummaryResponseData;
 }
 
 export interface IGetCampaignsSummaryResponseData {
-  totalNoOfCampaigns:    number;
-  totalCampaignViews:    number;
-  totalAmountDonated:    TotalAmountDonated[];
+  totalNoOfCampaigns: number;
+  totalCampaignViews: number;
+  totalAmountDonated: TotalAmountDonated[];
+  totalWithdrawableAmount: TotalWithdrawableAmount[];
   campaignCountByStatus: CampaignCountByStatus;
 }
 
 export interface CampaignCountByStatus {
   completed?: number;
-  active?:    number;
-  pending?:    number;
+  active?: number;
+  pending?: number;
 }
 
 export interface TotalAmountDonated {
-  currency:    string;
+  currency: string;
   totalAmount: number;
+}
+
+export interface TotalWithdrawableAmount {
+  amount: number;
+  currency: string;
 }

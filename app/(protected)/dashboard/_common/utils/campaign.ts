@@ -1,16 +1,18 @@
-import { Campaign, FundraiseCampaign, VolunteerCampaign } from "@/api/_campaigns/models/GetCampaigns"
-import { formatAmount } from "./currency"
-import { getDuration } from "./date"
+import {
+  Campaign,
+  FundraiseCampaign,
+  VolunteerCampaign
+} from "@/api/_campaigns/models/GetCampaigns";
+import { formatAmount } from "./currency";
+import { getDuration } from "./date";
 
 import {
   IFundraiseCampaign,
   ICampaign,
-  IVolunteerCampaign,
-} from "@/types/Campaign"
+  IVolunteerCampaign
+} from "@/types/Campaign";
 
-export const mapCampaignResponseToView = (
-  campaign: Campaign
-) => {
+export const mapCampaignResponseToView = (campaign: Campaign) => {
   const {
     _id,
     title,
@@ -21,56 +23,63 @@ export const mapCampaignResponseToView = (
     campaignType,
     campaignStartDate,
     campaignEndDate,
-    isCompleted,
-  } = campaign
+    isCompleted
+  } = campaign;
 
   let fundingGoal,
     fundsGotten,
     percentage,
     allDonors,
     allVolunteers,
+    withdrawableAmount,
     // serviceFee,
     // payableAmount,
     // totalAmount,
     fundsToReceive,
     amountDonated,
-    duration = getDuration(campaignStartDate, campaignEndDate)
+    duration = getDuration(campaignStartDate, campaignEndDate);
 
   if (isFundraise(campaign)) {
-    const [fundingGoalDetail] = campaign.fundraise.fundingGoalDetails
-    const [totalAmountDonated] = campaign.totalAmountDonated
+    const [fundingGoalDetail] = campaign.fundraise.fundingGoalDetails;
+    const [totalAmountDonated] = campaign.totalAmountDonated;
+    const [withdrawableAmountData] = campaign.withdrawableAmounts;
 
     fundingGoal = formatAmount(
       fundingGoalDetail.amount,
       fundingGoalDetail.currency
-    )
+    );
+
+    withdrawableAmount = formatAmount(
+      withdrawableAmountData.amount,
+      withdrawableAmountData.currency
+    );
 
     fundsGotten = formatAmount(
       totalAmountDonated.amount,
       totalAmountDonated.currency
-    )
+    );
 
     fundsToReceive = formatAmount(
       totalAmountDonated.payableAmount,
       totalAmountDonated.currency
-    )
+    );
 
     percentage = Math.floor(
       (totalAmountDonated.amount / fundingGoalDetail.amount) * 100
-    )
+    );
 
-    amountDonated = totalAmountDonated
+    amountDonated = totalAmountDonated;
 
     // serviceFee = totalAmountDonated.serviceFee
     // payableAmount = totalAmountDonated.payableAmount
     // totalAmount = totalAmountDonated.amount
   }
-  
+
   if (isVolunteer(campaign)) {
     duration = getDuration(
       campaign.volunteer.commitementStartDate,
       campaign.volunteer.commitementEndDate
-    )
+    );
   }
 
   return {
@@ -84,6 +93,7 @@ export const mapCampaignResponseToView = (
     donors: allDonors,
     volunteers: allVolunteers,
     fundingGoal,
+    withdrawableAmount,
     fundsGotten,
     percentage,
     campaignType,
@@ -94,20 +104,16 @@ export const mapCampaignResponseToView = (
     // payableAmount,
     // totalAmount,
     fundsToReceive,
-    amountDonated,
-  }
+    amountDonated
+  };
+};
+
+export type ICampaignView = ReturnType<typeof mapCampaignResponseToView>;
+
+export function isFundraise(campaign: Campaign): campaign is FundraiseCampaign {
+  return "fundraise" in campaign;
 }
 
-export type ICampaignView = ReturnType<typeof mapCampaignResponseToView>
-
-export function isFundraise(
-  campaign: Campaign
-): campaign is FundraiseCampaign {
-  return "fundraise" in campaign
-}
-
-export function isVolunteer(
-  campaign: Campaign
-): campaign is VolunteerCampaign {
-  return "volunteer" in campaign
+export function isVolunteer(campaign: Campaign): campaign is VolunteerCampaign {
+  return "volunteer" in campaign;
 }
