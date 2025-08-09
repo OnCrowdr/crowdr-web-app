@@ -33,7 +33,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
     mutationFn: _profile.updateProfile,
     onSuccess: (data) => {
       queryClient.refetchQueries({ queryKey: [query.keys.PROFILE, user?._id] })
-      toast.success(data.message)
+      // toast.success(data.message)
     },
     onError: errorHandler,
   })
