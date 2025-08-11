@@ -69,7 +69,7 @@ const ProfileCard: RFC<Props> & { Skeleton: RFC } = ({ profile }) => {
   const handleCopyLink = () => {
     try {
       navigator.clipboard.writeText(
-        `https://oncrowdr.com/profile/${profile?.user?._id}`
+        `https://www.oncrowdr.com/profile/${profile?.user?._id}`
       )
       toast.success("Copied", { position: "top-center" })
     } catch (error) {
