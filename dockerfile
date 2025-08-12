@@ -35,9 +35,6 @@ RUN npm run build
 FROM node:18-bullseye-slim AS runner
 WORKDIR /app
 
-# Create non-root user
-# (UID 1000 is conventional; adjust if needed)
-RUN useradd --create-home --uid 1000 nextjs
 
 # Only copy what is needed to run
 COPY --from=builder /app/.next ./.next
