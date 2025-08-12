@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install all dependencies (dev+prod) for building
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 ################################
 # 2) builder stage: build the production .next
