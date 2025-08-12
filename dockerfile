@@ -44,9 +44,6 @@ COPY --from=builder /app/package.json ./package.json
 # If you use next.config.js at runtime, copy it too:
 COPY --from=builder /app/next.config.js ./next.config.js
 
-# set permissions, switch to non-root
-RUN chown -R nextjs:nextjs /app
-USER nextjs
 
 ENV NODE_ENV=production
 ENV PORT=3000
