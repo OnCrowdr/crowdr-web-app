@@ -298,11 +298,12 @@ const AccountDetails = () => {
                 I have read, understood and I agree to{" "}
                 <span className="text-[#003D66]">Crowdr’s</span>{" "}
                 <Link href="/policies" target="_blank" className="underline">
-                  Privacy Policy
-                </Link>
-                , and{" "}
-                <Link href="/policies" target="_blank" className="underline">
                   Terms and conditions
+                </Link>
+                
+                , and{" "}
+                <Link href="/pricing" target="_blank" className="underline">
+                  Pricing policy
                 </Link>
                 .
               </p>
