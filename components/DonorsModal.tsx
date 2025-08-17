@@ -25,9 +25,8 @@ const DonorsModal: React.FC<DonorsModalProps> = ({
   donorCount,
   campaignId
 }) => {
-  const [allDonations, setAllDonations] = useState<PublicDonation[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalDonors, setTotalDonors] = useState(donorCount || 0);
+  const [accumulatedDonations, setAccumulatedDonations] = useState<PublicDonation[]>([]);
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Main query for fetching donations
@@ -44,44 +43,30 @@ const DonorsModal: React.FC<DonorsModalProps> = ({
           })
         : Promise.reject("No campaign ID"),
     enabled: isOpen && !!campaignId,
-    onSuccess: (data) => {
-      const donationsArray = data?.donations || [];
-      const paginationInfo = data?.pagination || {};
-      
-      if (currentPage === 1) {
-        setAllDonations(donationsArray);
-      } else {
-        setAllDonations(prev => [...prev, ...donationsArray]);
-      }
-      
-      setTotalDonors(paginationInfo.total || donationsArray.length || donorCount || 0);
-    },
-    onError: (err: any) => {
-      console.error("Failed to fetch donations:", err);
-      // Fallback to the limited donors from props on first page
-      if (currentPage === 1) {
-        const fallbackDonations = donors?.map(donor => ({
-          _id: donor._id || `${Date.now()}-${Math.random()}`,
-          fullName: donor.fullName,
-          amount: donor.amount,
-          currency: "NGN",
-          isAnonymous: donor.isAnonymous,
-          createdAt: new Date().toISOString()
-        })) || [];
-        setAllDonations(fallbackDonations);
-        setTotalDonors(fallbackDonations.length);
-      }
-    },
-    keepPreviousData: true,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    keepPreviousData: false, // Don't keep previous data to avoid stale state
+    staleTime: 0, // Always fetch fresh data
+    cacheTime: 0, // Don't cache data between modal opens
     refetchOnWindowFocus: false,
   });
+
+  // Handle data accumulation when new data arrives
+  useEffect(() => {
+    if (donationsData && isOpen) {
+      const newDonations = donationsData.donations || [];
+      
+      if (currentPage === 1) {
+        setAccumulatedDonations(newDonations);
+      } else {
+        setAccumulatedDonations(prev => [...prev, ...newDonations]);
+      }
+    }
+  }, [donationsData, currentPage, isOpen]);
 
   // Reset state when modal opens and handle focus
   useEffect(() => {
     if (isOpen) {
       setCurrentPage(1);
-      setAllDonations([]);
+      setAccumulatedDonations([]);
       
       // Focus the modal when it opens
       setTimeout(() => {
@@ -89,6 +74,10 @@ const DonorsModal: React.FC<DonorsModalProps> = ({
           modalRef.current.focus();
         }
       }, 100); // Small delay to ensure DOM is ready
+    } else {
+      // Reset state when modal closes
+      setAccumulatedDonations([]);
+      setCurrentPage(1);
     }
   }, [isOpen]);
 
@@ -100,20 +89,33 @@ const DonorsModal: React.FC<DonorsModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Determine which donations to show (accumulated from API or fallback to props)
+  const donationsToShow = accumulatedDonations.length > 0 
+    ? accumulatedDonations 
+    : (isLoading ? [] : donors?.map(donor => ({
+        _id: donor._id || `${Date.now()}-${Math.random()}`,
+        fullName: donor.fullName,
+        amount: donor.amount,
+        currency: "NGN",
+        isAnonymous: donor.isAnonymous,
+        createdAt: new Date().toISOString()
+      })) || []);
+
   // Sort donations by amount (highest first)
-  const sortedDonations = [...allDonations].sort((a, b) => {
+  const sortedDonations = [...donationsToShow].sort((a, b) => {
     const amountA = parseInt(a.amount) || 0;
     const amountB = parseInt(b.amount) || 0;
     return amountB - amountA;
   });
 
+  // Calculate total donors
+  const totalDonors = donationsData?.pagination?.total || sortedDonations.length || donorCount || 0;
+
   const handleClose = () => {
     Mixpanel.track("Donors modal closed", {
       campaignId,
-      totalDonors: allDonations.length
+      totalDonors: sortedDonations.length
     });
-    setAllDonations([]);
-    setCurrentPage(1);
     onClose();
   };
 
