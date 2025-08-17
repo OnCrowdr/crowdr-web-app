@@ -66,7 +66,7 @@ const TextInput: RFC<TextInputProps> = ({
       )}
       <div className="relative">
         {(props.icon || iconUrl) && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <div className="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center pl-3">
             {props.icon && <props.icon className="text-[#667085]" />}
             {iconUrl && <Image src={iconUrl} alt="" className="w-5" />}
           </div>

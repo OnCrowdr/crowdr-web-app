@@ -12,6 +12,7 @@ import Pagination from "../../admin-dashboard-components/Pagination"
 import Table from "../../admin-dashboard-components/Table"
 import Label from "../../admin-dashboard-components/Label"
 import { Button } from "../../../../../components/Button"
+import ExportButton from "../../admin-dashboard-components/ExportButton"
 import userService from "../../common/services/user"
 
 import { IGetUsersParams } from "../../common/services/user/models/GetUsers"
@@ -180,6 +181,8 @@ const Users = () => {
               wrapper: "grow",
             }}
           />
+
+          <ExportButton entity="users" />
 
           {/* <DropdownTrigger
             triggerId="withdrawalsFilterBtn"
