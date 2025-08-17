@@ -8,7 +8,7 @@ type Props = {
   openModal?: () => void;
 };
 
-export default function Header({ openModal }: Props) {
+export default function Hero({ openModal }: Props) {
   const router = useRouter();
   return (
     <section className="cta">

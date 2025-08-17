@@ -153,7 +153,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
   );
 };
 
-const Happening = () => {
+const LiveCampaigns = () => {
   const width = useWindowSize(800);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -197,6 +197,7 @@ const Happening = () => {
           Spread love by donating
           </p>
         </div>
+
         {width && (
           <div className="flex flex-row items-center gap-4">
             <button
@@ -212,6 +213,7 @@ const Happening = () => {
           </div>
         )}
       </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-3 items-center md:items-start  gap-4 w-full">
         {isLoading && <Loading size="contain" />}
         {Array.isArray(campaigns) &&
@@ -270,4 +272,4 @@ const Happening = () => {
   );
 };
 
-export default Happening;
+export default LiveCampaigns;

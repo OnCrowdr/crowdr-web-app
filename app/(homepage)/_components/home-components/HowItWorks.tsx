@@ -1,15 +1,15 @@
-import React from "react";
-import Image from "next/image";
-import "../home-styles/todo.css";
-import useWindowSize from "../../../../hooks/useWindowSize";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Slider from "react-slick";
-import { useRouter } from "next/navigation";
+import React from "react"
+import Image from "next/image"
+import "../home-styles/todo.css"
+import useWindowSize from "../../../../hooks/useWindowSize"
+import "slick-carousel/slick/slick.css"
+import "slick-carousel/slick/slick-theme.css"
+import Slider from "react-slick"
+import { useRouter } from "next/navigation"
 
-const Todo = () => {
-  const router = useRouter();
-  const width = useWindowSize(800);
+const HowItWorks = () => {
+  const router = useRouter()
+  const width = useWindowSize(800)
 
   const settings = {
     dots: true,
@@ -20,25 +20,38 @@ const Todo = () => {
     slidesToScroll: 1,
     adaptiveHeight: true,
     swipeToSlide: true,
-    arrows: false
-  };
-  
+    arrows: false,
+  }
+
   return (
-    <section className="todo max-w-[1484px] mx-auto">
-      <h3>How does Crowdr work?</h3>
+    <section className="todo max-w-[1484px] mx-auto !pt-20 !pb-[88px]">
+      <h3 className="!text-[32px] !md:text-[42px]">How It Works</h3>
 
       {width ? (
         <div className="todo-content">
           <div className="todo-item">
             <div className="flex flex-col gap-[14px]">
-              <h4>Create an account in minutes</h4>
-              <button
-                className="btn-primary !w-[171px]"
-                onClick={() => {
-                  router.push("signup");
-                }}>
-                Get started
-              </button>
+              <h4 className="!md:text-[32px] !leading-10">
+                Create an account within minutes
+              </h4>
+              <div className="flex gap-2">
+                <button
+                  className="btn-primary !w-[171px]"
+                  onClick={() => {
+                    router.push("signup")
+                  }}
+                >
+                  Get Started
+                </button>
+                <button
+                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
+                  onClick={() => {
+                    router.push("#")
+                  }}
+                >
+                  Watch Demo
+                </button>
+              </div>
             </div>
             <Image
               src="/svg/iphone.svg"
@@ -48,6 +61,7 @@ const Todo = () => {
               className="w-full mt-10 h-full overflow-hidden"
             />
           </div>
+
           <div className="flex flex-col items-center gap-4">
             <div className="todo-item !items-center !h-[340px] w-full">
               <h4 className="text-center !text-[24px]">Create campaigns</h4>
@@ -83,6 +97,7 @@ const Todo = () => {
               </div>
             </div>
           </div>
+
           <div className="todo-item">
             <span className="text-black text-sm leading-10">
               Wanna get more reach ?
@@ -128,8 +143,9 @@ const Todo = () => {
               <button
                 className="btn-primary !w-[171px] z-10"
                 onClick={() => {
-                  router.push("signup");
-                }}>
+                  router.push("signup")
+                }}
+              >
                 Get started
               </button>
             </div>
@@ -141,6 +157,7 @@ const Todo = () => {
               className="w-full mt-1 h-full overflow-hidden"
             />
           </div>
+
           <div className="!flex !flex-col !items-center !gap-4 !mt-4">
             <div className="todo-item !items-center !h-[340px] w-full">
               <h4 className="text-center !text-[24px]">Create campaigns</h4>
@@ -174,6 +191,7 @@ const Todo = () => {
               />
             </div>
           </div>
+          
           <div className="todo-item !mt-4">
             <span className="text-black text-sm leading-10">
               Wanna get more reach ?
@@ -213,7 +231,7 @@ const Todo = () => {
         </Slider>
       )}
     </section>
-  );
-};
+  )
+}
 
-export default Todo;
+export default HowItWorks
