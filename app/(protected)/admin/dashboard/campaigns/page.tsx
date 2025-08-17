@@ -12,6 +12,7 @@ import Pagination from "../../admin-dashboard-components/Pagination"
 import Table from "../../admin-dashboard-components/Table"
 import CircularProgress from "../../admin-dashboard-components/CircularProgress"
 import { Button } from "../../../../../components/Button"
+import ExportButton from "../../admin-dashboard-components/ExportButton"
 import campaignService from "../../common/services/campaign"
 
 import {
@@ -128,6 +129,8 @@ const Campaigns = () => {
               wrapper: "grow",
             }}
           />
+
+          <ExportButton entity="campaigns" />
 
           {/* <DropdownTrigger
             triggerId="withdrawalsFilterBtn"

@@ -13,6 +13,7 @@ import Pagination from "../../admin-dashboard-components/Pagination"
 import Table from "../../admin-dashboard-components/Table"
 import ModalTrigger from "../../../../../components/ModalTrigger"
 import { Button } from "../../../../../components/Button"
+import ExportButton from "../../admin-dashboard-components/ExportButton"
 import { label } from "../../admin-dashboard-components/Label"
 import { activeWithdrawalIdAtom } from "../../admin-dashboard-components/WithdrawalPopup"
 import withdrawalService from "../../common/services/withdrawal"
@@ -121,6 +122,8 @@ const Withdrawals = () => {
               wrapper: "grow",
             }}
           />
+
+          <ExportButton entity="withdrawals" />
 
           {/* <DropdownTrigger
             triggerId="withdrawalsFilterBtn"
