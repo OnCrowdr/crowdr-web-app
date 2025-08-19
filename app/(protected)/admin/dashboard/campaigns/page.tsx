@@ -1,8 +1,7 @@
 "use client"
 import { useState } from "react"
-import { useQuery } from "react-query"
-import { useUser } from "../../../../../contexts/UserProvider"
 import { useDebounceCallback } from "usehooks-ts"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
 import Image from "next/image"
 import StatCard from "../../admin-dashboard-components/StatCard"
 import ButtonGroup from "../../admin-dashboard-components/ButtonGroup"
@@ -24,10 +23,8 @@ import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import { mapCampaignResponseToView } from "../../common/utils/mappings"
-import { useAuth } from "@/contexts/AppProvider"
 
 const Campaigns = () => {
-  const {user } = useAuth()
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
   const [activeFilter, setActiveFilter] = useState<RunningStatus>(
@@ -38,19 +35,17 @@ const Campaigns = () => {
     page,
   })
 
-  const { data } = useQuery({
+  const { data } = useAuthQuery({
     queryKey: ["GET /admin/campaigns", params],
     queryFn: () => campaignService.getCampaigns(params),
     onSuccess: (data) => setPage(data.pagination.currentPage),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
-  const campaignStatsQuery = useQuery({
-    queryKey: ["GET /admin/campaigns-stats", user?.token],
+  const campaignStatsQuery = useAuthQuery({
+    queryKey: ["GET /admin/campaigns-stats"],
     queryFn: () => campaignService.getCampaignStats(),
-    enabled: Boolean(user),
   })
 
   const setSearch = useDebounceCallback(

@@ -1,8 +1,7 @@
 "use client"
 import { useState } from "react"
-import { useQuery } from "react-query"
-import { useUser } from "../../../../../contexts/UserProvider"
 import { useDebounceCallback } from "usehooks-ts"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
 import Image from "next/image"
 import StatCard from "../../admin-dashboard-components/StatCard"
 import ButtonGroup from "../../admin-dashboard-components/ButtonGroup"
@@ -21,11 +20,9 @@ import { FaArrowDown, FaArrowUp } from "react-icons/fa6"
 import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
-import { useAuth } from "@/contexts/AppProvider"
 import { UserType } from "@/types"
 
 const Users = () => {
-  const { user } = useAuth()
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
   const [activeFilter, setActiveFilter] = useState<UserType | "">("")
@@ -33,40 +30,36 @@ const Users = () => {
     page,
   })
 
-  const { data } = useQuery({
+  const { data } = useAuthQuery({
     queryKey: ["GET /admin/users", params],
     queryFn: () => userService.getUsers(params),
     onSuccess: (data) => setPage(data.pagination.currentPage),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
   // TODO: REPLACE WITH SINGLE ENDPOINT CALL
-  const allUsersQuery = useQuery({
+  const allUsersQuery = useAuthQuery({
     queryKey: ["GET /admin/users", "all-users"],
     queryFn: () => userService.getUsers({ perPage: 1 }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
-  const individualsQuery = useQuery({
+  const individualsQuery = useAuthQuery({
     queryKey: ["GET /admin/users", "individuals"],
     queryFn: () =>
       userService.getUsers({ perPage: 1, userType: UserType.Individual }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
-  const organizationsQuery = useQuery({
+  const organizationsQuery = useAuthQuery({
     queryKey: ["GET /admin/users", "organizations"],
     queryFn: () =>
       userService.getUsers({ perPage: 1, userType: UserType.NonProfit }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
   const setSearch = useDebounceCallback(

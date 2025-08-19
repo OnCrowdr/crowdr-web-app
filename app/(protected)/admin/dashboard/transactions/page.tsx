@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useQuery } from "react-query"
 import { useDebounceCallback } from "usehooks-ts"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
 import Image from "next/image"
 import StatCard from "../../admin-dashboard-components/StatCard"
 import ButtonGroup from "../../admin-dashboard-components/ButtonGroup"
@@ -10,64 +11,79 @@ import Pagination from "../../admin-dashboard-components/Pagination"
 import Table from "../../admin-dashboard-components/Table"
 import Label from "../../admin-dashboard-components/Label"
 import ExportButton from "../../admin-dashboard-components/ExportButton"
+import { Button } from "../../../../../components/Button"
 import transactionService from "../../common/services/transaction"
 
 import { IGetTransactionsParams } from "../../common/services/transaction/models/GetTransactions"
 
-import { FaArrowDown, FaArrowUp } from "react-icons/fa6"
 import SearchIcon from "@/public/svg/search.svg"
 import TempLogo from "@/public/temp/c-logo.png"
-import { useAuth } from "@/contexts/AppProvider"
 
 const Transactions = () => {
-  const { user } = useAuth()
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
+  const [campaignSearch, setCampaignSearch] = useState("")
   const [activeFilter, setActiveFilter] = useState<string>("")
   const [params, setParams] = useState<Partial<IGetTransactionsParams>>({
     page,
   })
 
-  const { data } = useQuery({
+  const { data, refetch } = useAuthQuery({
     queryKey: ["GET /admin/transactions", params],
     queryFn: () => transactionService.getTransactions(params),
     onSuccess: (data) => setPage(data.pagination.currentPage),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
   // TODO: REPLACE WITH SINGLE ENDPOINT CALL
-  const allTransactionsQuery = useQuery({
+  const allTransactionsQuery = useAuthQuery({
     queryKey: ["GET /admin/transactions", "all-transactions"],
     queryFn: () => transactionService.getTransactions({ perPage: 1 }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
-  const successfulTransactionsQuery = useQuery({
-    queryKey: ["GET /admin/transactions", "successful"],
+  const successfulTransactionsQuery = useAuthQuery({
+    queryKey: ["GET /admin/transactions", "completed"],
     queryFn: () =>
-      transactionService.getTransactions({ perPage: 1, status: "successful" }),
+      transactionService.getTransactions({ perPage: 1, status: "completed" }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
-  const pendingTransactionsQuery = useQuery({
+  const pendingTransactionsQuery = useAuthQuery({
     queryKey: ["GET /admin/transactions", "pending"],
     queryFn: () =>
       transactionService.getTransactions({ perPage: 1, status: "pending" }),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
+
+  const handleRefresh = () => {
+    refetch()
+    allTransactionsQuery.refetch()
+    successfulTransactionsQuery.refetch()
+    pendingTransactionsQuery.refetch()
+  }
 
   const setSearch = useDebounceCallback(
     () =>
       setSearchText((text) => {
-        setParams({ ...params, page: 1, reference: text })
+        // Search by userId - could be email or user ID
+        setParams({ ...params, page: 1, userId: text })
+        setPage(1)
+
+        return text
+      }),
+    1000
+  )
+
+  const setCampaignSearchDebounced = useDebounceCallback(
+    () =>
+      setCampaignSearch((text) => {
+        // Search by campaignId
+        setParams({ ...params, page: 1, campaignId: text })
         setPage(1)
 
         return text
@@ -85,11 +101,11 @@ const Transactions = () => {
       },
     },
     {
-      id: "successful",
-      label: "Successful",
+      id: "completed",
+      label: "Completed",
       onClick: () => {
-        setActiveFilter("successful")
-        setParams({ ...params, status: "successful" })
+        setActiveFilter("completed")
+        setParams({ ...params, status: "completed" })
       },
     },
     {
@@ -110,29 +126,6 @@ const Transactions = () => {
     },
   ]
 
-  const sort = () => {
-    let amountOrder = undefined as typeof params.amountOrder
-    if (params.amountOrder === "asc") {
-      amountOrder = "desc"
-    } else if (params.amountOrder === "desc" || !params.amountOrder) {
-      amountOrder = "asc"
-    }
-
-    setParams({ ...params, amountOrder })
-  }
-  
-  const sortIcon = () => {
-    switch (params.amountOrder) {
-      case "asc":
-        return <FaArrowDown />
-
-      case "desc":
-        return <FaArrowUp />
-
-      default:
-        return null
-    }
-  }
 
   const stats = [
     {
@@ -140,7 +133,7 @@ const Transactions = () => {
       value: allTransactionsQuery.data?.pagination?.total ?? 0,
     },
     {
-      title: "Successful",
+      title: "Completed",
       value: successfulTransactionsQuery.data?.pagination?.total ?? 0,
     },
     {
@@ -149,17 +142,20 @@ const Transactions = () => {
     },
   ]
 
-  const formatAmount = (amount: number, currency: string = "USD") => {
+  const formatAmount = (amount: number, currency: string = "naira") => {
+    // Handle currency mapping for proper formatting
+    const currencyCode = currency === "naira" ? "NGN" : currency.toUpperCase();
+    
     return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: currency,
-    }).format(amount / 100) // Assuming amount is in cents
+      currency: currencyCode,
+    }).format(amount) // Amount is already in the correct format
   }
 
   const getStatusLabel = (status: string) => {
     switch (status.toLowerCase()) {
-      case "successful":
-        return <Label text="Successful" dotColor="#17B26A" />
+      case "completed":
+        return <Label text="Completed" dotColor="#17B26A" />
       case "pending":
         return <Label text="Pending" dotColor="#F79009" />
       case "failed":
@@ -174,10 +170,10 @@ const Transactions = () => {
       {/* page title x subtitle */}
       <hgroup className="mb-3">
         <h1 className="text-3xl font-semibold text-[#101828] mb-0.5">
-          Transactions
+          Donations
         </h1>
         <p className=" text-[#475467]">
-          Track and manage all platform transactions.
+          Track and manage all platform donations.
         </p>
       </hgroup>
 
@@ -191,19 +187,42 @@ const Transactions = () => {
       <div className="flex justify-between items-center px-4 py-3">
         <ButtonGroup buttons={tableFilterButtons} selected={activeFilter} />
 
-        <div className="flex gap-3 items-center w-[515px]">
+        <div className="flex gap-3 items-center w-[700px]">
           <TextInput
             value={searchText}
             onChange={(e) => {
               setSearchText(e.target.value)
               setSearch()
             }}
-            placeholder="Search by reference"
+            placeholder="Search by user (email or ID)"
             iconUrl={SearchIcon}
             styles={{
               input: "text-base",
-              wrapper: "grow",
+              wrapper: "flex-1",
             }}
+          />
+          
+          <TextInput
+            value={campaignSearch}
+            onChange={(e) => {
+              setCampaignSearch(e.target.value)
+              setCampaignSearchDebounced()
+            }}
+            placeholder="Search by campaign ID"
+            iconUrl={SearchIcon}
+            styles={{
+              input: "text-base",
+              wrapper: "flex-1",
+            }}
+          />
+
+          <Button
+            text="Refresh"
+            bgColor="#FFF"
+            textColor="#344054"
+            onClick={handleRefresh}
+            shadow
+            className="font-semibold"
           />
 
           <ExportButton entity="transactions" />
@@ -217,16 +236,9 @@ const Transactions = () => {
           <Table>
             <Table.Head>
               <Table.HeadCell>Transaction ID</Table.HeadCell>
-              <Table.HeadCell>User</Table.HeadCell>
-              <Table.HeadCell>Type</Table.HeadCell>
-              <Table.HeadCell>
-                <div
-                  onClick={sort}
-                  className="flex items-center gap-1.5 cursor-pointer"
-                >
-                  Amount {sortIcon()}
-                </div>
-              </Table.HeadCell>
+              <Table.HeadCell>Donor</Table.HeadCell>
+              <Table.HeadCell>Payment Method</Table.HeadCell>
+              <Table.HeadCell>Amount</Table.HeadCell>
               <Table.HeadCell>Status</Table.HeadCell>
               <Table.HeadCell>Date</Table.HeadCell>
               <Table.HeadCell></Table.HeadCell>
@@ -244,17 +256,17 @@ const Transactions = () => {
                   <Table.Cell>
                     <div className="flex items-center gap-3 font-medium">
                       <Image src={TempLogo} alt="" className="shrink-0" />
-                      {transaction.user?.fullName || transaction.user?.organizationName || transaction.user?.email}
+                      {transaction.isAnonymous ? "Anonymous" : transaction.fullName}
                     </div>
                   </Table.Cell>
 
                   <Table.Cell>
-                    <div className="font-medium capitalize">{transaction.type}</div>
+                    <div className="font-medium capitalize">{transaction.paymentMethod}</div>
                   </Table.Cell>
 
                   <Table.Cell>
                     <div className="font-medium">
-                      {formatAmount(transaction.amount, transaction.currency)}
+                      {formatAmount(parseInt(transaction.amount), transaction.currency)}
                     </div>
                   </Table.Cell>
 
