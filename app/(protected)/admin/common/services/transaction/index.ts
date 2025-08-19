@@ -14,7 +14,11 @@ const getTransactions = async (params: Partial<IGetTransactionsParams> = {}) => 
 
   try {
     const res = await api.get<IGetTransactionsResponse>(url, { params })
-    return res.data.data
+    // Handle the nested data structure: res.data.data contains { data: [], pagination: {} }
+    return {
+      results: res.data.data.data,
+      pagination: res.data.data.pagination
+    }
   } catch (error: any) {
     throw new Error(error.response?.data?.message || "An error occurred")
   }

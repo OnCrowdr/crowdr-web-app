@@ -13,16 +13,14 @@ const api = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
-    // const userJson = localStorage.getItem("USER")
-    // const user = userJson ? (JSON.parse(userJson) as IUser) : null
-    // if (user && user.token) {
-    //   config.headers["x-auth-token"] = user.token
-    // }
     if (!authToken) {
       authToken = (await getToken()) ?? null
-    } else {
+    }
+    
+    if (authToken) {
       config.headers["x-auth-token"] = authToken
     }
+    
     return config
   },
   (error) => Promise.reject(error)

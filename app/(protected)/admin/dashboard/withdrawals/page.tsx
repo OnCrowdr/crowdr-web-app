@@ -1,9 +1,8 @@
 "use client"
 import { useState } from "react"
-import { useQuery } from "react-query"
 import { useSetAtom } from "jotai"
-import { useUser } from "../../../../../contexts/UserProvider"
 import { useDebounceCallback } from "usehooks-ts"
+import { useAuthQuery } from "@/hooks/useAuthQuery"
 import Image from "next/image"
 import StatCard from "../../admin-dashboard-components/StatCard"
 import ButtonGroup from "../../admin-dashboard-components/ButtonGroup"
@@ -26,10 +25,8 @@ import {
   WithdrawalStatus,
 } from "../../common/services/withdrawal/models/GetWithdrawals"
 import { mapWithdrawalResponseToView } from "../../common/utils/mappings"
-import { useAuth } from "@/contexts/AppProvider"
 
 const Withdrawals = () => {
-  const {user } = useAuth()
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
   const setActiveWithdrawalIdAtom = useSetAtom(activeWithdrawalIdAtom)
@@ -41,13 +38,12 @@ const Withdrawals = () => {
     page,
   })
 
-  const { data } = useQuery({
+  const { data } = useAuthQuery({
     queryKey: ["GET /admin/withdrawals", params],
     queryFn: () => withdrawalService.getWithdrawals(params),
     onSuccess: (data) => setPage(data.pagination.currentPage),
     refetchOnWindowFocus: false,
     keepPreviousData: true,
-    enabled: Boolean(user),
   })
 
   const setSearch = useDebounceCallback(
