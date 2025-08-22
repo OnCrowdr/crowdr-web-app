@@ -239,6 +239,7 @@ const Transactions = () => {
               <Table.HeadCell>Donor</Table.HeadCell>
               <Table.HeadCell>Payment Method</Table.HeadCell>
               <Table.HeadCell>Amount</Table.HeadCell>
+              <Table.HeadCell>Transaction Fee</Table.HeadCell>
               <Table.HeadCell>Status</Table.HeadCell>
               <Table.HeadCell>Date</Table.HeadCell>
               <Table.HeadCell></Table.HeadCell>
@@ -266,7 +267,12 @@ const Transactions = () => {
 
                   <Table.Cell>
                     <div className="font-medium">
-                      {formatAmount(parseInt(transaction.amount), transaction.currency)}
+                      {formatAmount(parseInt(transaction.totalAmount), transaction.currency)}
+                    </div>
+                  </Table.Cell>
+                   <Table.Cell>
+                    <div className="font-medium">
+                      {formatAmount(parseInt(transaction.transactionFee.toString()), transaction.currency)}
                     </div>
                   </Table.Cell>
 
