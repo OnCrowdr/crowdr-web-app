@@ -1,35 +1,35 @@
-import { toTitleCase } from "../../../../../utils/toTitleCase"
-import { formatAmount } from "../../../dashboard/_common/utils/currency"
+import { toTitleCase } from "../../../../../utils/toTitleCase";
+import { formatAmount } from "../../../dashboard/_common/utils/currency";
 
 import {
   Campaign,
-  CampaignType,
-} from "../services/campaign/models/GetCampaigns"
-import { Withdrawal } from "../services/withdrawal/models/GetWithdrawals"
-import { Kyc } from "../services/kyc/models/GetKycs"
+  CampaignType
+} from "../services/campaign/models/GetCampaigns";
+import { Withdrawal } from "../services/withdrawal/models/GetWithdrawals";
+import { Kyc } from "../services/kyc/models/GetKycs";
 
 const mapCampaignResponseToView = (campaigns: Campaign[]) => {
   return campaigns.map((campaign) => {
     const isFundraising =
       campaign.campaignType == CampaignType.Fundraise ||
-      campaign.campaignType == CampaignType.FundraiseVolunteer
+      campaign.campaignType == CampaignType.FundraiseVolunteer;
 
-    const [raisedAmount] = isFundraising ? campaign.totalAmountDonated : []
+    const [raisedAmount] = isFundraising ? campaign.totalAmountDonated : [];
     const [targetAmount] = isFundraising
       ? campaign.fundraise.fundingGoalDetails
-      : []
+      : [];
 
     const formattedRaisedAmount = isFundraising
       ? formatAmount(raisedAmount.amount, raisedAmount.currency)
-      : "--"
+      : "--";
     const formattedTargetAmount = isFundraising
       ? formatAmount(targetAmount.amount, targetAmount.currency)
-      : "--"
+      : "--";
 
     const progressPercentage =
       isFundraising && targetAmount.amount !== 0
         ? (raisedAmount.amount / targetAmount.amount) * 100
-        : "--"
+        : "--";
 
     return {
       id: campaign._id,
@@ -41,10 +41,10 @@ const mapCampaignResponseToView = (campaigns: Campaign[]) => {
       raisedAmount: formattedRaisedAmount,
       targetAmount: formattedTargetAmount,
       progressPercentage,
-      imageUrl: "",
-    }
-  })
-}
+      imageUrl: ""
+    };
+  });
+};
 
 const mapKycResponseToView = (kycs: Kyc[]) => {
   return kycs.map((kyc) => ({
@@ -52,14 +52,15 @@ const mapKycResponseToView = (kycs: Kyc[]) => {
     accountName: kyc.user.organizationName || kyc.user.fullName,
     accountType: kyc.user.userType,
     status: kyc.verificationStatus || "pending",
-    imageUrl: "",
-  }))
-}
+    imageUrl: ""
+  }));
+};
 
 const mapWithdrawalResponseToView = (withdrawals: Withdrawal[]) => {
   return withdrawals.map((withdrawal) => {
-    const [{ currency, payableAmount }] = withdrawal.totalAmountDonated
-    const formattedAmount = formatAmount(payableAmount, currency)
+    const [{ currency, payableAmount }] = withdrawal.totalAmountDonated;
+    const [{ availableAmount }] = withdrawal.withdrawableAmounts;
+    const formattedAmount = formatAmount(availableAmount, currency);
 
     return {
       id: withdrawal._id,
@@ -67,9 +68,13 @@ const mapWithdrawalResponseToView = (withdrawals: Withdrawal[]) => {
       campaignTitle: withdrawal.campaign.title,
       status: withdrawal.status,
       amount: formattedAmount,
-      imageUrl: "",
-    }
-  })
-}
+      imageUrl: ""
+    };
+  });
+};
 
-export { mapCampaignResponseToView, mapKycResponseToView, mapWithdrawalResponseToView }
+export {
+  mapCampaignResponseToView,
+  mapKycResponseToView,
+  mapWithdrawalResponseToView
+};

@@ -17,17 +17,33 @@ type ShareCampaignProps = {
 };
 
 const ShareCampaign = (props: ShareCampaignProps) => {
-  const { 
-    campaignId, 
-    title, 
-    onClose, 
-    story, 
+  const {
+    campaignId,
+    title,
+    onClose,
+    story,
     donationSuccess = false,
     onDonateAgain,
     campaignType = "fundraise"
   } = props;
 
-  const shareUrl = `https://www.oncrowdr.com/explore/c/${campaignId}`;
+  // Determine base URL based on environment
+  const getBaseUrl = () => {
+    if (typeof window === "undefined") return "https://www.oncrowdr.com";
+
+    const hostname = window.location.hostname;
+
+    if (
+      hostname === "localhost" ||
+      hostname.includes("crowdr-web-app-538709702725.europe-west1.run.app")
+    ) {
+      return "https://crowdr-web-app-538709702725.europe-west1.run.app";
+    }
+
+    return "https://www.oncrowdr.com";
+  };
+
+  const shareUrl = `${getBaseUrl()}/explore/c/${campaignId}`;
   const { copied, copy } = useClipboard();
 
   const boxShadow =
@@ -51,9 +67,21 @@ const ShareCampaign = (props: ShareCampaignProps) => {
 
   const getSuccessMessage = () => {
     if (isVolunteerCampaign) {
-      return <>Thank you for your interest in volunteering for <span className="font-semibold">{title}</span>! Help us find more volunteers by sharing this campaign.</>;
+      return (
+        <>
+          Thank you for your interest in volunteering for{" "}
+          <span className="font-semibold">{title}</span>! Help us find more
+          volunteers by sharing this campaign.
+        </>
+      );
     }
-    return <>Thank you for your donation to <span className="font-semibold">{title}.</span> Help us reach our goal by sharing this campaign with your friends and family.</>;
+    return (
+      <>
+        Thank you for your donation to{" "}
+        <span className="font-semibold">{title}.</span> Help us reach our goal
+        by sharing this campaign with your friends and family.
+      </>
+    );
   };
 
   const getButtonText = () => {
@@ -62,41 +90,61 @@ const ShareCampaign = (props: ShareCampaignProps) => {
   };
 
   const getSharePrompt = () => {
-    if (isVolunteerCampaign) return "Help us find more volunteers by sharing this campaign!";
-    if (isMixedCampaign) return "Support this campaign by sharing it to friends and family!";
+    if (isVolunteerCampaign)
+      return "Help us find more volunteers by sharing this campaign!";
+    if (isMixedCampaign)
+      return "Support this campaign by sharing it to friends and family!";
     return "Support this campaign by sharing it to friends and family!";
   };
 
   const shareViaEmail = () => {
     const subject = encodeURIComponent(`${title} campaign on oncrowdr.com`);
     let body = "";
-    
+
     if (donationSuccess) {
       if (isVolunteerCampaign) {
-        body = encodeURIComponent(`Hi, I just applied to volunteer for this amazing campaign and I'd really appreciate it if you would share or volunteer too! ${shareUrl}`);
+        body = encodeURIComponent(
+          `Hi, I just applied to volunteer for this amazing campaign and I'd really appreciate it if you would share or volunteer too! ${shareUrl}`
+        );
       } else {
-        body = encodeURIComponent(`Hi, I just donated to this amazing campaign and I'd really appreciate it if you would share or donate too! ${shareUrl}`);
+        body = encodeURIComponent(
+          `Hi, I just donated to this amazing campaign and I'd really appreciate it if you would share or donate too! ${shareUrl}`
+        );
       }
     } else {
-      body = encodeURIComponent(`Hi, I'd really appreciate it if you would share or ${getActionText()} this campaign! ${shareUrl}`);
+      body = encodeURIComponent(
+        `Hi, I'd really appreciate it if you would share or ${getActionText()} this campaign! ${shareUrl}`
+      );
     }
-    
+
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   const getWhatsAppShareLink = () => {
     const header = encodeURIComponent(`\n\n*${title}*`);
-    const body = encodeURIComponent(`\n\n${story}…\n\n${isVolunteerCampaign ? 'Volunteer here:' : 'Donate here:'} ${shareUrl}`);
-    
+    const body = encodeURIComponent(
+      `\n\n${story}…\n\n${
+        isVolunteerCampaign ? "Volunteer here:" : "Donate here:"
+      } ${shareUrl}`
+    );
+
     let footer = "";
     if (donationSuccess) {
       if (isVolunteerCampaign) {
-        footer = encodeURIComponent(`\n\nI just applied to volunteer for this campaign! Forward this message to your contacts to help find more volunteers!`);
+        footer = encodeURIComponent(
+          `\n\nI just applied to volunteer for this campaign! Forward this message to your contacts to help find more volunteers!`
+        );
       } else {
-        footer = encodeURIComponent(`\n\nI just donated to this campaign! Forward this message to your contacts to help reach the goal!`);
+        footer = encodeURIComponent(
+          `\n\nI just donated to this campaign! Forward this message to your contacts to help reach the goal!`
+        );
       }
     } else {
-      footer = encodeURIComponent(`\n\nForward this message to your contacts to help this campaign ${isVolunteerCampaign ? 'find volunteers' : 'reach its goal'}!`);
+      footer = encodeURIComponent(
+        `\n\nForward this message to your contacts to help this campaign ${
+          isVolunteerCampaign ? "find volunteers" : "reach its goal"
+        }!`
+      );
     }
 
     let message = "";
@@ -124,9 +172,9 @@ const ShareCampaign = (props: ShareCampaignProps) => {
     } else {
       onClose();
     }
-    
-    const trackingEvent = isVolunteerCampaign 
-      ? "Clicked Apply Again from Share Modal" 
+
+    const trackingEvent = isVolunteerCampaign
+      ? "Clicked Apply Again from Share Modal"
       : "Clicked Donate Again from Share Modal";
     Mixpanel.track(trackingEvent);
   };
@@ -146,11 +194,13 @@ const ShareCampaign = (props: ShareCampaignProps) => {
   return (
     <div
       style={{ boxShadow }}
-      className="min-w-[360px] max-w-[410px] md:max-w-[600px] bg-white rounded-lg overflow-hidden p-4 md:p-6 font-satoshi"
-    >
+      className="min-w-[360px] max-w-[410px] md:max-w-[600px] bg-white rounded-lg overflow-hidden p-4 md:p-6 font-satoshi">
       {/* Header Section */}
       <div className="flex justify-between md:gap-4 mb-3 md:mb-6">
-        <Rings donationSuccess={donationSuccess} isVolunteerCampaign={isVolunteerCampaign} />
+        <Rings
+          donationSuccess={donationSuccess}
+          isVolunteerCampaign={isVolunteerCampaign}
+        />
 
         <div className="hidden md:flex flex-col gap-1 mb-6 flex-1 ml-4">
           <div className="flex justify-between items-start">
@@ -164,12 +214,12 @@ const ShareCampaign = (props: ShareCampaignProps) => {
                   {title}
                 </h2>
               )}
-              
+
               <p className="text-sm text-[#475467] md:text-justify">
                 {donationSuccess ? getSuccessMessage() : getSharePrompt()}
               </p>
             </div>
-            
+
             <XIcon onClick={onClose} className="cursor-pointer" />
           </div>
         </div>
@@ -187,19 +237,18 @@ const ShareCampaign = (props: ShareCampaignProps) => {
       <div className="flex flex-col gap-1 mb-6 md:hidden">
         {donationSuccess ? (
           <>
-            <p className={`text-lg font-semibold ${isVolunteerCampaign ? 'text-blue-600' : 'text-green-600'}`}>
+            <p
+              className={`text-lg font-semibold ${
+                isVolunteerCampaign ? "text-blue-600" : "text-green-600"
+              }`}>
               {getSuccessTitle()}
             </p>
-            <p className="text-sm text-[#475467]">
-              {getSuccessMessage()}
-            </p>
+            <p className="text-sm text-[#475467]">{getSuccessMessage()}</p>
           </>
         ) : (
           <>
             <p className="text-lg font-semibold">Share {title}.</p>
-            <p className="text-sm text-[#475467]">
-              {getSharePrompt()}
-            </p>
+            <p className="text-sm text-[#475467]">{getSharePrompt()}</p>
           </>
         )}
       </div>
@@ -211,15 +260,17 @@ const ShareCampaign = (props: ShareCampaignProps) => {
             {!isVolunteerCampaign && (
               <button
                 onClick={handleDonateAgain}
-                className={`flex-1 ${isVolunteerCampaign ? 'bg-[#175CD3] hover:bg-[#1E40AF]' : 'bg-[#00B964] hover:bg-[#009954]'} text-white py-3 px-4 rounded-lg font-semibold text-base transition-colors shadow-sm`}
-              >
+                className={`flex-1 ${
+                  isVolunteerCampaign
+                    ? "bg-[#175CD3] hover:bg-[#1E40AF]"
+                    : "bg-[#00B964] hover:bg-[#009954]"
+                } text-white py-3 px-4 rounded-lg font-semibold text-base transition-colors shadow-sm`}>
                 {getButtonText()}
               </button>
             )}
             <button
               onClick={onClose}
-              className="flex-1 border border-[#D0D5DD] text-[#344054] py-3 px-4 rounded-lg font-semibold text-base hover:bg-gray-50 transition-colors"
-            >
+              className="flex-1 border border-[#D0D5DD] text-[#344054] py-3 px-4 rounded-lg font-semibold text-base hover:bg-gray-50 transition-colors">
               Close
             </button>
           </div>
@@ -234,12 +285,19 @@ const ShareCampaign = (props: ShareCampaignProps) => {
             className="flex flex-col cursor-pointer gap-2 items-center p-3 rounded-lg hover:bg-[#F9FAFB] transition-colors"
             onClick={() => {
               copy(shareUrl);
-              const trackingEvent = donationSuccess 
-                ? `Copied share link after ${isVolunteerCampaign ? 'volunteer application' : 'donation'}`
+              const trackingEvent = donationSuccess
+                ? `Copied share link after ${
+                    isVolunteerCampaign ? "volunteer application" : "donation"
+                  }`
                 : "Copied share link";
               Mixpanel.track(trackingEvent);
             }}>
-            <Image src={"/svg/copy.svg"} alt="Copy link" width={40} height={40} />
+            <Image
+              src={"/svg/copy.svg"}
+              alt="Copy link"
+              width={40}
+              height={40}
+            />
             <p className="text-[#667085] text-[11px] text-center">
               {copied ? "Copied!" : "Copy link"}
             </p>
@@ -250,8 +308,10 @@ const ShareCampaign = (props: ShareCampaignProps) => {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => {
-              const trackingEvent = donationSuccess 
-                ? `Shared via WhatsApp after ${isVolunteerCampaign ? 'volunteer application' : 'donation'}`
+              const trackingEvent = donationSuccess
+                ? `Shared via WhatsApp after ${
+                    isVolunteerCampaign ? "volunteer application" : "donation"
+                  }`
                 : "Shared via WhatsApp";
               Mixpanel.track(trackingEvent);
             }}
@@ -263,12 +323,16 @@ const ShareCampaign = (props: ShareCampaignProps) => {
           </a>
 
           <a
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+              shareUrl
+            )}`}
             target="_blank"
             className="decoration-none text-[#000]"
             onClick={() => {
-              const trackingEvent = donationSuccess 
-                ? `Shared via Facebook after ${isVolunteerCampaign ? 'volunteer application' : 'donation'}`
+              const trackingEvent = donationSuccess
+                ? `Shared via Facebook after ${
+                    isVolunteerCampaign ? "volunteer application" : "donation"
+                  }`
                 : "Shared via Facebook";
               Mixpanel.track(trackingEvent);
             }}
@@ -283,14 +347,20 @@ const ShareCampaign = (props: ShareCampaignProps) => {
               <p className="text-[#667085] text-[11px] text-center">Facebook</p>
             </div>
           </a>
-          
+
           <a
-            href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(!!title && title)}&source=oncrowdr.com`}
+            href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+              shareUrl
+            )}&title=${encodeURIComponent(
+              !!title && title
+            )}&source=oncrowdr.com`}
             target="_blank"
             className="decoration-none text-[#000]"
             onClick={() => {
-              const trackingEvent = donationSuccess 
-                ? `Shared via LinkedIn after ${isVolunteerCampaign ? 'volunteer application' : 'donation'}`
+              const trackingEvent = donationSuccess
+                ? `Shared via LinkedIn after ${
+                    isVolunteerCampaign ? "volunteer application" : "donation"
+                  }`
                 : "Shared via LinkedIn";
               Mixpanel.track(trackingEvent);
             }}
@@ -305,14 +375,18 @@ const ShareCampaign = (props: ShareCampaignProps) => {
               <p className="text-[#667085] text-[11px] text-center">LinkedIn</p>
             </div>
           </a>
-          
+
           <a
-            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(getTwitterText())} @oncrowdr`}
+            href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+              shareUrl
+            )}&text=${encodeURIComponent(getTwitterText())} @oncrowdr`}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => {
-              const trackingEvent = donationSuccess 
-                ? `Shared via Twitter after ${isVolunteerCampaign ? 'volunteer application' : 'donation'}`
+              const trackingEvent = donationSuccess
+                ? `Shared via Twitter after ${
+                    isVolunteerCampaign ? "volunteer application" : "donation"
+                  }`
                 : "Shared via Twitter";
               Mixpanel.track(trackingEvent);
             }}
@@ -324,7 +398,9 @@ const ShareCampaign = (props: ShareCampaignProps) => {
                 width={40}
                 height={40}
               />
-              <p className="text-[#667085] text-[11px] text-center">Twitter / X</p>
+              <p className="text-[#667085] text-[11px] text-center">
+                Twitter / X
+              </p>
             </div>
           </a>
 
@@ -332,8 +408,10 @@ const ShareCampaign = (props: ShareCampaignProps) => {
             className="flex flex-col cursor-pointer gap-2 items-center p-3 rounded-lg hover:bg-[#F9FAFB] transition-colors"
             onClick={() => {
               shareViaEmail();
-              const trackingEvent = donationSuccess 
-                ? `Shared via Email after ${isVolunteerCampaign ? 'volunteer application' : 'donation'}`
+              const trackingEvent = donationSuccess
+                ? `Shared via Email after ${
+                    isVolunteerCampaign ? "volunteer application" : "donation"
+                  }`
                 : "Shared via Email";
               Mixpanel.track(trackingEvent);
             }}>
@@ -348,7 +426,13 @@ const ShareCampaign = (props: ShareCampaignProps) => {
 
 export default ShareCampaign;
 
-const Rings = ({ donationSuccess, isVolunteerCampaign }: { donationSuccess: boolean; isVolunteerCampaign: boolean }) => {
+const Rings = ({
+  donationSuccess,
+  isVolunteerCampaign
+}: {
+  donationSuccess: boolean;
+  isVolunteerCampaign: boolean;
+}) => {
   const ringClasses =
     "absolute scale border rounded-full border-[#D0D5DD] left-[50%] -translate-x-[50%] top-[50%] -translate-y-[50%] ";
 
@@ -369,16 +453,14 @@ const Rings = ({ donationSuccess, isVolunteerCampaign }: { donationSuccess: bool
 
   return (
     <div
-      className={`${getBgColor()} relative grid place-content-center shrink-0 rounded-full w-12 h-12`}
-    >
+      className={`${getBgColor()} relative grid place-content-center shrink-0 rounded-full w-12 h-12`}>
       {donationSuccess ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          fill="none"
-        >
+          fill="none">
           <path
             d="M7.5 12L10.5 15L16.5 9M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
             stroke={getStrokeColor()}
@@ -393,8 +475,7 @@ const Rings = ({ donationSuccess, isVolunteerCampaign }: { donationSuccess: bool
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          fill="none"
-        >
+          fill="none">
           <path
             d="M8.5 14.5L12 11L15.5 14.5M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
             stroke="#175CD3"
@@ -409,32 +490,27 @@ const Rings = ({ donationSuccess, isVolunteerCampaign }: { donationSuccess: bool
         className={
           ringClasses +
           "opacity-90 w-[calc(48px+(24px*2))] h-[calc(48px+(24px*2))]"
-        }
-      ></div>
+        }></div>
       <div
         className={
           ringClasses +
           "opacity-70 w-[calc(48px+(24px*4))] h-[calc(48px+(24px*4))]"
-        }
-      ></div>
+        }></div>
       <div
         className={
           ringClasses +
           "opacity-50 w-[calc(48px+(24px*6))] h-[calc(48px+(24px*6))]"
-        }
-      ></div>
+        }></div>
       <div
         className={
           ringClasses +
           "opacity-30 w-[calc(48px+(24px*8))] h-[calc(48px+(24px*8))]"
-        }
-      ></div>
+        }></div>
       <div
         className={
           ringClasses +
           "opacity-10 w-[calc(48px+(24px*10))] h-[calc(48px+(24px*10))]"
-        }
-      ></div>
+        }></div>
     </div>
   );
 };
@@ -450,8 +526,7 @@ const XIcon = ({ onClick, className, wrapperClass }: any) => {
           viewBox="0 0 24 24"
           fill="none"
           onClick={onClick}
-          className={className}
-        >
+          className={className}>
           <path
             d="M18 6L6 18M6 6L18 18"
             stroke="#98A2B3"
