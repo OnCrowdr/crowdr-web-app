@@ -8,17 +8,40 @@ export default function Header () {
       id: 1,
       title: 'Donor fee',
       description:
-        'To fulfill the transaction with our payment processor, we charge a fee of 1.5% and ₦100 — capped at ₦500.',
-      percentageCharge: '1.5% + ₦100',
-      percentageDescription: 'each donation',
+        'A processing fee is added at the donation point and paid by the donor. This goes to our payment provider, not Crowdr. Think of this like the processing fees all banks charge on transfers.',
+      percentageCharge: '1.5% + ₦100 ',
+      percentageDescription: (
+        <>
+          each donation. *Fee varies for Apple Pay transactions.{" "}
+          <a
+            href="https://blog.oncrowdr.com/payments-and-payouts/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#00B964]"
+          >
+            Learn more here
+          </a>.
+        </>
+      ),
       bgColor: 'bg-[#E3FFE6]',
       textColor: 'text-[#181A1D]'
     },
     {
       id: 2,
       title: 'Fundraising fee',
-      description:
-        'A 5% fee is deducted from the total funds raised by a campaign creator.',
+      description: (
+        <>
+          We deduct a small fee on funds raised to support our team and business operations. This helps us keep Crowdr running for everyone, so you can continue to make impact.{" "}
+          <a
+            href="https://blog.oncrowdr.com/payments-and-payouts/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[#EBECED] underline"
+          >
+            Read more on why we charge fees here
+          </a>.
+        </>
+      ),
       percentageCharge: '5%',
       percentageDescription: 'amount raised',
       bgColor: 'bg-[#3B8249]',
@@ -28,7 +51,7 @@ export default function Header () {
       id: 3,
       title: 'Volunteer sourcing fee',
       description:
-        'At this time, sourcing volunteers through our platform is free!',
+        'Sourcing volunteers through Crowdr is 100% free!',
       percentageCharge: '₦0',
       percentageDescription: 'volunteer',
       bgColor: 'bg-[#2B5F49]',
@@ -52,20 +75,35 @@ export default function Header () {
           Transaction fees help us run the platform successfully and we’ve
           worked hard to keep them lower than<br/> market costs. If you have any
           questions or concerns, please email us at{' '}
-          <a className='text-[#00B964]' href='mailto:info@oncrowdr.com'>info@oncrowdr.com</a>.
+          <a 
+            className='text-[#00B964]' 
+            href='mailto:info@oncrowdr.com'
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            info@oncrowdr.com
+          </a>.
         </p>
         </div>
         <div className='flex flex-col md:flex-row items-start gap-3 mt-16'>
         {
-          pricingDetails.map(({id, title, description, percentageCharge, percentageDescription, bgColor, textColor}, index) => (
-            <div key={id} className={`flex flex-col items-start justify-between gap-3 p-6 ${index !== 0 && "w-full md:w-auto"}  ${bgColor} ${textColor} h-[280px] md:h-[340px]`}>
+          pricingDetails.map(({id, title, description, percentageCharge, percentageDescription, bgColor, textColor}: {
+            id: number;
+            title: string;
+            description: string | React.ReactElement;
+            percentageCharge: string;
+            percentageDescription: string | React.ReactElement;
+            bgColor: string;
+            textColor: string;
+          }, index: number) => (
+            <div key={id} className={`flex flex-col items-start justify-between gap-3 p-4 md:p-6 w-full ${bgColor} ${textColor} min-h-[280px] md:h-[340px]`}>
               <div>
-              <h3 className={`text-[24px] md:text-[36px] font-medium  ${textColor} leading-[55px]`}>{title}</h3>
-              <p className={`text-[14px] md:text-sm ${textColor}`}>{description}</p>
+              <h3 className={`text-[20px] md:text-[36px] font-medium  ${textColor} leading-[28px] md:leading-[55px]`}>{title}</h3>
+              <p className={`text-[12px] md:text-sm ${textColor} leading-[18px] md:leading-[20px]`}>{description}</p>
               </div>
               <div className='flex flex-col items-start gap-1'>
-                <h4 className={`text-[40px] md:text-[72px] font-medium ${textColor}`}>{percentageCharge}</h4>
-                <p className={`text-[14px] md:text-[20px] ${textColor}`}>/ {percentageDescription}</p>
+                <h4 className={`text-[32px] md:text-[72px] font-medium ${textColor} leading-[36px] md:leading-[76px]`}>{percentageCharge}</h4>
+                <p className={`text-[12px] md:text-[20px] ${textColor} leading-[16px] md:leading-[24px]`}>/ {percentageDescription}</p>
               </div>
             </div>
           ))
