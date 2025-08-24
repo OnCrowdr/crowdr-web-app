@@ -57,9 +57,11 @@ const mapKycResponseToView = (kycs: Kyc[]) => {
 };
 
 const mapWithdrawalResponseToView = (withdrawals: Withdrawal[]) => {
+  console.log("withdrawals", withdrawals);
   return withdrawals.map((withdrawal) => {
     const [{ currency, payableAmount }] = withdrawal.totalAmountDonated;
-    const [{ availableAmount }] = withdrawal.withdrawableAmounts;
+    const withdrawableAmount = withdrawal.withdrawableAmounts?.[0];
+    const availableAmount = withdrawableAmount?.availableAmount || 0;
     const formattedAmount = formatAmount(availableAmount, currency);
 
     return {
@@ -68,6 +70,7 @@ const mapWithdrawalResponseToView = (withdrawals: Withdrawal[]) => {
       campaignTitle: withdrawal.campaign.title,
       status: withdrawal.status,
       amount: formattedAmount,
+      payableAmount: formatAmount(payableAmount, currency),
       imageUrl: ""
     };
   });

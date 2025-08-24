@@ -238,31 +238,33 @@ const WithdrawalPopup = () => {
             </div>
           )}
 
-          <div className="flex gap-6">
-            <ModalTrigger id="withdrawalPopup" type="hide">
-              <ModalTrigger id="kycRejectionForm">
-                <GrayButton
-                  text="Decline"
-                  className="h-11 !w-[218px] !justify-center"
-                  disabled={!otpIsFilled}
-                  onClick={() =>
-                    setWithdrawalToReject({
-                      id: activeWithdrawalId!,
-                      otp: adminOtp,
-                    })
-                  }
-                />
+          {!withdrawalApproved && (
+            <div className="flex gap-6">
+              <ModalTrigger id="withdrawalPopup" type="hide">
+                <ModalTrigger id="kycRejectionForm">
+                  <GrayButton
+                    text="Decline"
+                    className="h-11 !w-[218px] !justify-center"
+                    disabled={!otpIsFilled}
+                    onClick={() =>
+                      setWithdrawalToReject({
+                        id: activeWithdrawalId!,
+                        otp: adminOtp,
+                      })
+                    }
+                  />
+                </ModalTrigger>
               </ModalTrigger>
-            </ModalTrigger>
 
-            <Button
-              text="Approve Withdrawal"
-              loading={isApproving}
-              disabled={!otpIsFilled || isApproving}
-              className="h-11 !w-[218px] !justify-center"
-              onClick={approveWithdrawal}
-            />
-          </div>
+              <Button
+                text="Approve Withdrawal"
+                loading={isApproving}
+                disabled={!otpIsFilled || isApproving}
+                className="h-11 !w-[218px] !justify-center"
+                onClick={approveWithdrawal}
+              />
+            </div>
+          )}
         </div>
       </div>
     )

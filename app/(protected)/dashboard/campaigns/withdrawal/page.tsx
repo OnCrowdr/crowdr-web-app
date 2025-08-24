@@ -50,7 +50,6 @@ const Withdrawal = () => {
   const summary = campaignsSummaryQuery.data;
   const campaigns = campaignsQuery.data;
 
-  console.log("campaigns",campaigns )
 
   const withdraw = async (campaignId: string) => {
     try {

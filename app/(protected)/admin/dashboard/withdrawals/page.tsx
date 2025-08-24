@@ -207,7 +207,8 @@ const Withdrawals = () => {
             <Table.Head>
               <Table.HeadCell>Account Name</Table.HeadCell>
               <Table.HeadCell>Campaign</Table.HeadCell>
-              <Table.HeadCell>Withdrawal Amount</Table.HeadCell>
+              <Table.HeadCell>Withdrawable Amount</Table.HeadCell>
+              <Table.HeadCell>Payable Amount</Table.HeadCell>
               <Table.HeadCell>Status</Table.HeadCell>
             </Table.Head>
 
@@ -235,6 +236,7 @@ const Withdrawals = () => {
                     </Table.Cell>
 
                     <Table.Cell>{withdrawal.amount}</Table.Cell>
+                    <Table.Cell>{withdrawal.payableAmount}</Table.Cell>
 
                     <Table.Cell>{label(withdrawal.status)}</Table.Cell>
 
@@ -251,17 +253,19 @@ const Withdrawals = () => {
                           </button>
                         </ModalTrigger>
 
-                        <ModalTrigger id="withdrawalPopup">
-                          <button
-                            type="button"
-                            className="font-semibold text-sm text-[#6941C6]"
-                            onClick={() =>
-                              setActiveWithdrawalIdAtom(withdrawal.id)
-                            }
-                          >
-                            Approve
-                          </button>
-                        </ModalTrigger>
+                        {activeFilter !== WithdrawalStatus.Approved && (
+                          <ModalTrigger id="withdrawalPopup">
+                            <button
+                              type="button"
+                              className="font-semibold text-sm text-[#6941C6]"
+                              onClick={() =>
+                                setActiveWithdrawalIdAtom(withdrawal.id)
+                              }
+                            >
+                              Approve
+                            </button>
+                          </ModalTrigger>
+                        )}
                       </div>
                     </Table.Cell>
                   </Table.Row>
