@@ -106,8 +106,16 @@ const WithdrawalPopup = () => {
         setWithdrawalData(withdrawalData)
         setIsApproving(false)
         toast({ title: "Withdrawal Approved" })
+        
+         withdrawalService.refreshWithdrawal()
+        withdrawalService.fetchWithdrawal({
+          withdrawalId: activeWithdrawalId,
+          authToken: user.token,
+        })
+        const modal = modalStore.get("withdrawalPopup")!
+        modal.hide()
 
-        withdrawalService.refreshWithdrawal()
+       
       } catch (error) {
         setIsApproving(false)
         const message = extractErrorMessage(error)
@@ -119,6 +127,8 @@ const WithdrawalPopup = () => {
   if (withdrawalData) {
     const [{ payableAmount, serviceFee, currency, amount }] =
       withdrawalData.totalAmountDonated
+
+      const [{ availableAmount }] = withdrawalData.withdrawableAmounts
 
     return (
       <div className="grow max-w-[1031px] bg-white px-[50px] py-10 mb-11 border max-h-screen overflow-y-auto">
@@ -162,7 +172,7 @@ const WithdrawalPopup = () => {
           <div className="flex flex-col gap-[26px] pt-2.5 mb-6">
             <TextInput
               label="Withdrawal amount"
-              value={formatAmount(payableAmount, currency)}
+              value={formatAmount(availableAmount, currency)}
               disabled
             />
             <TextInput
@@ -184,14 +194,21 @@ const WithdrawalPopup = () => {
             <h3 className="font-semibold text-[#666]">Donation Breakdown</h3>
 
             <div className="flex justify-between">
-              <p>Total</p>
+              <p>Total raised</p>
               <p>{formatAmount(amount, currency)}</p>
             </div>
 
             <div className="flex justify-between">
               <p>Service fee</p>
               <p>
-                {-formatAmount(serviceFee, currency, { prefixSymbol: false })}
+                - {formatAmount(serviceFee, currency)}
+              </p>
+            </div>
+
+             <div className="flex justify-between">
+              <p>Withdrawable Amount</p>
+              <p>
+               {formatAmount(availableAmount, currency)}
               </p>
             </div>
             <hr className="border-t-[#CFCFCF]" />
@@ -199,7 +216,7 @@ const WithdrawalPopup = () => {
             <div className="flex justify-between font-semibold text-base">
               <p>Amount payable</p>
               <p>
-                {formatAmount(payableAmount, currency, { prefixSymbol: false })}
+                {formatAmount(availableAmount, currency)}
               </p>
             </div>
           </div>
@@ -221,31 +238,33 @@ const WithdrawalPopup = () => {
             </div>
           )}
 
-          <div className="flex gap-6">
-            <ModalTrigger id="withdrawalPopup" type="hide">
-              <ModalTrigger id="kycRejectionForm">
-                <GrayButton
-                  text="Decline"
-                  className="h-11 !w-[218px] !justify-center"
-                  disabled={!otpIsFilled}
-                  onClick={() =>
-                    setWithdrawalToReject({
-                      id: activeWithdrawalId!,
-                      otp: adminOtp,
-                    })
-                  }
-                />
+          {!withdrawalApproved && (
+            <div className="flex gap-6">
+              <ModalTrigger id="withdrawalPopup" type="hide">
+                <ModalTrigger id="kycRejectionForm">
+                  <GrayButton
+                    text="Decline"
+                    className="h-11 !w-[218px] !justify-center"
+                    disabled={!otpIsFilled}
+                    onClick={() =>
+                      setWithdrawalToReject({
+                        id: activeWithdrawalId!,
+                        otp: adminOtp,
+                      })
+                    }
+                  />
+                </ModalTrigger>
               </ModalTrigger>
-            </ModalTrigger>
 
-            <Button
-              text="Approve Withdrawal"
-              loading={isApproving}
-              disabled={!otpIsFilled || isApproving}
-              className="h-11 !w-[218px] !justify-center"
-              onClick={approveWithdrawal}
-            />
-          </div>
+              <Button
+                text="Approve Withdrawal"
+                loading={isApproving}
+                disabled={!otpIsFilled || isApproving}
+                className="h-11 !w-[218px] !justify-center"
+                onClick={approveWithdrawal}
+              />
+            </div>
+          )}
         </div>
       </div>
     )

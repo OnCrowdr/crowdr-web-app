@@ -50,6 +50,7 @@ const Withdrawal = () => {
   const summary = campaignsSummaryQuery.data;
   const campaigns = campaignsQuery.data;
 
+
   const withdraw = async (campaignId: string) => {
     try {
       await withdrawMutation.mutateAsync({ campaignId });
@@ -68,10 +69,7 @@ const Withdrawal = () => {
     modal.show(
       <CompletionCard
         altLayout
-        title={`You’re making a withdrawal of ${formatAmount(
-          payableAmount,
-          currency
-        )}`}
+        title={`You’re making a withdrawal of ${campaign.withdrawableAmount}`}
         text={
           <div className="flex flex-col gap-5">
             <p className="text-sm text-[#475467] md:text-justify md:pr-2">
@@ -94,17 +92,22 @@ const Withdrawal = () => {
               <div className="flex justify-between">
                 <p>Service fee</p>
                 <p>
-                  -{formatAmount(serviceFee, currency, { prefixSymbol: false })}
+                  -{formatAmount(serviceFee, currency)}
+                </p>
+              </div>
+
+               <div className="flex justify-between">
+                <p>Withdrawable Amount</p>
+                <p>
+                  {campaign.withdrawableAmount}
                 </p>
               </div>
               <hr className="border-t-[#CFCFCF]" />
 
               <div className="flex justify-between font-semibold text-base">
-                <p>Amount to be received</p>
+                <p>Amount to be received:</p>
                 <p>
-                  {formatAmount(payableAmount, currency, {
-                    prefixSymbol: false
-                  })}
+                  {campaign.withdrawableAmount}
                 </p>
               </div>
             </div>
@@ -247,8 +250,12 @@ const Withdrawal = () => {
                           text="Withdraw"
                           onClick={() => activateWithdrawalModal(campaign)}
                           disabled={
-                            (campaign.amountDonated?.amount ?? 0) <= 0 ||
-                            !campaign.isCompleted
+                            (() => {
+                              const amount = campaign.withdrawableAmount as string;
+                              // Remove currency symbol, commas, and parse as number
+                              const numericValue = parseInt(amount?.replace(/[₦,]/g, '') || '0') || 0;
+                              return numericValue <= 0;
+                            })()
                           }
                         />
                       )}
