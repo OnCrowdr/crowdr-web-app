@@ -23,11 +23,15 @@ import { useAuthQuery } from "@/hooks/useAuthQuery";
 import query from "@/api/query";
 import _my_campaigns from "@/api/_my_campaigns";
 import _withdrawals from "@/api/_withdrawals";
+import { useAuth } from "@/contexts/AppProvider";
+import makeRequest from "@/utils/makeRequest";
+import Link from "next/link";
 
 const Withdrawal = () => {
   const [page, setPage] = useState(1);
   const modal = useModal();
   const toast = useToast();
+  const { user } = useAuth();
 
   const campaignsSummaryQuery = useAuthQuery({
     queryKey: query.keys.MY_CAMPAIGN,
@@ -47,9 +51,29 @@ const Withdrawal = () => {
 
   const withdrawMutation = useMutation(_withdrawals.requestWithdrawal);
 
+  const bankDetailsQuery = useAuthQuery({
+    queryKey: ["bank-details", user?.token],
+    queryFn: async () => {
+      if (!user?.token) return null;
+      const endpoint = `/settings/bank-details`;
+      const headers = { "x-auth-token": user.token };
+      try {
+        const { data } = await makeRequest<IBankDetail[]>(endpoint, {
+          headers,
+          method: "GET"
+        });
+        return data;
+      } catch (error) {
+        const message = extractErrorMessage(error);
+        throw new Error(message);
+      }
+    },
+    enabled: Boolean(user?.token)
+  });
+
   const summary = campaignsSummaryQuery.data;
   const campaigns = campaignsQuery.data;
-
+  const bankDetails = bankDetailsQuery.data;
 
   const withdraw = async (campaignId: string) => {
     try {
@@ -91,24 +115,18 @@ const Withdrawal = () => {
 
               <div className="flex justify-between">
                 <p>Service fee</p>
-                <p>
-                  -{formatAmount(serviceFee, currency)}
-                </p>
+                <p>-{formatAmount(serviceFee, currency)}</p>
               </div>
 
-               <div className="flex justify-between">
+              <div className="flex justify-between">
                 <p>Withdrawable Amount</p>
-                <p>
-                  {campaign.withdrawableAmount}
-                </p>
+                <p>{campaign.withdrawableAmount}</p>
               </div>
               <hr className="border-t-[#CFCFCF]" />
 
               <div className="flex justify-between font-semibold text-base">
                 <p>Amount to be received:</p>
-                <p>
-                  {campaign.withdrawableAmount}
-                </p>
+                <p>{campaign.withdrawableAmount}</p>
               </div>
             </div>
           </div>
@@ -156,7 +174,16 @@ const Withdrawal = () => {
         <Button
           text="Withdraw"
           className="!h-9"
-          disabled={!campaign.isCompleted}
+          disabled={(() => {
+            // Check if bank details exist
+            if (!bankDetails || bankDetails.length === 0) return true;
+
+            const amount = campaign.withdrawableAmount as string;
+            // Remove currency symbol, commas, and parse as number
+            const numericValue =
+              parseInt(amount?.replace(/[₦,]/g, "") || "0") || 0;
+            return numericValue <= 0;
+          })()}
           onClick={() => activateWithdrawalModal(campaign)}
         />
       )
@@ -172,7 +199,48 @@ const Withdrawal = () => {
         </h1>
       </hgroup>
 
-      {/* stats */}
+      {/* Bank details check */}
+      {bankDetails && bankDetails.length === 0 && (
+        <div className="mb-10 p-6 bg-[#FEF0C7] border border-[#FED7AA] rounded-lg">
+          <div className="flex flex-col space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-[#A75003]"
+                  fill="currentColor"
+                  viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-sm font-medium text-[#A75003]">
+                  Bank Account Required
+                </h3>
+              </div>
+            </div>
+            <div className="ml-8">
+              <div className="text-sm text-[#9A3412]">
+                <p className="mb-4">
+                  You need to add your bank account details before you can make
+                  withdrawals. This ensures your funds can be transferred to
+                  your account securely.
+                </p>
+                <Link
+                  href="/dashboard/settings/payment"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#A75003] hover:bg-[#A75003] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#EA580C] transition-colors duration-200">
+                  Add Bank Account Details
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* stats - only show when bank details exist */}
       <div className="grid md:grid-cols-[repeat(4,_minmax(0,_350px))] 2xl:grid-cols-4 gap-4 md:gap-5 mb-[23px] md:mb-[75px]">
         {summary ? (
           <>
@@ -215,7 +283,7 @@ const Withdrawal = () => {
         )}
       </div>
 
-      {/* campaigns */}
+      {/* campaigns - only show when bank details exist */}
       {campaigns && (
         <>
           <Table className="hidden md:block mb-20">
@@ -249,14 +317,19 @@ const Withdrawal = () => {
                         <Button
                           text="Withdraw"
                           onClick={() => activateWithdrawalModal(campaign)}
-                          disabled={
-                            (() => {
-                              const amount = campaign.withdrawableAmount as string;
-                              // Remove currency symbol, commas, and parse as number
-                              const numericValue = parseInt(amount?.replace(/[₦,]/g, '') || '0') || 0;
-                              return numericValue <= 0;
-                            })()
-                          }
+                          disabled={(() => {
+                            // Check if bank details exist
+                            if (!bankDetails || bankDetails.length === 0)
+                              return true;
+
+                            const amount =
+                              campaign.withdrawableAmount as string;
+                            // Remove currency symbol, commas, and parse as number
+                            const numericValue =
+                              parseInt(amount?.replace(/[₦,]/g, "") || "0") ||
+                              0;
+                            return numericValue <= 0;
+                          })()}
                         />
                       )}
                     </Table.Cell>
@@ -304,3 +377,16 @@ const Withdrawal = () => {
 };
 
 export default Withdrawal;
+
+interface IBankDetail {
+  _id: string;
+  userId: string;
+  accountType: string;
+  accountNumber: string;
+  bankName: string;
+  accountName: string;
+  isVerifiedWithBVN: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
