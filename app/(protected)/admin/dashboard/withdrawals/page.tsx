@@ -46,6 +46,45 @@ const Withdrawals = () => {
     keepPreviousData: true,
   })
 
+  // Fetch metrics for all statuses
+  const { data: inReviewData } = useAuthQuery({
+    queryKey: ["GET /admin/withdrawals/in-review"],
+    queryFn: () => withdrawalService.getWithdrawals({ status: WithdrawalStatus.InReview, page: 1 }),
+    refetchOnWindowFocus: false,
+  })
+
+  const { data: approvedData } = useAuthQuery({
+    queryKey: ["GET /admin/withdrawals/approved"],
+    queryFn: () => withdrawalService.getWithdrawals({ status: WithdrawalStatus.Approved, page: 1 }),
+    refetchOnWindowFocus: false,
+  })
+
+  const { data: rejectedData } = useAuthQuery({
+    queryKey: ["GET /admin/withdrawals/rejected"],
+    queryFn: () => withdrawalService.getWithdrawals({ status: WithdrawalStatus.Rejected, page: 1 }),
+    refetchOnWindowFocus: false,
+  })
+
+  // Calculate metrics from the data
+  const calculateMetrics = () => {
+    return [
+      {
+        title: "Pending Withdrawals",
+        value: inReviewData?.pagination?.total || 0,
+      },
+      {
+        title: "Approved Withdrawals",
+        value: approvedData?.pagination?.total || 0,
+      },
+      {
+        title: "Rejected Withdrawals", 
+        value: rejectedData?.pagination?.total || 0,
+      },
+    ]
+  }
+
+  const metrics = calculateMetrics()
+
   const setSearch = useDebounceCallback(
     () =>
       setSearchText((text) => {
@@ -96,8 +135,7 @@ const Withdrawals = () => {
 
       {/* stats */}
       <div className="flex gap-6 px-8 pt-8 mb-8">
-        {dummyStats &&
-          dummyStats.map((stat, index) => <StatCard key={index} {...stat} />)}
+        {metrics.map((stat, index) => <StatCard key={index} {...stat} />)}
       </div>
 
       {/* toggle buttons x search x filters */}
@@ -291,17 +329,3 @@ const Withdrawals = () => {
 
 export default Withdrawals
 
-const dummyStats = [
-  {
-    title: "Pending Campaigns",
-    value: 123,
-  },
-  {
-    title: "Active Campaigns",
-    value: 456,
-  },
-  {
-    title: "Completed Campaigns",
-    value: 789,
-  },
-]
