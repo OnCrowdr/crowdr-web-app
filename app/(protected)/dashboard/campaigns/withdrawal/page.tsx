@@ -111,6 +111,21 @@ const Withdrawal = () => {
     return withdrawal?.status || null;
   };
 
+  // Helper function to determine if status should be displayed based on withdrawal amount
+  const shouldShowApprovedStatus = (campaign: ICampaignView, status: string | null) => {
+    if (!status) return false;
+    
+    const amount = campaign.withdrawableAmount as string;
+    const numericValue = parseInt(amount?.replace(/[₦,]/g, "") || "0") || 0;
+    
+    // Only show approved status if withdrawal amount is 0 and status is approved
+    if (status.toLowerCase() === 'approved') {
+      return numericValue === 0;
+    }
+    
+    return true; // Show other statuses regardless of amount
+  };
+
   const withdraw = async (campaignId: string) => {
     try {
       await withdrawMutation.mutateAsync({ campaignId });
@@ -328,7 +343,9 @@ const Withdrawal = () => {
                     <Table.Cell>
                       {(() => {
                         const status = getWithdrawalStatusForCampaign(campaign._id);
-                        if (!status) return <span className="text-gray-500">-</span>;
+                        if (!status || !shouldShowApprovedStatus(campaign, status)) {
+                          return <span className="text-gray-500">-</span>;
+                        }
                         return status.match(regex("i")`approved`) ? (
                           <Label text={status} />
                         ) : (
@@ -345,31 +362,39 @@ const Withdrawal = () => {
                         format(parseISO(campaign?.endDate), "PPP 'at' p")}
                     </Table.Cell>
                     <Table.Cell>
-                      {campaign.campaignType !== "volunteer" && (
-                        <Button
-                          text="Withdraw"
-                          onClick={() => activateWithdrawalModal(campaign)}
-                          disabled={(() => {
-                            // Check if bank details exist
-                            if (!bankDetails || bankDetails.length === 0)
-                              return true;
-
-                            // Check withdrawal status
-                            const status = getWithdrawalStatusForCampaign(campaign._id);
-                            if (status && (status.toLowerCase() === 'in-review' || status.toLowerCase() === 'approved')) {
-                              return true;
-                            }
-
-                            const amount =
-                              campaign.withdrawableAmount as string;
-                            // Remove currency symbol, commas, and parse as number
-                            const numericValue =
-                              parseInt(amount?.replace(/[₦,]/g, "") || "0") ||
-                              0;
-                            return numericValue <= 0;
-                          })()}
-                        />
-                      )}
+                      {campaign.campaignType !== "volunteer" && (() => {
+                        const amount = campaign.withdrawableAmount as string;
+                        const numericValue = parseInt(amount?.replace(/[₦,]/g, "") || "0") || 0;
+                        const status = getWithdrawalStatusForCampaign(campaign._id);
+                        
+                        // Don't render button if withdrawal is approved and amount is 0 (completed withdrawal)
+                        if (status && status.toLowerCase() === 'approved' && numericValue === 0) {
+                          return null;
+                        }
+                        
+                        return (
+                          <Button
+                            text="Withdraw"
+                            onClick={() => activateWithdrawalModal(campaign)}
+                            disabled={(() => {
+                              // Check if bank details exist
+                              if (!bankDetails || bankDetails.length === 0)
+                                return true;
+                              
+                              // If withdrawal amount is 0, disable button
+                              if (numericValue <= 0) return true;
+                              
+                              // Disable if status is "in-review"
+                              if (status && status.toLowerCase() === 'in-review') {
+                                return true;
+                              }
+                              
+                              // Enable button for all other cases
+                              return false;
+                            })()}
+                          />
+                        );
+                      })()}
                     </Table.Cell>
                   </Table.Row>
                 ))}
@@ -396,7 +421,7 @@ const Withdrawal = () => {
                         <div className="flex flex-col items-end gap-1">
                           {/* Status badge - visible when closed */}
                           <div className="group-open:hidden">
-                            {status ? (
+                            {status && shouldShowApprovedStatus(campaign, status) ? (
                               status.match(regex("i")`approved`) ? (
                                 <Label text={status} />
                               ) : (
@@ -441,7 +466,7 @@ const Withdrawal = () => {
                           <div className="flex justify-between items-center">
                             <span className="text-sm text-[#667085]">Status:</span>
                             <div>
-                              {status ? (
+                              {status && shouldShowApprovedStatus(campaign, status) ? (
                                 status.match(regex("i")`approved`) ? (
                                   <Label text={status} />
                                 ) : (
@@ -466,30 +491,40 @@ const Withdrawal = () => {
                         </div>
                         
                         {/* Withdraw Button */}
-                        {campaign.campaignType !== "volunteer" && (
-                          <div className="flex justify-end">
-                            <Button
-                              text="Withdraw"
-                              className="!h-9"
-                              disabled={(() => {
-                                // Check if bank details exist
-                                if (!bankDetails || bankDetails.length === 0) return true;
-
-                                // Check withdrawal status
-                                if (status && (status.toLowerCase() === 'in-review' || status.toLowerCase() === 'approved')) {
-                                  return true;
-                                }
-
-                                const amount = campaign.withdrawableAmount as string;
-                                // Remove currency symbol, commas, and parse as number
-                                const numericValue =
-                                  parseInt(amount?.replace(/[₦,]/g, "") || "0") || 0;
-                                return numericValue <= 0;
-                              })()}
-                              onClick={() => activateWithdrawalModal(campaign)}
-                            />
-                          </div>
-                        )}
+                        {campaign.campaignType !== "volunteer" && (() => {
+                          const amount = campaign.withdrawableAmount as string;
+                          const numericValue = parseInt(amount?.replace(/[₦,]/g, "") || "0") || 0;
+                          
+                          // Don't render button if withdrawal is approved and amount is 0 (completed withdrawal)
+                          if (status && status.toLowerCase() === 'approved' && numericValue === 0) {
+                            return null;
+                          }
+                          
+                          return (
+                            <div className="flex justify-end">
+                              <Button
+                                text="Withdraw"
+                                className="!h-9"
+                                disabled={(() => {
+                                  // Check if bank details exist
+                                  if (!bankDetails || bankDetails.length === 0) return true;
+                                  
+                                  // If withdrawal amount is 0, disable button
+                                  if (numericValue <= 0) return true;
+                                  
+                                  // Disable if status is "in-review"
+                                  if (status && status.toLowerCase() === 'in-review') {
+                                    return true;
+                                  }
+                                  
+                                  // Enable button for all other cases
+                                  return false;
+                                })()}
+                                onClick={() => activateWithdrawalModal(campaign)}
+                              />
+                            </div>
+                          );
+                        })()}
                       </div>
                     </summary>
                   </details>
