@@ -1,12 +1,11 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useModal } from "@/hooks/useModal";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/Button";
 import Table from "../../_components/Table";
-import Detail from "../../_components/Detail";
 import Pagination from "../../_components/Pagination";
 import StatCard from "../../_components/StatCard";
 import StatCardSkeleton from "../../_components/skeletons/StatCardSkeleton";
@@ -26,12 +25,17 @@ import _withdrawals from "@/api/_withdrawals";
 import { useAuth } from "@/contexts/AppProvider";
 import makeRequest from "@/utils/makeRequest";
 import Link from "next/link";
+import Label from "../../_components/Label";
+import moment from "moment";
+import { regex } from "regex";
 
 const Withdrawal = () => {
   const [page, setPage] = useState(1);
+  const [withdrawalPage, setWithdrawalPage] = useState(1);
   const modal = useModal();
   const toast = useToast();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const campaignsSummaryQuery = useAuthQuery({
     queryKey: query.keys.MY_CAMPAIGN,
@@ -71,13 +75,49 @@ const Withdrawal = () => {
     enabled: Boolean(user?.token)
   });
 
+  const withdrawalsQuery = useAuthQuery({
+    queryKey: ["withdrawals", user?.token, withdrawalPage],
+    queryFn: async () => {
+      if (!user?.token) return null;
+      const query = new URLSearchParams({
+        page: `${withdrawalPage}`,
+        perPage: "50"
+      });
+      const endpoint = `/withdrawals?${query}`;
+      const headers = { "x-auth-token": user.token };
+      try {
+        const { data } = await makeRequest<IWithdrawals>(endpoint, {
+          headers,
+          method: "GET"
+        });
+        return data;
+      } catch (error) {
+        const message = extractErrorMessage(error);
+        throw new Error(message);
+      }
+    },
+    enabled: Boolean(user?.token)
+  });
+
   const summary = campaignsSummaryQuery.data;
   const campaigns = campaignsQuery.data;
   const bankDetails = bankDetailsQuery.data;
+  const withdrawals = withdrawalsQuery.data;
+
+  // Create a mapping of campaign ID to withdrawal status
+  const getWithdrawalStatusForCampaign = (campaignId: string) => {
+    if (!withdrawals?.withdrawals) return null;
+    const withdrawal = withdrawals.withdrawals.find(w => w.campaignId === campaignId);
+    return withdrawal?.status || null;
+  };
 
   const withdraw = async (campaignId: string) => {
     try {
       await withdrawMutation.mutateAsync({ campaignId });
+      // Refetch both campaigns and withdrawals data
+      queryClient.invalidateQueries([query.keys.MY_CAMPAIGNS]);
+      queryClient.invalidateQueries([query.keys.MY_CAMPAIGN]);
+      queryClient.invalidateQueries(["withdrawals"]);
       activateWithdrawalCompletionModal();
     } catch (error) {
       const message = extractErrorMessage(error);
@@ -165,30 +205,6 @@ const Withdrawal = () => {
     );
   };
 
-  const mapCampaignToView = (campaign: ICampaignView) => {
-    return {
-      title: campaign.title,
-      detail: campaign.fundsGotten || "",
-      date: campaign.endDate,
-      button: (
-        <Button
-          text="Withdraw"
-          className="!h-9"
-          disabled={(() => {
-            // Check if bank details exist
-            if (!bankDetails || bankDetails.length === 0) return true;
-
-            const amount = campaign.withdrawableAmount as string;
-            // Remove currency symbol, commas, and parse as number
-            const numericValue =
-              parseInt(amount?.replace(/[₦,]/g, "") || "0") || 0;
-            return numericValue <= 0;
-          })()}
-          onClick={() => activateWithdrawalModal(campaign)}
-        />
-      )
-    };
-  };
 
   return (
     <div>
@@ -292,6 +308,7 @@ const Withdrawal = () => {
               <Table.HeadCell>Target Amount</Table.HeadCell>
               <Table.HeadCell>Amount Raised</Table.HeadCell>
               <Table.HeadCell>Withdrawal Amount</Table.HeadCell>
+              <Table.HeadCell>Status</Table.HeadCell>
               <Table.HeadCell>End Date</Table.HeadCell>
               <Table.HeadCell></Table.HeadCell>
             </Table.Head>
@@ -309,6 +326,21 @@ const Withdrawal = () => {
                     <Table.Cell>{campaign.fundsGotten}</Table.Cell>
                     <Table.Cell>{campaign.withdrawableAmount}</Table.Cell>
                     <Table.Cell>
+                      {(() => {
+                        const status = getWithdrawalStatusForCampaign(campaign._id);
+                        if (!status) return <span className="text-gray-500">-</span>;
+                        return status.match(regex("i")`approved`) ? (
+                          <Label text={status} />
+                        ) : (
+                          <Label
+                            text={status}
+                            textColor="#B42318"
+                            bgColor="#FEF3F2"
+                          />
+                        );
+                      })()}
+                    </Table.Cell>
+                    <Table.Cell>
                       {campaign?.endDate &&
                         format(parseISO(campaign?.endDate), "PPP 'at' p")}
                     </Table.Cell>
@@ -321,6 +353,12 @@ const Withdrawal = () => {
                             // Check if bank details exist
                             if (!bankDetails || bankDetails.length === 0)
                               return true;
+
+                            // Check withdrawal status
+                            const status = getWithdrawalStatusForCampaign(campaign._id);
+                            if (status && (status.toLowerCase() === 'in-review' || status.toLowerCase() === 'approved')) {
+                              return true;
+                            }
 
                             const amount =
                               campaign.withdrawableAmount as string;
@@ -345,13 +383,118 @@ const Withdrawal = () => {
                   campaign.campaignType === "fundraise" ||
                   campaign.campaignType === "fundraiseAndVolunteer"
               )
-              .map((campaign) => (
-                <Detail
-                  key={campaign._id}
-                  {...mapCampaignToView(campaign)}
-                  campaignType={campaign.campaignType}
-                />
-              ))}
+              .map((campaign) => {
+                const status = getWithdrawalStatusForCampaign(campaign._id);
+                return (
+                  <details key={campaign._id} className="group border-b border-[#DDD] mb-5">
+                    <summary className="block pb-6 cursor-pointer">
+                      <div className="flex items-center group-open:items-end justify-between group-open:mb-4">
+                        <div className="flex flex-col gap-2">
+                          <p className="text-[#667085] font-medium">{campaign.title}</p>
+                          <p className="group-open:hidden text-[#555] text-sm">{campaign.fundsGotten}</p>
+                        </div>
+                        <div className="flex flex-col items-end gap-1">
+                          {/* Status badge - visible when closed */}
+                          <div className="group-open:hidden">
+                            {status ? (
+                              status.match(regex("i")`approved`) ? (
+                                <Label text={status} />
+                              ) : (
+                                <Label
+                                  text={status}
+                                  textColor="#B42318"
+                                  bgColor="#FEF3F2"
+                                />
+                              )
+                            ) : (
+                              <span className="text-xs text-gray-500 px-2 py-1 bg-gray-100 rounded">No withdrawal</span>
+                            )}
+                          </div>
+                          {/* Chevron icons */}
+                          <svg className="group-open:hidden w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                          <svg className="hidden group-open:block w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Expanded content */}
+                      <div className="hidden group-open:block">
+                        <div className="space-y-3 mb-4">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#667085]">Target Amount:</span>
+                            <span className="text-sm text-[#555] font-medium">{campaign.fundingGoal}</span>
+                          </div>
+                          
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#667085]">Amount Raised:</span>
+                            <span className="text-sm text-[#555] font-medium">{campaign.fundsGotten}</span>
+                          </div>
+                          
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#667085]">Withdrawal Amount:</span>
+                            <span className="text-sm text-[#555] font-medium">{campaign.withdrawableAmount}</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[#667085]">Status:</span>
+                            <div>
+                              {status ? (
+                                status.match(regex("i")`approved`) ? (
+                                  <Label text={status} />
+                                ) : (
+                                  <Label
+                                    text={status}
+                                    textColor="#B42318"
+                                    bgColor="#FEF3F2"
+                                  />
+                                )
+                              ) : (
+                                <span className="text-sm text-gray-500">-</span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-[#667085]">End Date:</span>
+                            <span className="text-sm text-[#555]">
+                              {campaign?.endDate && format(parseISO(campaign?.endDate), "MMM dd, yyyy")}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {/* Withdraw Button */}
+                        {campaign.campaignType !== "volunteer" && (
+                          <div className="flex justify-end">
+                            <Button
+                              text="Withdraw"
+                              className="!h-9"
+                              disabled={(() => {
+                                // Check if bank details exist
+                                if (!bankDetails || bankDetails.length === 0) return true;
+
+                                // Check withdrawal status
+                                if (status && (status.toLowerCase() === 'in-review' || status.toLowerCase() === 'approved')) {
+                                  return true;
+                                }
+
+                                const amount = campaign.withdrawableAmount as string;
+                                // Remove currency symbol, commas, and parse as number
+                                const numericValue =
+                                  parseInt(amount?.replace(/[₦,]/g, "") || "0") || 0;
+                                return numericValue <= 0;
+                              })()}
+                              onClick={() => activateWithdrawalModal(campaign)}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </summary>
+                  </details>
+                );
+              })}
           </div>
 
           {/* pagination */}
@@ -389,4 +532,54 @@ interface IBankDetail {
   createdAt: string;
   updatedAt: string;
   __v: number;
+}
+
+interface IWithdrawals {
+  withdrawals: Withdrawal[];
+  pagination: Pagination;
+}
+
+interface Pagination {
+  total: number;
+  perPage: number;
+  currentPage: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+interface Withdrawal {
+  _id: string;
+  userId: string;
+  campaignId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  campaign: Campaign;
+  totalAmountDonated: TotalAmountDonated[];
+}
+
+interface Campaign {
+  _id: string;
+  userId: string;
+  category: string;
+  title: string;
+  story: string;
+  campaignType: string;
+  campaignStatus: string;
+  campaignCoverImage: string;
+  campaignAdditionalImages: string[];
+  campaignStartDate: string;
+  campaignEndDate: string;
+  campaignViews: number;
+  fundraise: Fundraise;
+}
+
+interface Fundraise {
+  fundingGoalDetails: TotalAmountDonated[];
+}
+
+interface TotalAmountDonated {
+  amount: number;
+  currency: string;
 }
