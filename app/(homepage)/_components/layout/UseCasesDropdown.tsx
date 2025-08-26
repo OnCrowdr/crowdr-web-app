@@ -28,7 +28,7 @@ export default UseCaseDropdown
 export const useCases = [
   {
     label: "For Organisations (CSR)",
-    href: "organizations",
+    href: "organisations",
   },
   {
     label: "For NGOs",
