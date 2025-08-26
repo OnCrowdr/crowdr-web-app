@@ -1,16 +1,21 @@
 "use client"
 import Faq from "./_components/home-components/Faq"
-import Header from "./_components/home-components/Header"
+import Hero from "./_components/home-components/Hero"
 import Community from "./_components/home-components/Community"
 import { useEffect, useState } from "react"
 import Footer from "./_components/layout/Footer"
 import Navigation from "./_components/layout/Navigation"
-import Todo from "./_components/home-components/Todo"
+import HowItWorks from "./_components/home-components/HowItWorks"
 import WhyCrowdr from "./_components/home-components/WhyCrowdr"
-import Happening from "./_components/home-components/Happening"
+import LiveCampaigns from "./_components/home-components/LiveCampaigns"
 import Partners from "./_components/home-components/Partners"
 import { Mixpanel } from "../../utils/mixpanel"
 import ForeignDonationsBanner from "./_components/home-components/ForeignDonationsBanner"
+import CrowdrStats from "./_components/home-components/CrowdrStats"
+import RunningCampaigns from "./_components/home-components/RunningCampaigns"
+import SoundFamiliar from "./_components/home-components/SoundFamiliar"
+import CrowdrFeatures from "./_components/home-components/CrowdrFeatures"
+import UseCases from "./_components/home-components/UseCases"
 
 export default function Home() {
   useEffect(() => {
@@ -22,13 +27,17 @@ export default function Home() {
       <Navigation />
       <main className="font-satoshi">
         <ForeignDonationsBanner />
-        <Header />
-        <Todo />
-        <WhyCrowdr />
-        <Happening />
+        <Hero />
+        <CrowdrStats />
+        <RunningCampaigns />
+        <SoundFamiliar />
+        <CrowdrFeatures />
+        <HowItWorks />
+        {/* <WhyCrowdr /> */}
+        <UseCases />
         <Partners />
         <Faq />
-        <Community />
+        {/* <Community /> */}
         <Footer />
       </main>
     </main>
