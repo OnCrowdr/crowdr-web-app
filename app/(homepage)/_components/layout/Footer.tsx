@@ -94,7 +94,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li className="">
-                <Link href="/use-cases/organisations" className="">
+                <Link href="/use-cases/organizations" className="">
                   For Organisations
                 </Link>
               </li>
