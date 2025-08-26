@@ -73,8 +73,8 @@ const ActiveCampaign: RFC<Props> = ({ campaign }) => {
         <Link
           href={
             user && user._id === campaign.userId
-              ? `/dashboard/campaigns/${campaign._id}`
-              : `/campaigns/${campaign._id}`
+              ? `/explore/c/${campaign._id}`
+              : `/explore/c/${campaign._id}`
           }
         >
           <h3 className="font-medium text-base truncate mb-2 hover:text-green-600 transition-colors">

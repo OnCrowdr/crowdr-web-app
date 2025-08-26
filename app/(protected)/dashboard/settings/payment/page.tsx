@@ -233,7 +233,7 @@ const PaymentPage = () => {
                           {moment(withdrawal.createdAt).format(DATE_FORMAT)}
                         </Table.Cell>
                         <Table.Cell>
-                          {withdrawal.status.match(regex("i")`success`) ? (
+                          {withdrawal.status.match(regex("i")`approved`) ? (
                             <Label text={withdrawal.status} />
                           ) : (
                             <Label

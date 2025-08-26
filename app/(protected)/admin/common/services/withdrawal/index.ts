@@ -102,7 +102,9 @@ async function fetchBankDetails({ userId, authToken }: IGetBankingDetails) {
   }
 }
 
-const refreshWithdrawal = () => {};
+const refreshWithdrawal = () => {
+  
+};
 
 export default {
   fetchWithdrawal,

@@ -64,7 +64,7 @@ const Header = () => {
         {/* profile */}
         {user ? (
           <Link
-            href={`/dashboard/profile/${user._id}`}
+            href={`/dashboard/profile`}
             className="group hidden md:flex items-center"
           >
             <div className="mr-[15px]">

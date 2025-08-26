@@ -1,124 +1,141 @@
-"use client"
-import Image from "next/image"
-import { atom, useAtom } from "jotai"
-import { Button, GrayButton } from "../../../../components/Button"
-import TextInput from "../../../../components/TextInput"
+"use client";
+import Image from "next/image";
+import { atom, useAtom } from "jotai";
+import { Button, GrayButton } from "../../../../components/Button";
+import TextInput from "../../../../components/TextInput";
 import ModalTrigger, {
-  modalStoreAtom,
-} from "../../../../components/ModalTrigger"
+  modalStoreAtom
+} from "../../../../components/ModalTrigger";
 
-import { CgSpinner } from "react-icons/cg"
-import XMark from "@/public/svg/x-mark.svg"
-import { useEffect, useState } from "react"
-import withdrawalService from "../common/services/withdrawal"
-import { useUser } from "../../../../contexts/UserProvider"
-import { useToast } from "../../../../hooks/useToast"
-import otpService from "../common/services/otp"
-import { extractErrorMessage } from "../../../../utils/extractErrorMessage"
-import Text from "../../dashboard/_components/Text"
-import { formatAmount } from "../../dashboard/_common/utils/currency"
-import { IBankingDetails, IWithdrawal } from "../common/services/withdrawal/models"
-import { useAuth } from "@/contexts/AppProvider"
+import { CgSpinner } from "react-icons/cg";
+import XMark from "@/public/svg/x-mark.svg";
+import { useEffect, useState } from "react";
+import withdrawalService from "../common/services/withdrawal";
+import { useUser } from "../../../../contexts/UserProvider";
+import { useToast } from "../../../../hooks/useToast";
+import otpService from "../common/services/otp";
+import { extractErrorMessage } from "../../../../utils/extractErrorMessage";
+import Text from "../../dashboard/_components/Text";
+import { formatAmount } from "../../dashboard/_common/utils/currency";
+import {
+  IBankingDetails,
+  IWithdrawal
+} from "../common/services/withdrawal/models";
+import { useAuth } from "@/contexts/AppProvider";
 
-export const activeWithdrawalIdAtom = atom<string | null>(null)
+export const activeWithdrawalIdAtom = atom<string | null>(null);
 export const withdrawalToRejectAtom = atom<{ id: string; otp: string } | null>(
   null
-)
+);
 
 const WithdrawalPopup = () => {
-  const [adminOtp, setAdminOtp] = useState("")
-  const [withdrawalData, setWithdrawalData] = useState<IWithdrawal | null>(null)
-  const [bankDetails, setBankDetails] = useState<IBankingDetails | null>(null)
+  const [adminOtp, setAdminOtp] = useState("");
+  const [withdrawalData, setWithdrawalData] = useState<IWithdrawal | null>(
+    null
+  );
+  const [bankDetails, setBankDetails] = useState<IBankingDetails | null>(null);
   const [activeWithdrawalId, setActiveWithdrawalId] = useAtom(
     activeWithdrawalIdAtom
-  )
-  const [modalStore] = useAtom(modalStoreAtom)
-  const [_, setWithdrawalToReject] = useAtom(withdrawalToRejectAtom)
-  const [isApproving, setIsApproving] = useState(false)
-  const {user } = useAuth()
-  const toast = useToast()
-  const otpIsFilled = adminOtp.length > 0
-  const isOrganization = withdrawalData?.user.userType === "non-profit"
-  const withdrawalApproved = withdrawalData?.status === "approved"
+  );
+  const [modalStore] = useAtom(modalStoreAtom);
+  const [_, setWithdrawalToReject] = useAtom(withdrawalToRejectAtom);
+  const [isApproving, setIsApproving] = useState(false);
+  const { user } = useAuth();
+  const toast = useToast();
+  const otpIsFilled = adminOtp.length > 0;
+  const isOrganization = withdrawalData?.user.userType === "non-profit";
+  const withdrawalApproved = withdrawalData?.status === "approved";
 
   useEffect(() => {
     const initialize = async () => {
       if (user && activeWithdrawalId) {
-        const modal = modalStore.get("withdrawalPopup")!
+        const modal = modalStore.get("withdrawalPopup")!;
 
         try {
           const withdrawalData = await withdrawalService.fetchWithdrawal({
             withdrawalId: activeWithdrawalId,
-            authToken: user.token,
-          })
+            authToken: user.token
+          });
 
           const [bankingDetails] = await withdrawalService.fetchBankDetails({
             userId: withdrawalData.userId,
-            authToken: user.token,
-          })
+            authToken: user.token
+          });
 
-          setWithdrawalData(withdrawalData)
-          setBankDetails(bankingDetails)
+          setWithdrawalData(withdrawalData);
+          setBankDetails(bankingDetails);
 
           modal._options.onHide = () => {
-            setAdminOtp("")
-            setActiveWithdrawalId(null)
-            setWithdrawalData(null)
-          }
+            setAdminOtp("");
+            setActiveWithdrawalId(null);
+            setWithdrawalData(null);
+          };
         } catch (error) {
-          modal.hide()
-          const message = extractErrorMessage(error)
-          toast({ title: "Oops!", body: message })
+          modal.hide();
+          const message = extractErrorMessage(error);
+          toast({ title: "Oops!", body: message });
         }
       } else {
-        setWithdrawalData(null)
-        setIsApproving(false)
+        setWithdrawalData(null);
+        setIsApproving(false);
       }
-    }
+    };
 
-    initialize()
-  }, [activeWithdrawalId])
+    initialize();
+  }, [activeWithdrawalId]);
 
   const generateToken = async () => {
     if (user) {
-      const res = await otpService.generateOtp(user.token)
-      toast({ title: "OTP created!", body: `OTP sent to ${res.email}` })
+      const res = await otpService.generateOtp(user.token);
+      toast({ title: "OTP created!", body: `OTP sent to ${res.email}` });
     }
-  }
+  };
 
   const approveWithdrawal = async () => {
     if (user && activeWithdrawalId) {
-      setIsApproving(true)
+      setIsApproving(true);
 
       try {
         const res = await withdrawalService.changeWithdrawalStatus({
           withdrawalId: activeWithdrawalId,
           adminOtp: adminOtp,
           authToken: user.token,
-          status: "approved",
-        })
+          status: "approved"
+        });
 
         const withdrawalData = await withdrawalService.fetchWithdrawal({
           withdrawalId: activeWithdrawalId,
-          authToken: user.token,
-        })
+          authToken: user.token
+        });
 
-        setWithdrawalData(withdrawalData)
-        setIsApproving(false)
-        toast({ title: "Withdrawal Approved" })
+        setWithdrawalData(withdrawalData);
+        setIsApproving(false);
+        toast({ title: "Withdrawal Approved" });
 
-        withdrawalService.refreshWithdrawal()
+        withdrawalService.refreshWithdrawal();
+        withdrawalService.fetchWithdrawal({
+          withdrawalId: activeWithdrawalId,
+          authToken: user.token
+        });
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
+        const modal = modalStore.get("withdrawalPopup")!;
+        modal.hide();
+        
       } catch (error) {
-        setIsApproving(false)
-        const message = extractErrorMessage(error)
-        toast({ title: "Oops!", body: message })
+        setIsApproving(false);
+        const message = extractErrorMessage(error);
+        toast({ title: "Oops!", body: message });
       }
     }
-  }
+  };
 
   if (withdrawalData) {
     const [{ payableAmount, serviceFee, currency, amount }] =
-      withdrawalData.totalAmountDonated
+      withdrawalData.totalAmountDonated;
+
+    const [{ availableAmount }] = withdrawalData.withdrawableAmounts;
 
     return (
       <div className="grow max-w-[1031px] bg-white px-[50px] py-10 mb-11 border max-h-screen overflow-y-auto">
@@ -136,7 +153,9 @@ const WithdrawalPopup = () => {
                 {isOrganization ? "Organization" : "Individual"}
               </p>
               <h2 className="font-semibold text-2xl text-black">
-                {isOrganization ? withdrawalData.user.organizationName : withdrawalData.user.fullName}
+                {isOrganization
+                  ? withdrawalData.user.organizationName
+                  : withdrawalData.user.fullName}
               </h2>
             </div>
             {/* {isOrganization && (
@@ -151,8 +170,7 @@ const WithdrawalPopup = () => {
               characterLimit={128}
               expandText="Read more"
               className="text-sm text-[#393E46]"
-              toggle
-            >
+              toggle>
               {withdrawalData.campaign.story}
             </Text>
           </div>
@@ -162,7 +180,7 @@ const WithdrawalPopup = () => {
           <div className="flex flex-col gap-[26px] pt-2.5 mb-6">
             <TextInput
               label="Withdrawal amount"
-              value={formatAmount(payableAmount, currency)}
+              value={formatAmount(availableAmount, currency)}
               disabled
             />
             <TextInput
@@ -184,23 +202,24 @@ const WithdrawalPopup = () => {
             <h3 className="font-semibold text-[#666]">Donation Breakdown</h3>
 
             <div className="flex justify-between">
-              <p>Total</p>
+              <p>Total raised</p>
               <p>{formatAmount(amount, currency)}</p>
             </div>
 
             <div className="flex justify-between">
               <p>Service fee</p>
-              <p>
-                {-formatAmount(serviceFee, currency, { prefixSymbol: false })}
-              </p>
+              <p>- {formatAmount(serviceFee, currency)}</p>
+            </div>
+
+            <div className="flex justify-between">
+              <p>Withdrawable Amount</p>
+              <p>{formatAmount(availableAmount, currency)}</p>
             </div>
             <hr className="border-t-[#CFCFCF]" />
 
             <div className="flex justify-between font-semibold text-base">
               <p>Amount payable</p>
-              <p>
-                {formatAmount(payableAmount, currency, { prefixSymbol: false })}
-              </p>
+              <p>{formatAmount(availableAmount, currency)}</p>
             </div>
           </div>
 
@@ -208,8 +227,7 @@ const WithdrawalPopup = () => {
             <div className="max-w-xs mb-[55px]">
               <p
                 className="text-primary text-xs mb-1.5 hover:underline cursor-pointer"
-                onClick={generateToken}
-              >
+                onClick={generateToken}>
                 Generate OTP
               </p>
               <TextInput
@@ -221,37 +239,39 @@ const WithdrawalPopup = () => {
             </div>
           )}
 
-          <div className="flex gap-6">
-            <ModalTrigger id="withdrawalPopup" type="hide">
-              <ModalTrigger id="kycRejectionForm">
-                <GrayButton
-                  text="Decline"
-                  className="h-11 !w-[218px] !justify-center"
-                  disabled={!otpIsFilled}
-                  onClick={() =>
-                    setWithdrawalToReject({
-                      id: activeWithdrawalId!,
-                      otp: adminOtp,
-                    })
-                  }
-                />
+          {!withdrawalApproved && (
+            <div className="flex gap-6">
+              <ModalTrigger id="withdrawalPopup" type="hide">
+                <ModalTrigger id="kycRejectionForm">
+                  <GrayButton
+                    text="Decline"
+                    className="h-11 !w-[218px] !justify-center"
+                    disabled={!otpIsFilled}
+                    onClick={() =>
+                      setWithdrawalToReject({
+                        id: activeWithdrawalId!,
+                        otp: adminOtp
+                      })
+                    }
+                  />
+                </ModalTrigger>
               </ModalTrigger>
-            </ModalTrigger>
 
-            <Button
-              text="Approve Withdrawal"
-              loading={isApproving}
-              disabled={!otpIsFilled || isApproving}
-              className="h-11 !w-[218px] !justify-center"
-              onClick={approveWithdrawal}
-            />
-          </div>
+              <Button
+                text="Approve Withdrawal"
+                loading={isApproving}
+                disabled={!otpIsFilled || isApproving}
+                className="h-11 !w-[218px] !justify-center"
+                onClick={approveWithdrawal}
+              />
+            </div>
+          )}
         </div>
       </div>
-    )
+    );
   }
 
-  return <CgSpinner size="50px" className="animate-spin icon opacity-100" />
-}
+  return <CgSpinner size="50px" className="animate-spin icon opacity-100" />;
+};
 
-export default WithdrawalPopup
+export default WithdrawalPopup;
