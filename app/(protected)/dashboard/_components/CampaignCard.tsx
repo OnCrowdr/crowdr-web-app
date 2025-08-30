@@ -57,8 +57,6 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
   // State for share modal
   const [shareModal, setShareModal] = useState(false);
 
-  console.log("volunteers rendered", duration);
-
   // Check if campaign has ended
   const currentDate = new Date();
   const campaignEndDate = campaign.campaignEndDate

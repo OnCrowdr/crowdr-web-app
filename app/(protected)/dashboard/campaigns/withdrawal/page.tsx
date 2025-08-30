@@ -27,7 +27,6 @@ import makeRequest from "@/utils/makeRequest";
 import Link from "next/link";
 import Label from "../../_components/Label";
 import moment from "moment";
-import { regex } from "regex";
 
 const Withdrawal = () => {
   const [page, setPage] = useState(1);
@@ -346,7 +345,7 @@ const Withdrawal = () => {
                         if (!status || !shouldShowApprovedStatus(campaign, status)) {
                           return <span className="text-gray-500">-</span>;
                         }
-                        return status.match(regex("i")`approved`) ? (
+                        return /approved/i.test(status) ? (
                           <Label text={status} />
                         ) : (
                           <Label
@@ -422,7 +421,7 @@ const Withdrawal = () => {
                           {/* Status badge - visible when closed */}
                           <div className="group-open:hidden">
                             {status && shouldShowApprovedStatus(campaign, status) ? (
-                              status.match(regex("i")`approved`) ? (
+                              /approved/i.test(status) ? (
                                 <Label text={status} />
                               ) : (
                                 <Label
@@ -467,7 +466,7 @@ const Withdrawal = () => {
                             <span className="text-sm text-[#667085]">Status:</span>
                             <div>
                               {status && shouldShowApprovedStatus(campaign, status) ? (
-                                status.match(regex("i")`approved`) ? (
+                                /approved/i.test(status) ? (
                                   <Label text={status} />
                                 ) : (
                                   <Label
