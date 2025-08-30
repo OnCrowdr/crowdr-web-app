@@ -1,32 +1,42 @@
-"use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { IoMdMenu, IoMdClose } from "react-icons/io";
-import { usePathname, useRouter } from "next/navigation";
-import { email } from "../../../../utils/openEmail";
-import "./component-styles/mobile-menu.css";
+"use client"
+import React, { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { IoMdMenu, IoMdClose } from "react-icons/io"
+import { usePathname, useRouter } from "next/navigation"
+import { email } from "../../../../utils/openEmail"
+import "./component-styles/mobile-menu.css"
+import { cn } from "@/utils/style"
+import { useAuth } from "@/contexts/AppProvider"
+import MenuItem from "./MenuItem"
+import { useCases } from "./UseCasesDropdown"
 
 type Props = {
-  openModal?: () => void;
-};
+  openModal?: () => void
+}
 
 export default function MobileMenu({ openModal }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-  const currentPath = usePathname();
-  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false)
+  const currentPath = usePathname()
+  const router = useRouter()
+  const { isAuthenticated } = useAuth()
 
   const isActive = (pathname: string) => {
-    return currentPath === pathname ? "active" : "";
-  };
+    return currentPath === pathname ? "active" : ""
+  }
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+    setIsOpen(!isOpen)
+  }
 
   const closeMenu = () => {
-    setIsOpen(false);
-  };
+    setIsOpen(false)
+  }
+
+  const props = {
+    onClick: closeMenu,
+  }
+
   return (
     <div className="mobile-menu">
       <div className="container">
@@ -38,42 +48,62 @@ export default function MobileMenu({ openModal }: Props) {
           )}
         </div>
       </div>
-      <div className={`menu ${isOpen ? "open" : ""}`} onClick={closeMenu}>
+      <div className={cn("menu", isOpen && "open shadow-md")}>
         <ul>
-          <li>
-            <Link href="/about" className={isActive("/about")}>
-              About
-            </Link>
-          </li>
-          <li>
-            <a href="https://blog.oncrowdr.com" target="_blank">
-              Blog
-            </a>
-          </li>
-          <li>
-            <Link href="/pricing" className={isActive("/pricing")}>
-              Pricing
-            </Link>
-          </li>
-          <li>
-            <a href={`mailto:${email}`} target="_blank">
-              Contact us
-            </a>
-          </li>
-          <li>
-            <Link href="/login" className={isActive("/login")}>
-              Log In
-            </Link>
-          </li>
-          <li>
-            <button
-              className="btn-outline w-100"
-              onClick={() => router.push("signup")}>
-              Start a Campaign
-            </button>
-          </li>
+          {items.map((item, index) => (
+            <li key={index}>
+              <MenuItem item={item} onLinkClick={closeMenu} />
+            </li>
+          ))}
+
+          {!isAuthenticated ? (
+            <>
+              <li>
+                <MenuItem
+                  item={{
+                    label: "Login",
+                    href: "/login",
+                  }}
+                  onLinkClick={closeMenu}
+                />
+              </li>
+              <li>
+                <Link href="/signup" {...props}>
+                  <button className="btn-outline w-100">
+                    Start a Campaign
+                  </button>
+                </Link>
+              </li>
+            </>
+          ) : (
+            <li className="mt-5">
+              <Link href={"/dashboard"} {...props}>
+                <button className="btn-outline w-100">Go To Dashboard</button>
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </div>
-  );
+  )
 }
+
+const items = [
+  {
+    label: "About",
+    href: "/about",
+  },
+  {
+    label: "Use Cases",
+    children: useCases,
+  },
+  {
+    label: "Pricing",
+    href: "/pricing",
+  },
+  {
+    label: "Blog",
+    href: "https://blog.oncrowdr.com",
+    external: "_blank" as const,
+  },
+]
