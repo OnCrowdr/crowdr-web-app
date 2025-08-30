@@ -5,7 +5,6 @@ import SelectInput from "../../../../../components/SelectInput"
 import AccountFormContext, { FormFields } from "../utils/useAccountForm"
 import { Option } from "../../_common/utils/form"
 import { Button } from "../../../../../components/Button"
-import _banks from "../../_common/utils/banks"
 import { IBankDetail } from "./page"
 import { QF, RFC } from "@/types"
 import { useQuery } from "react-query"
@@ -13,6 +12,7 @@ import makeRequest from "../../../../../utils/makeRequest"
 import { extractErrorMessage } from "../../../../../utils/extractErrorMessage"
 import { keys } from "../../_utils/queryKeys"
 import { useToast } from "../../../../../hooks/useToast"
+import { useBanks } from "../../../../../hooks/useBanks"
 
 const AccountForm: RFC<AccountFormProps> = ({
   onSubmit,
@@ -28,6 +28,9 @@ const AccountForm: RFC<AccountFormProps> = ({
     formState: { isSubmitting, errors },
   } = useFormContext() as AccountFormContext
   const toast = useToast()
+  
+  // Fetch banks from API
+  const { data: banksList, isLoading: banksLoading, error: banksError } = useBanks()
 
   // Local state for account resolution
   const [isVerifying, setIsVerifying] = useState(false)
@@ -38,12 +41,14 @@ const AccountForm: RFC<AccountFormProps> = ({
   const bankName = watch("bankName")
 
   // Find the bank code based on selected bank name
-  const selectedBank = _banks.find((bank) => bank.name === bankName)
+  const selectedBank = banksList?.find((bank) => bank.name === bankName)
   const bankCode = selectedBank?.code || ""
 
   // Format banks for dropdown
-  const banks = [Option("", "Select a bank...", true)].concat(
-    _banks
+  const banks = [
+    Option("", banksLoading ? "Loading banks..." : banksError ? "Error loading banks" : "Select a bank...", true)
+  ].concat(
+    (banksList || [])
       .map(({ name }) => Option(name, name))
       .sort((a, b) => a.label.localeCompare(b.label))
   )
@@ -137,6 +142,7 @@ const AccountForm: RFC<AccountFormProps> = ({
           label="Bank"
           ariaLabel="Bank"
           isSearchable
+          disabled={banksLoading}
         />
 
         {/* Verification Status */}

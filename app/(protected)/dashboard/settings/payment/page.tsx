@@ -228,7 +228,7 @@ const PaymentPage = () => {
                     <Table.HeadCell>Reference No</Table.HeadCell>
                     <Table.HeadCell>Withdrawn Amount</Table.HeadCell>
                     <Table.HeadCell>Balance</Table.HeadCell>
-                    <Table.HeadCell>Total Donated</Table.HeadCell>
+                    <Table.HeadCell>Total Donations</Table.HeadCell>
                     <Table.HeadCell>Date & time</Table.HeadCell>
                     <Table.HeadCell>Status</Table.HeadCell>
                   </Table.Head>
