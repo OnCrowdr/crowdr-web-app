@@ -8,6 +8,8 @@ import { email } from "../../../../utils/openEmail"
 import "./component-styles/nav.css"
 import { Mixpanel } from "../../../../utils/mixpanel"
 import { useAuth } from "@/contexts/AppProvider"
+import { ChevronDown } from "lucide-react"
+import UseCaseDropdown from "./UseCasesDropdown"
 
 type Props = {
   openModal?: () => void
@@ -16,7 +18,7 @@ type Props = {
 export default function Navigation({ openModal }: Props) {
   const currentPath = usePathname()
   const router = useRouter()
-  const {user } = useAuth()
+  const { user } = useAuth()
 
   const isActive = (pathname: string) => {
     return currentPath === pathname ? "active" : ""
@@ -42,8 +44,16 @@ export default function Navigation({ openModal }: Props) {
         </li> */}
         <li>
           <Link href="/about" className={isActive("/about")}>
-            About us
+            About
           </Link>
+        </li>
+        <li>
+          <UseCaseDropdown>
+            <a className="flex items-center gap-1">
+              Use Cases
+              <ChevronDown />
+            </a>
+          </UseCaseDropdown>
         </li>
         <li>
           <a href="https://blog.oncrowdr.com" target="_blank">
@@ -54,11 +64,6 @@ export default function Navigation({ openModal }: Props) {
           <Link href="/pricing" className={isActive("/pricing")}>
             Pricing
           </Link>
-        </li>
-        <li>
-          <a href={`mailto:${email}`} target="_blank">
-            Contact us
-          </a>
         </li>
       </ul>
 
@@ -94,7 +99,9 @@ export default function Navigation({ openModal }: Props) {
           </button>
         </div>
       )}
+
       <MobileMenu openModal={openModal} />
     </nav>
   )
 }
+

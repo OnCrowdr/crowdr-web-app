@@ -52,7 +52,6 @@ import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import UserIcon from "@/public/svg/user-01.svg"
-import { regex } from "regex"
 import { useAuth } from "@/contexts/AppProvider"
 
 const Dashboard = () => {
@@ -425,7 +424,7 @@ const Dashboard = () => {
                         </button>
                       </ModalTrigger>
 
-                      {kyc.status.match(regex("i")`pending`) ? (
+                      {/pending/i.test(kyc.status) ? (
                         <ModalTrigger id="kycPopup">
                           <button
                             type="button"
