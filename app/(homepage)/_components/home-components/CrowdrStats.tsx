@@ -24,15 +24,15 @@ export default CrowdrStats
 
 const stats = [
   {
-    figure: "₦10M",
-    description: "Raised in less than a year",
+    figure: "₦20M",
+    description: "Raised in just over a year",
   },
   {
-    figure: "150+",
+    figure: "350+",
     description: "Campaigns",
   },
   {
-    figure: "700+",
+    figure: "2000+",
     description: "Donors and Campaigners",
   },
 ]

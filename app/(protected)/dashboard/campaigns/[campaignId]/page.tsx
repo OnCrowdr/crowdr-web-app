@@ -32,7 +32,6 @@ import { Mixpanel } from "../../../../../utils/mixpanel"
 import SidebarModal from "../../_components/SidebarModal"
 import VolunteerProfile from "../../_components/VolunteerProfile"
 import ModalTrigger from "@/components/ModalTrigger"
-import { regex } from "regex"
 import { isAfter, parseISO } from "date-fns"
 import { useAuthQuery } from "@/hooks/useAuthQuery"
 import query from "@/api/query"
@@ -473,10 +472,10 @@ const DATE_FORMAT = "ddd DD MMM, YYYY; hh:mm A"
 
 const camelCaseToTitleCase = (str: string) => {
   // 1. Split before each uppercase letter (global)
-  const splitter = regex("g")`([A-Z])`
+  const splitter = /([A-Z])/g
 
   // 2. Match the very first character of the string
-  const firstChar = regex`^.`
+  const firstChar = /^./
 
   // return str.replace(/([A-Z])/g, " $1").replace(/^./, function (ch) {
   return str.replace(splitter, " $1").replace(firstChar, function (ch) {

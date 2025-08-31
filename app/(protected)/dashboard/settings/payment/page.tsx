@@ -19,7 +19,6 @@ import { QF } from "@/types"
 import CaretIcon from "@/public/svg/caret.svg"
 import { formatAmount } from "../../_common/utils/currency"
 import moment from "moment"
-import { regex } from "regex"
 import { useAuth } from "@/contexts/AppProvider"
 
 const PaymentPage = () => {
@@ -110,8 +109,20 @@ const PaymentPage = () => {
     return {
       title: withdrawal.campaignId, // TODO: MAKE SURE TO REPLACE WITH ACTUAL WITHDRAWAL REFERENCE NO.
       detail: formatAmount(
+        withdrawal.withdrawableAmounts[0].breakdown.totalWithdrawn,
+        withdrawal.withdrawableAmounts[0].currency
+      ),
+      withdrawnAmount: formatAmount(
+        withdrawal.withdrawableAmounts[0].breakdown.totalWithdrawn,
+        withdrawal.withdrawableAmounts[0].currency
+      ),
+      availableAmount: formatAmount(
+        withdrawal.withdrawableAmounts[0].availableAmount,
+        withdrawal.withdrawableAmounts[0].currency
+      ),
+      totalDonated: formatAmount(
         withdrawal.totalAmountDonated[0].amount,
-        withdrawal.totalAmountDonated[0].currency
+        withdrawal.withdrawableAmounts[0].currency
       ),
       date: moment(withdrawal.createdAt).format(DATE_FORMAT),
       status: withdrawal.status,
@@ -215,7 +226,9 @@ const PaymentPage = () => {
                 <Table className="hidden md:block mb-9">
                   <Table.Head>
                     <Table.HeadCell>Reference No</Table.HeadCell>
-                    <Table.HeadCell>Amount</Table.HeadCell>
+                    <Table.HeadCell>Withdrawn Amount</Table.HeadCell>
+                    <Table.HeadCell>Balance</Table.HeadCell>
+                    <Table.HeadCell>Total Donations</Table.HeadCell>
                     <Table.HeadCell>Date & time</Table.HeadCell>
                     <Table.HeadCell>Status</Table.HeadCell>
                   </Table.Head>
@@ -225,15 +238,27 @@ const PaymentPage = () => {
                         <Table.Cell>{withdrawal.campaignId}</Table.Cell>
                         <Table.Cell>
                           {formatAmount(
+                            withdrawal.withdrawableAmounts[0].breakdown.totalWithdrawn,
+                            withdrawal.withdrawableAmounts[0].currency
+                          )}
+                        </Table.Cell>
+                         <Table.Cell>
+                          {formatAmount(
+                            withdrawal.withdrawableAmounts[0].availableAmount,
+                            withdrawal.withdrawableAmounts[0].currency
+                          )}
+                        </Table.Cell>
+                        <Table.Cell>
+                          {formatAmount(
                             withdrawal.totalAmountDonated[0].amount,
-                            withdrawal.totalAmountDonated[0].currency
+                            withdrawal.withdrawableAmounts[0].currency
                           )}
                         </Table.Cell>
                         <Table.Cell>
                           {moment(withdrawal.createdAt).format(DATE_FORMAT)}
                         </Table.Cell>
                         <Table.Cell>
-                          {withdrawal.status.match(regex("i")`approved`) ? (
+                          {/approved/i.test(withdrawal.status) ? (
                             <Label text={withdrawal.status} />
                           ) : (
                             <Label
@@ -342,38 +367,6 @@ const fetchWithdrawals: QF<
   }
 }
 
-const payments = [
-  {
-    title: "crowdr_test_bank_withdraw_PpHpXxz3uLMvj8Pi",
-    detail: "N40,000.00",
-    date: "Tue 26 Jul, 2022; 10:14 PM",
-    status: "Success",
-  },
-  {
-    title: "crowdr_test_bank_withdraw_PpHpXxz3uLMvj8Pi",
-    detail: "N40,000.00",
-    date: "Tue 26 Jul, 2022; 10:14 PM",
-    status: "Failed",
-  },
-  {
-    title: "crowdr_test_bank_withdraw_PpHpXxz3uLMvj8Pi",
-    detail: "N21,300.00",
-    date: "Tue 26 Jul, 2022; 10:14 PM",
-    status: "Success",
-  },
-  {
-    title: "crowdr_test_bank_withdraw_PpHpXxz3uLMvj8Pi",
-    detail: "N21,300.00",
-    date: "Tue 26 Jul, 2022; 10:14 PM",
-    status: "Success",
-  },
-  {
-    title: "crowdr_test_bank_withdraw_PpHpXxz3uLMvj8Pi",
-    detail: "N21,300.00",
-    date: "Tue 26 Jul, 2022; 10:14 PM",
-    status: "Failed",
-  },
-]
 
 export interface IBankDetail {
   _id: string
@@ -411,6 +404,7 @@ export interface Withdrawal {
   updatedAt: string
   campaign: Campaign
   totalAmountDonated: TotalAmountDonated[]
+  withdrawableAmounts: WithdrawableAmount[]
 }
 
 export interface Campaign {
@@ -436,4 +430,15 @@ export interface Fundraise {
 export interface TotalAmountDonated {
   amount: number
   currency: string
+}
+
+export interface WithdrawableAmount {
+  availableAmount: number
+  currency: string
+  breakdown: {
+    netAvailable: number
+    serviceFee: number
+    totalDonated: number
+    totalWithdrawn: number
+  }
 }
