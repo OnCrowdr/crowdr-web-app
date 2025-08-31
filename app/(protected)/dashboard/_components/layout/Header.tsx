@@ -53,11 +53,14 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <div className="flex mr-6">
-          {/* <GrayButton
+          <GrayButton
             text="Setup Guide"
             iconUrl={PuzzleIcon}
+            onClick={() =>
+              open("https://blog.oncrowdr.com/tag/help-center/", "_blank")
+            }
             className="hidden md:inline-flex mr-[6px]"
-          /> */}
+          />
           <CreateCampaignDropdown />
         </div>
 

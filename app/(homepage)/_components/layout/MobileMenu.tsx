@@ -48,7 +48,7 @@ export default function MobileMenu({ openModal }: Props) {
           )}
         </div>
       </div>
-      <div className={cn("menu", isOpen && "open shadow-md")}>
+      <div className={cn("menu z-10", isOpen && "open shadow-md")}>
         <ul>
           {items.map((item, index) => (
             <li key={index}>

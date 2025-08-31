@@ -25,7 +25,7 @@ const HowItWorks = () => {
 
   return (
     <section className="todo max-w-[1484px] mx-auto !pt-20 !pb-[88px]">
-      <h3 className="!text-[32px] !md:text-[42px]">How It Works</h3>
+      <h3 className="!text-[32px] !sm:text-[42px]">How It Works</h3>
 
       {width ? (
         <div className="todo-content">
@@ -50,7 +50,10 @@ const HowItWorks = () => {
                 <button
                   className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
                   onClick={() => {
-                    router.push("#")
+                    open(
+                      "https://youtube.com/playlist?list=PL_Rbth8fvDDxbh5l-5sNCDRcNpSNSn1GZ&si=RcMGWZoLrAxwhhJK",
+                      "_blank"
+                    )
                   }}
                 >
                   Watch Demo
@@ -104,7 +107,7 @@ const HowItWorks = () => {
 
           <div className="todo-item flex-1">
             <span className="text-black text-sm leading-10">
-              Wanna get more reach ?
+              Wanna get more reach?
             </span>
             <div className="flex flex-col gap-[14px]">
               <h4>Share campaign to socials </h4>
@@ -198,7 +201,7 @@ const HowItWorks = () => {
 
           <div className="todo-item !mt-4">
             <span className="text-black text-sm leading-10">
-              Wanna get more reach ?
+              Wanna get more reach?
             </span>
             <div className="flex flex-col gap-[14px]">
               <h4>Share campaign to socials </h4>

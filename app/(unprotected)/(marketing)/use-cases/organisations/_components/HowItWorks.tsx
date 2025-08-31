@@ -18,7 +18,7 @@ const HowItWorks = () => {
         </h5>
         <div className="grid gap-[18px]">
           {items.map((item, index) => (
-            <div key={index} className="flex gap-2 md:gap-2.5">
+            <div key={index} className="flex items-center gap-2 md:gap-2.5">
               <CheckCircle2
                 color="#079455"
                 size={37}
