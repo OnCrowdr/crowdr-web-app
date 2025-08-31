@@ -13,7 +13,7 @@ export default function Faq() {
         </p>
 
         <div>
-          {faqArr.map((faq: { heading: string; text: string }, index) => (
+          {faqs.map((faq: { heading: string; text: string }, index) => (
             <div className="faq-collapsible-container" key={index}>
               <Collapsible
                 trigger={
@@ -67,7 +67,7 @@ export default function Faq() {
   )
 }
 
-const faqArr = [
+const faqs = [
   {
     heading: "What kind of fundraisers can I start?",
     text: "You can raise money for anything, from medical bills, tuition, emergencies, and community projects—anything that genuinely helps you or someone else.",

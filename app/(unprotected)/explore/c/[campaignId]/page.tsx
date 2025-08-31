@@ -104,6 +104,7 @@ export default function DonateOrVolunteer(props: {
     isAnonymous: false,
     shouldShareDetails: false,
     isSubscribedToPromo: false,
+    agreedToTerms: false,
   })
 
   // Memoized values
@@ -811,7 +812,7 @@ export default function DonateOrVolunteer(props: {
                     />
                     <Checkbox
                       id="2"
-                      label="I'm delighted to share my name and email with this charity to receive updates on other ways I can help."
+                      label="I'm delighted to share my name and email with the campaigner."
                       checked={checkboxValues.shouldShareDetails}
                       onChange={(newValue) =>
                         updateCheckbox("shouldShareDetails", newValue)
@@ -819,10 +820,27 @@ export default function DonateOrVolunteer(props: {
                     />
                     <Checkbox
                       id="3"
-                      label="Get occasional marketing updates from Crowdr. You may unsubscribe at any time."
+                      label="Get occasional updates from Crowdr. You may unsubscribe at any time."
                       checked={checkboxValues.isSubscribedToPromo}
                       onChange={(newValue) =>
                         updateCheckbox("isSubscribedToPromo", newValue)
+                      }
+                    />
+                    <Checkbox
+                      id="4"
+                      label={
+                        <>
+                          By ticking this box, you agree with Crowdr’s policies
+                          on fees and our{" "}
+                          <Link href={""} className={"text-[#00B964]"}>
+                            terms and conditions
+                          </Link>
+                          .
+                        </>
+                      }
+                      checked={checkboxValues.agreedToTerms}
+                      onChange={(newValue) =>
+                        updateCheckbox("agreedToTerms", newValue)
                       }
                     />
                   </div>
@@ -835,7 +853,10 @@ export default function DonateOrVolunteer(props: {
                     className="w-full !justify-center"
                     onClick={() => donate("card")}
                     loading={loading}
-                    disabled={!areAllInputsFilled(donationInputs)}
+                    disabled={
+                      !areAllInputsFilled(donationInputs) ||
+                      !checkboxValues.agreedToTerms
+                    }
                   />
 
                   {paystackLoaded && applePaySupported && (

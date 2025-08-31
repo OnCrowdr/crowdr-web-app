@@ -2,12 +2,13 @@
 import Navigation from "@/app/(homepage)/_components/layout/Navigation"
 import Hero from "./_components/Hero"
 import SoundFamiliar from "./_components/SoundFamiliar"
-import Faq from "./_components/Faq"
+// import Faq from "./_components/Faq"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import HowItWorks from "./_components/HowItWorks"
 import Testimonials from "../ngos/_components/Testimonials"
-import WhyCrowdr from "./_components/WhyCrowdr"
+import UseCases from "./_components/UseCases"
+import Faq from "@/app/(homepage)/_components/home-components/Faq"
 
 const Organizations = () => {
   return (
@@ -18,7 +19,7 @@ const Organizations = () => {
         <SoundFamiliar />
         <CrowdrFeatures />
         <HowItWorks />
-        <WhyCrowdr />
+        <UseCases />
         <Testimonials testimonials={testimonials} />
         <Faq />
         <Footer />
@@ -37,13 +38,13 @@ const testimonials = [
     role: "Brand & Community Lead at BeautyHut Africa",
   },
   {
-    quote: "fdfdf",
-    name: "dfd",
-    role: "fdfdf",
+    quote: "“Crowdr is Nigeria’s GoFundMe! Super effective — donors can get refunds if scammed before payout. The last guy who faked being homeless was exposed in under 48 hours!”",
+    name: "Aishat Mustapha",
+    role: "Founder, Mairachamp",
   },
-  {
-    quote: "fdfdf",
-    name: "dfd",
-    role: "fdfdf",
-  },
+  // {
+  //   quote: "fdfdf",
+  //   name: "dfd",
+  //   role: "fdfdf",
+  // },
 ]

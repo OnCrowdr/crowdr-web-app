@@ -2,11 +2,12 @@
 import Navigation from "@/app/(homepage)/_components/layout/Navigation"
 import Hero from "./_components/Hero"
 import SoundFamiliar from "./_components/SoundFamiliar"
-import Faq from "./_components/Faq"
+// import Faq from "./_components/Faq"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import HowItWorks from "./_components/HowItWorks"
 import Testimonials from "./_components/Testimonials"
+import Faq from "@/app/(homepage)/_components/home-components/Faq"
 
 const NGOs = () => {
   return (
@@ -35,13 +36,13 @@ const testimonials = [
     role: "Co-founder, Project Mend",
   },
   {
-    quote: "fdfdf",
-    name: "dfd",
-    role: "fdfdf",
+    quote: "“This product is really amazing. Thank you guys for what you are doing.”",
+    name: "Mfonabasi Okutinyang",
+    role: "Founder, Kasere",
   },
-  {
-    quote: "fdfdf",
-    name: "dfd",
-    role: "fdfdf",
-  },
+  // {
+  //   quote: "fdfdf",
+  //   name: "dfd",
+  //   role: "fdfdf",
+  // },
 ]

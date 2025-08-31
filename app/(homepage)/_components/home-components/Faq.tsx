@@ -12,7 +12,7 @@ export default function Faq() {
         <p className="faq-header-big mt-[20px]">We knew you would ask. See? We’re two peas in a pod.</p>
 
         <div>
-          {faqArr.map((faq: { heading: string, text: string}, index) => (
+          {faqs.map((faq: { heading: string, text: string}, index) => (
             <div className="faq-collapsible-container" key={index}>
               <Collapsible
                 trigger={
@@ -42,7 +42,7 @@ export default function Faq() {
   );
 }
 
-const faqArr = [
+export const faqs = [
   {
     heading: "How do I start a campaign?",
     text: "Please click the “Start a Campaign” button to create an account! After that, please click here for a comprehensive step-by-step guide for creating a campaign. This guide is also located on our blog. If you run into any issues, please don’t hesitate to email us at support@oncrowdr.com.",

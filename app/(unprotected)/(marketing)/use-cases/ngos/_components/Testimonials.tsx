@@ -8,27 +8,30 @@ const Testimonials: RFC<Props> = ({ testimonials }) => {
   const intervalRef = useRef<NodeJS.Timer | null>(null)
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      nextTestimonial()
-    }, 10000) // Change testimonial every 10 seconds
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-      }
-    }
+    startLoop()
+    return stopLoop
   }, [])
 
   const nextTestimonial = () => {
+    stopLoop()
+    setIndex((prevIndex) => (prevIndex + 1) % testimonials.length)
+    startLoop()
+  }
+
+  const startLoop = () => {
+    intervalRef.current = setInterval(() => {
+      nextTestimonial()
+    }, 10000) // Change testimonial every 10 seconds
+  }
+
+  const stopLoop = () => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
     }
-
-    setIndex((prevIndex) => (prevIndex + 1) % testimonials.length)
   }
 
   return (
-    <section className="bg-[#DFFFE8] px-5 pt-20 pb-[118px]">
+    <section className="bg-[#DFFFE8] px-5 pt-20 pb-[30px]">
       <div className="grid gap-6 w-full max-w-[1053px] m-auto">
         <div className="grid place-items-center gap-2">
           <h3 className="font-medium text-[40px] text-[#101828] leading-tight mx-auto">
@@ -40,7 +43,7 @@ const Testimonials: RFC<Props> = ({ testimonials }) => {
         </div>
 
         <div
-          className="rounded-[63px] bg-[#00B964] text-black border-2 border-black max-w-[1054px] pt-5 pb-7 px-5 md:px-[37px] mb-[150px]"
+          className="rounded-[63px] bg-[#00B964] text-black border-2 border-black max-w-[1054px] pt-5 pb-7 px-5 md:px-[37px] mb-[110px]"
           style={{ boxShadow: "0 10.558px 0 0 #111" }}
         >
           <div
@@ -109,8 +112,6 @@ interface Props {
     role: string
   }>
 }
-
-
 
 const IconArrowRight = () => {
   return (

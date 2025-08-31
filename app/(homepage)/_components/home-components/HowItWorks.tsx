@@ -46,7 +46,10 @@ const HowItWorks = () => {
                 <button
                   className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
                   onClick={() => {
-                    router.push("#")
+                    open(
+                      "https://youtube.com/playlist?list=PL_Rbth8fvDDxbh5l-5sNCDRcNpSNSn1GZ&si=RcMGWZoLrAxwhhJK",
+                      "_blank"
+                    )
                   }}
                 >
                   Watch Demo
@@ -100,7 +103,7 @@ const HowItWorks = () => {
 
           <div className="todo-item">
             <span className="text-black text-sm leading-10">
-              Wanna get more reach ?
+              Wanna get more reach?
             </span>
             <div className="flex flex-col gap-[14px]">
               <h4>Share campaign to socials </h4>
@@ -191,10 +194,10 @@ const HowItWorks = () => {
               />
             </div>
           </div>
-          
+
           <div className="todo-item !mt-4">
             <span className="text-black text-sm leading-10">
-              Wanna get more reach ?
+              Wanna get more reach?
             </span>
             <div className="flex flex-col gap-[14px]">
               <h4>Share campaign to socials </h4>
