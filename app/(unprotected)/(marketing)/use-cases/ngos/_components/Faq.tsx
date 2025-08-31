@@ -67,6 +67,7 @@ export default function Faq() {
   )
 }
 
+
 const faqs = [
   {
     heading: "How does Crowdr verify NGOs?",

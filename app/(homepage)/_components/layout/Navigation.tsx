@@ -82,7 +82,7 @@ export default function Navigation({ openModal }: Props) {
           <button
             className="btn-outline hide-sm flex-1"
             onClick={() => {
-              router.push("login")
+              router.push("/login")
               Mixpanel.track("Log In Clicked")
             }}
           >
@@ -91,7 +91,7 @@ export default function Navigation({ openModal }: Props) {
           <button
             className="btn-primary hide-sm flex-1"
             onClick={() => {
-              router.push("signup")
+              router.push("/signup")
               Mixpanel.track("Sign Up Clicked")
             }}
           >
