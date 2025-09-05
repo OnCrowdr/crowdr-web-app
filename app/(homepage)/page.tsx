@@ -16,6 +16,7 @@ import RunningCampaigns from "./_components/home-components/RunningCampaigns"
 import SoundFamiliar from "./_components/home-components/SoundFamiliar"
 import CrowdrFeatures from "./_components/home-components/CrowdrFeatures"
 import UseCases from "./_components/home-components/UseCases"
+import Press from "./_components/home-components/Press"
 
 export default function Home() {
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function Home() {
         {/* <WhyCrowdr /> */}
         <UseCases />
         <Partners />
+        <Press />
         <Faq />
         {/* <Community /> */}
         <Footer />
