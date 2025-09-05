@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { MdArrowOutward } from "react-icons/md"
 
 const UseCases = () => {
@@ -26,10 +27,10 @@ const UseCases = () => {
                 <p className="text-[#EBECED]">{useCase.description}</p>
               </div>
 
-              <div className="flex items-center gap-1 text-[#00B964] cursor-pointer">
+              <Link href={useCase.href} className="flex items-center gap-1 text-[#00B964] cursor-pointer">
                 Learn More
                 <MdArrowOutward fill="#00B964" className="relative top-0.5" />
-              </div>
+              </Link>
             </div>
           ))}
         </div>
@@ -119,7 +120,7 @@ const useCases = [
     heading: "For Organisations",
     description:
       "Launch CSR projects without spending months on research & execution.",
-    href: "/use-cases/organizations",
+    href: "/use-cases/organisations",
     icon: IconGlobe,
   },
 ]
