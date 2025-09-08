@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDebounceCallback } from "usehooks-ts"
 import { useAuthQuery } from "@/hooks/useAuthQuery"
 import Image from "next/image"
@@ -23,6 +23,18 @@ import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import { mapCampaignResponseToView } from "../../common/utils/mappings"
+import DateRange from "../../../dashboard/_components/DateRange"
+import { IDateRange } from "../../../dashboard/_components/DateRange"
+
+const SORT_OPTIONS = [
+  { value: "milestonePercentage", label: "Milestone Percentage" },
+  { value: "createdAt", label: "Created Date" },
+  { value: "title", label: "Title" },
+  { value: "campaignEndDate", label: "End Date" },
+  { value: "campaignStartDate", label: "Start Date" },
+  { value: "goalAmount", label: "Goal Amount" },
+  { value: "donatedAmount", label: "Donated Amount" },
+] as const
 
 const Campaigns = () => {
   const [page, setPage] = useState(1)
@@ -30,9 +42,14 @@ const Campaigns = () => {
   const [activeFilter, setActiveFilter] = useState<RunningStatus>(
     RunningStatus.Upcoming
   )
+  const [dateRange, setDateRange] = useState<IDateRange>()
+  const [startDate, endDate] = dateRange ?? []
   const [params, setParams] = useState<Partial<IGetCampaignsParams>>({
     runningStatus: RunningStatus.Upcoming,
+    sortBy: 'milestonePercentage',
     page,
+    startDate,
+    endDate,
   })
 
   const { data } = useAuthQuery({
@@ -48,6 +65,12 @@ const Campaigns = () => {
     queryFn: () => campaignService.getCampaignStats(),
   })
 
+  // Update params when date range changes
+  useEffect(() => {
+    setParams(prev => ({ ...prev, startDate, endDate, page: 1 }))
+    setPage(1)
+  }, [startDate, endDate])
+
   const setSearch = useDebounceCallback(
     () =>
       setSearchText((text) => {
@@ -58,6 +81,11 @@ const Campaigns = () => {
       }),
     1000
   )
+
+  const handleSortChange = (sortBy: string) => {
+    setParams({ ...params, sortBy, page: 1 })
+    setPage(1)
+  }
 
   const tableFilterButtons = [
     {
@@ -98,6 +126,11 @@ const Campaigns = () => {
         </p>
       </hgroup>
 
+      {/* date range */}
+      <div className="flex justify-between items-center mb-5 px-8">
+        <DateRange onChange={setDateRange} />
+      </div>
+
       {/* stats */}
       <div className="flex gap-6 px-8 pt-8 mb-8">
         {campaignStatsQuery.data &&
@@ -127,81 +160,55 @@ const Campaigns = () => {
 
           <ExportButton entity="campaigns" />
 
-          {/* <DropdownTrigger
-            triggerId="withdrawalsFilterBtn"
-            targetId="dropdownDefaultRadio"
+          <DropdownTrigger
+            triggerId="campaignsSortBtn"
+            targetId="campaignsSortDropdown"
             options={{ placement: "bottom-end" }}
           >
             <Button
-              text="Filters"
+              text="Sort"
               bgColor="#FFF"
               textColor="#344054"
               iconUrl={FilterIcon}
               shadow
               className="font-semibold"
             />
-          </DropdownTrigger> */}
+          </DropdownTrigger>
 
-          {/* filter dropdown */}
-          {/* <div
-            id="dropdownDefaultRadio"
-            className="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow"
+          {/* Sort dropdown */}
+          <div
+            id="campaignsSortDropdown"
+            className="z-10 hidden w-64 bg-white divide-y divide-gray-100 rounded-lg shadow border"
           >
-            <ul className="p-3 space-y-3 text-sm text-gray-700">
-              {_filter[selectedView].map((filter) => (
-                <li key={filter.value}>
-                  <div className="flex items-center">
-                    <input
-                      id={filter.value}
-                      type="radio"
-                      value={filter.value}
-                      name={selectedView}
-                      className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500"
-                      onChange={() => {
-                        resetPage()
-                        setFilter((prev) => {
-                          return {
-                            ...prev,
-                            [selectedView]: {
-                              status: filter.value as Status<
-                                typeof selectedView
-                              >,
-                            },
-                          }
-                        })
-                      }}
-                    />
-                    <label
-                      htmlFor={filter.value}
-                      className="ms-2 text-sm font-medium text-gray-900"
-                    >
-                      {filter.label}
-                    </label>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            <div className="flex justify-center px-4 py-3">
-              <Button
-                text="Clear"
-                bgColor="#FFF"
-                textColor="#344054"
-                shadow
-                className="grow !justify-center font-semibold"
-                onClick={() => {
-                  setFilter({ KYC: {}, Withdrawals: {} })
-                  const radioButtons =
-                    document.querySelectorAll<HTMLInputElement>(
-                      'input[type="radio"]'
-                    )
-                  radioButtons.forEach((button) => {
-                    button.checked = false
-                  })
-                }}
-              />
+            <div className="p-3">
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Sort by</h4>
+              <div className="max-h-60 overflow-y-auto">
+                <ul className="space-y-2 text-sm text-gray-700">
+                  {SORT_OPTIONS.map((option) => (
+                    <li key={option.value}>
+                      <div className="flex items-center">
+                        <input
+                          id={`sort-${option.value}`}
+                          type="radio"
+                          value={option.value}
+                          name="sortBy"
+                          checked={params.sortBy === option.value}
+                          className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500"
+                          onChange={() => handleSortChange(option.value)}
+                        />
+                        <label
+                          htmlFor={`sort-${option.value}`}
+                          className="ml-2 text-sm font-medium text-gray-700 cursor-pointer"
+                        >
+                          {option.label}
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
       <hr className="mb-8" />
