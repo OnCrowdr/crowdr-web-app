@@ -200,7 +200,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center px-4 py-3">
         <ButtonGroup buttons={tablePickerButtons} selected={selectedTable} />
 
-        <div className="flex gap-3 items-center w-[515px]">
+        <div className="flex gap-3 items-center w-[515px] ">
           <TextInput
             value={searchText}
             onChange={(e) => {
