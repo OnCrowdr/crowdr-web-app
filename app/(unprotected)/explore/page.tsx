@@ -25,6 +25,9 @@ import {
   isFundraise,
   isVolunteer,
 } from "@/app/(protected)/dashboard/_common/utils/campaign"
+import { Button } from "../../../components/Button"
+import DropdownTrigger from "../../../components/DropdownTrigger"
+import FilterIcon from "@/public/svg/filter-2.svg"
 
 const Explore = () => {
   const router = useRouter()
@@ -44,8 +47,8 @@ const Explore = () => {
   const url = useMemo(() => new URL(currentUrl), [currentUrl])
 
   const campaignsQuery = useQuery({
-    queryKey: queryKey(query.keys.CAMPAIGNS, campaignParams),
-    queryFn: () => _campaigns.getCampaigns(campaignParams),
+    queryKey: queryKey(query.keys.CAMPAIGNS, params),
+    queryFn: () => _campaigns.getCampaigns(params),
   })
   const campaigns = campaignsQuery.data
   const selectedInterest = params.category ?? ALL_CATEGORY.value
@@ -89,6 +92,12 @@ const Explore = () => {
     updatePageParams()
   }
 
+  const handleSortChange = (sortBy: string) => {
+    url.searchParams.set(paramKey("page"), "1")
+    url.searchParams.set(paramKey("sortBy"), sortBy)
+    updatePageParams()
+  }
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchTerm(value)
@@ -125,16 +134,34 @@ const Explore = () => {
             </p>
           </div>
 
-          {/* search input */}
-          <div className="relative w-full md:w-[400px]">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Search campaigns..."
-              className="w-full text-[15px] rounded-lg border border-[#D0D5DD] py-[10px] pl-[40px] pr-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            />
-            <Search className="absolute left-[14px] top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          {/* search input and filter */}
+          <div className="flex flex-col md:flex-row md:justify-between gap-4 w-full">
+            <div className="relative w-full md:w-[400px]">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                placeholder="Search campaigns..."
+                className="w-full text-[15px] rounded-lg border border-[#D0D5DD] py-[10px] pl-[40px] pr-[14px] focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              />
+              <Search className="absolute left-[14px] top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            </div>
+            
+            {/* Filter button */}
+            <DropdownTrigger
+              triggerId="exploreFilterBtn"
+              targetId="exploreSortDropdown"
+              options={{ placement: "bottom-end" }}
+            >
+              <Button
+                text="Sort"
+                bgColor="#FFF"
+                textColor="#344054"
+                iconUrl={FilterIcon}
+                shadow
+                className="font-semibold !w-auto"
+              />
+            </DropdownTrigger>
           </div>
 
           {/* categories */}
@@ -171,6 +198,41 @@ const Explore = () => {
                 </span>
               </label>
             ))}
+          </div>
+
+          {/* Sort dropdown */}
+          <div
+            id="exploreSortDropdown"
+            className="z-10 hidden w-64 bg-white divide-y divide-gray-100 rounded-lg shadow border"
+          >
+            <div className="p-3">
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Sort by</h4>
+              <div className="max-h-60 overflow-y-auto">
+                <ul className="space-y-2 text-sm text-gray-700">
+                  {SORT_OPTIONS.map((option) => (
+                    <li key={option.value}>
+                      <div className="flex items-center">
+                        <input
+                          id={`sort-${option.value}`}
+                          type="radio"
+                          value={option.value}
+                          name="sortBy"
+                          checked={campaignParams.sortBy === option.value}
+                          className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 focus:ring-green-500"
+                          onChange={() => handleSortChange(option.value)}
+                        />
+                        <label
+                          htmlFor={`sort-${option.value}`}
+                          className="ml-2 text-sm font-medium text-gray-700 cursor-pointer"
+                        >
+                          {option.label}
+                        </label>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -273,6 +335,16 @@ const ALL_CATEGORY = {
 } as const
 
 const categories = [ALL_CATEGORY, ...campaignCategories]
+
+const SORT_OPTIONS = [
+  { value: "milestonePercentage", label: "Milestone Percentage" },
+  { value: "createdAt", label: "Created Date" },
+  { value: "title", label: "Title" },
+  { value: "campaignEndDate", label: "End Date" },
+  { value: "campaignStartDate", label: "Start Date" },
+  { value: "goalAmount", label: "Goal Amount" },
+  { value: "donatedAmount", label: "Donated Amount" },
+] as const
 
 const CampaignsContainer: RFC = ({ children }) => {
   return (

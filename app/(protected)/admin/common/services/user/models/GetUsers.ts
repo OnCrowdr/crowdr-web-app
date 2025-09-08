@@ -7,6 +7,8 @@ export interface IGetUsersParams {
   userType: UserType | ""
   nameOrder: 'asc' | 'desc'
   name: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 // response

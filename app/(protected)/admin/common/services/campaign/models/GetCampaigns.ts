@@ -9,7 +9,10 @@ export interface IGetCampaignsParams {
   title: string;
   type: CampaignType;
   category: CampaignCategory;
-  userId: string
+  userId: string;
+  sortBy?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 // response
