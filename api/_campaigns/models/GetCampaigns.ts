@@ -8,6 +8,7 @@ export interface IGetCampaignsParams extends PaginationParams {
   type?: CampaignType;
   category?: CampaignCategory;
   userId?: string;
+  sortBy?: string;
 }
 
 export enum CampaignStatus {
