@@ -30,6 +30,12 @@ const Explore = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const params = mapParamsToObject<IGetCampaignsParams>(searchParams)
+  
+  // Set default sortBy parameter
+  const campaignParams = {
+    ...params,
+    sortBy: params.sortBy || 'milestonePercentage'
+  }
   const [currentUrl, setCurrentUrl] = useState("https://oncrowdr.com/explore")
   const [searchTerm, setSearchTerm] = useState(params.title)
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -38,8 +44,8 @@ const Explore = () => {
   const url = useMemo(() => new URL(currentUrl), [currentUrl])
 
   const campaignsQuery = useQuery({
-    queryKey: queryKey(query.keys.CAMPAIGNS, params),
-    queryFn: () => _campaigns.getCampaigns(params),
+    queryKey: queryKey(query.keys.CAMPAIGNS, campaignParams),
+    queryFn: () => _campaigns.getCampaigns(campaignParams),
   })
   const campaigns = campaignsQuery.data
   const selectedInterest = params.category ?? ALL_CATEGORY.value
@@ -80,7 +86,6 @@ const Explore = () => {
   const handleInterestToggle = (interest: string) => {
     url.searchParams.set(paramKey("page"), "1")
     url.searchParams.set(paramKey("category"), interest)
-    console.log(url.search)
     updatePageParams()
   }
 

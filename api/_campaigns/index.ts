@@ -5,7 +5,7 @@ import {
   IGetCampaignDonationsPath,
   IGetCampaignDonationsResponse
 } from "./models/GetCampaignDonations";
-import { IGetCampaignsResponse } from "./models/GetCampaigns";
+import { IGetCampaignsParams, IGetCampaignsResponse } from "./models/GetCampaigns";
 import {
   IGetCampaignsSummaryParams,
   IGetCampaignsSummaryResponse
@@ -37,7 +37,7 @@ const updateCampaign = async (
   }
 };
 
-const getCampaigns = async (params: PaginationParams = {}) => {
+const getCampaigns = async (params: IGetCampaignsParams = {}) => {
   const url = `/campaigns`;
   params.page ??= 1;
   params.perPage ??= 10;

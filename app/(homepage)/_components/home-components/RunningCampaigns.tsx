@@ -19,7 +19,7 @@ const RunningCampaigns = () => {
   const { ref: titleElementRef, width: titleElementWidth } = useElementSize()
   const carouselOffset = Math.abs((windowWidth - titleElementWidth) / 2)
   const queryKey = useQueryKey()
-  const params: IGetCampaignsParams = { perPage: 10 }
+  const params: IGetCampaignsParams = { perPage: 10, sortBy: 'milestonePercentage' }
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.CAMPAIGNS, params),
@@ -103,6 +103,7 @@ const RunningCampaigns = () => {
                         avatar={campaign?.photo?.url || ""}
                         campaignType={campaign.campaignType}
                         showCtaButtons={false}
+                        limitTitleToOneLine={true}
                       />
                     </div>
                   )

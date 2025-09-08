@@ -48,6 +48,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     currency,
     user,
     showCtaButtons = true,
+    className,
   } = props
 
   const router = useRouter()
@@ -210,7 +211,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
   }
 
   return (
-    <div className="p-6 rounded-xl border-[#393e4614] border h-fit bg-white">
+    <div className={cn("p-6 rounded-xl border-[#393e4614] border h-fit bg-white")}>
       <div className="flex items-center justify-between ">
         <Link
           href={`/profile/${user?._id ?? userId}`}
@@ -350,7 +351,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
           </div>
         )}
         <div className="my-5">
-          <h3 className="font-semibold text-[18px]">{header}</h3>
+          <h3 className={cn("font-semibold text-[18px]", props.limitTitleToOneLine && "line-clamp-1")}>{header}</h3>
           <p className="mt-2 break-words text-sm whitespace-pre-line">
             {isCollapsed ? formattedText.shortText : formattedText.fullText}
             {formattedText.shortText !== formattedText.fullText && (
@@ -513,5 +514,7 @@ type ExploreCardProps = {
   currency?: string
   user?: User
   showCtaButtons?: boolean
+  className?: string
+  limitTitleToOneLine?: boolean
 }
 type User = IGetCampaignsResponse["data"]["campaigns"][number]["user"]
