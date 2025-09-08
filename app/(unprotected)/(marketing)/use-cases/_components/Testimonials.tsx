@@ -69,9 +69,11 @@ const Testimonials: RFC<Props> = ({ testimonials }) => {
               <p className="font-bold text-center text-black text-xl md:text-[32px] uppercase tracking-[6.4px]">
                 {testimonial.name}
               </p>
-              <p className="text-sm md:text-base text-center text-[#475467]">
-                {testimonial.role}
-              </p>
+              {testimonial.role && (
+                <p className="text-sm md:text-base text-center text-[#475467]">
+                  {testimonial.role}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -109,7 +111,7 @@ interface Props {
   testimonials: Array<{
     quote: string
     name: string
-    role: string
+    role?: string
   }>
 }
 

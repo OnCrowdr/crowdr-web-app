@@ -6,6 +6,7 @@ import HowItWorks from "@/app/(homepage)/_components/home-components/HowItWorks"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import Faq from "@/app/(homepage)/_components/home-components/Faq"
+import Testimonials from "../_components/Testimonials"
 
 const Individuals = () => {
   return (
@@ -16,6 +17,7 @@ const Individuals = () => {
         <SoundFamiliar />
         <CrowdrFeatures />
         <HowItWorks />
+        <Testimonials testimonials={testimonials} />
         <Faq />
         <Footer />
       </main>
@@ -24,3 +26,31 @@ const Individuals = () => {
 }
 
 export default Individuals
+
+const testimonials = [
+  {
+    quote:
+      "“The app is easy to use, and I like how it helps connect people to support causes. I think Crowdr has the potential to do a lot of good things and I’m excited to see how it grows.”",
+    name: "Ifeanyi Moses",
+  },
+  {
+    quote:
+      "“Crowdr built a beautiful platform that enables people to do good in their communities and it has my heart.”",
+    name: "Kamnelechukwu Obasi",
+  },
+  {
+    quote:
+      "“The first thing that caught my attention about Crowdr was that they’re community-based. I also really loved the user interface, it was really easy on the eyes.”",
+    name: "Benedicta Ivarave",
+  },
+  {
+    quote:
+      "“God bless Crowdr, the funds I raised will go a long way in easing a number of stress and bills ahead of my final exams.”",
+    name: "Victory Adeyemi",
+  },
+  {
+    quote:
+      "“I use Crowdr for transparency and accuracy. That way, I can just upload all my relevant proof at once and everybody can see how far along I am with my goal.”",
+    name: "Sanni Morenikeji ‘BigBadReni’",
+  },
+]

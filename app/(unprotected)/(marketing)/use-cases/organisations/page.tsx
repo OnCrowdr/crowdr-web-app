@@ -6,7 +6,7 @@ import SoundFamiliar from "./_components/SoundFamiliar"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import HowItWorks from "./_components/HowItWorks"
-import Testimonials from "../ngos/_components/Testimonials"
+import Testimonials from "../_components/Testimonials"
 import UseCases from "./_components/UseCases"
 import Faq from "@/app/(homepage)/_components/home-components/Faq"
 
@@ -42,9 +42,4 @@ const testimonials = [
     name: "Aishat Mustapha",
     role: "Founder, Mairachamp",
   },
-  // {
-  //   quote: "fdfdf",
-  //   name: "dfd",
-  //   role: "fdfdf",
-  // },
 ]

@@ -6,7 +6,7 @@ import SoundFamiliar from "./_components/SoundFamiliar"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import HowItWorks from "./_components/HowItWorks"
-import Testimonials from "./_components/Testimonials"
+import Testimonials from "../_components/Testimonials"
 import Faq from "@/app/(homepage)/_components/home-components/Faq"
 
 const NGOs = () => {
@@ -40,9 +40,4 @@ const testimonials = [
     name: "Mfonabasi Okutinyang",
     role: "Founder, Kasere",
   },
-  // {
-  //   quote: "fdfdf",
-  //   name: "dfd",
-  //   role: "fdfdf",
-  // },
 ]

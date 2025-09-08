@@ -28,11 +28,11 @@ export default function Navigation({ openModal }: Props) {
     <nav className="font-satoshi">
       <Link href="/">
         <Image
-          src="/svg/new-crowdr-logo.svg"
+          src="/images/brand/crowdr-logo.svg"
           alt="crowdr logo"
-          width={120}
+          width={70}
           height={30}
-          className="cursor"
+          className="cursor w-[55px] md:w-[70px]"
         />
       </Link>
 

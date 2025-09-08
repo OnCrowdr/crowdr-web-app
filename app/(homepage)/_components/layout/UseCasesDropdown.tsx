@@ -14,7 +14,7 @@ const UseCaseDropdown: RFC = ({ children }) => {
       <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
       <DropdownMenuContent>
         {useCases.map((useCase, index) => (
-          <Link key={index} href={`/use-cases/${useCase.href}`}>
+          <Link key={index} href={useCase.href}>
             <DropdownMenuItem>{useCase.label}</DropdownMenuItem>
           </Link>
         ))}
@@ -28,14 +28,14 @@ export default UseCaseDropdown
 export const useCases = [
   {
     label: "For Organisations (CSR)",
-    href: "organisations",
+    href: "/use-cases/organisations",
   },
   {
     label: "For NGOs",
-    href: "ngos",
+    href: "/use-cases/ngos",
   },
   {
     label: "For Individuals",
-    href: "individuals",
+    href: "/use-cases/individuals",
   },
 ]
