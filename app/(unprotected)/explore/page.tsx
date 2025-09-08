@@ -47,8 +47,8 @@ const Explore = () => {
   const url = useMemo(() => new URL(currentUrl), [currentUrl])
 
   const campaignsQuery = useQuery({
-    queryKey: queryKey(query.keys.CAMPAIGNS, params),
-    queryFn: () => _campaigns.getCampaigns(params),
+    queryKey: queryKey(query.keys.CAMPAIGNS, campaignParams),
+    queryFn: () => _campaigns.getCampaigns(campaignParams),
   })
   const campaigns = campaignsQuery.data
   const selectedInterest = params.category ?? ALL_CATEGORY.value
