@@ -338,12 +338,8 @@ const categories = [ALL_CATEGORY, ...campaignCategories]
 
 const SORT_OPTIONS = [
   { value: "milestonePercentage", label: "Milestone Percentage" },
-  { value: "createdAt", label: "Created Date" },
-  { value: "title", label: "Title" },
   { value: "campaignEndDate", label: "End Date" },
-  { value: "campaignStartDate", label: "Start Date" },
   { value: "goalAmount", label: "Goal Amount" },
-  { value: "donatedAmount", label: "Donated Amount" },
 ] as const
 
 const CampaignsContainer: RFC = ({ children }) => {
@@ -361,3 +357,4 @@ const MessageContainer: RFC = ({ children }) => {
     </div>
   )
 }
+
