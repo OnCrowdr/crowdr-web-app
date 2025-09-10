@@ -104,7 +104,7 @@ export default function DonateOrVolunteer(props: {
     isAnonymous: false,
     shouldShareDetails: false,
     isSubscribedToPromo: false,
-    agreedToTerms: false,
+    // agreedToTerms: false,
   })
 
   // Memoized values
@@ -826,7 +826,7 @@ export default function DonateOrVolunteer(props: {
                         updateCheckbox("isSubscribedToPromo", newValue)
                       }
                     />
-                    <Checkbox
+                    {/* <Checkbox
                       id="4"
                       label={
                         <>
@@ -842,7 +842,7 @@ export default function DonateOrVolunteer(props: {
                       onChange={(newValue) =>
                         updateCheckbox("agreedToTerms", newValue)
                       }
-                    />
+                    /> */}
                   </div>
                 </div>
 
@@ -854,8 +854,8 @@ export default function DonateOrVolunteer(props: {
                     onClick={() => donate("card")}
                     loading={loading}
                     disabled={
-                      !areAllInputsFilled(donationInputs) ||
-                      !checkboxValues.agreedToTerms
+                      !areAllInputsFilled(donationInputs) 
+                      // || !checkboxValues.agreedToTerms
                     }
                   />
 

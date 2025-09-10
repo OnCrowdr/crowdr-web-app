@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDebounceCallback } from "usehooks-ts"
 import { useAuthQuery } from "@/hooks/useAuthQuery"
 import Image from "next/image"
@@ -21,13 +21,19 @@ import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import { UserType } from "@/types"
+import DateRange from "../../../dashboard/_components/DateRange"
+import { IDateRange } from "../../../dashboard/_components/DateRange"
 
 const Users = () => {
   const [page, setPage] = useState(1)
   const [searchText, setSearchText] = useState("")
   const [activeFilter, setActiveFilter] = useState<UserType | "">("")
+  const [dateRange, setDateRange] = useState<IDateRange>()
+  const [startDate, endDate] = dateRange ?? []
   const [params, setParams] = useState<Partial<IGetUsersParams>>({
     page,
+    startDate,
+    endDate,
   })
 
   const { data } = useAuthQuery({
@@ -100,6 +106,12 @@ const Users = () => {
     },
   ]
 
+  // Update params when date range changes
+  useEffect(() => {
+    setParams(prev => ({ ...prev, startDate, endDate, page: 1 }))
+    setPage(1)
+  }, [startDate, endDate])
+
   const sort = () => {
     let nameOrder = undefined as typeof params.nameOrder
     if (params.nameOrder === "asc") {
@@ -150,8 +162,13 @@ const Users = () => {
         </p>
       </hgroup>
 
+      {/* date range */}
+      <div className="flex justify-between items-center mb-5 px-4">
+        <DateRange onChange={setDateRange} />
+      </div>
+
       {/* stats */}
-      <div className="flex gap-6 px-8 pt-8 mb-8">
+      <div className="flex gap-6 px-4 mb-8 justify-between">
         {stats &&
           stats.map((stat, index) => <StatCard key={index} {...stat} />)}
       </div>

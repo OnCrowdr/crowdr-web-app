@@ -18,5 +18,5 @@ export interface CheckboxValues {
   isAnonymous: boolean;
   shouldShareDetails: boolean;
   isSubscribedToPromo: boolean;
-  agreedToTerms: boolean;
+  // agreedToTerms: boolean;
 }

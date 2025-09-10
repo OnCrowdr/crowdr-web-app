@@ -1,5 +1,5 @@
 "use client"
-import { useReducer, useState } from "react"
+import { useEffect, useReducer, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { useQuery } from "react-query"
@@ -53,11 +53,15 @@ import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import UserIcon from "@/public/svg/user-01.svg"
 import { useAuth } from "@/contexts/AppProvider"
+import DateRange from "../../dashboard/_components/DateRange"
+import { IDateRange } from "../../dashboard/_components/DateRange"
 
 const Dashboard = () => {
   const [searchText, setSearchText] = useState("")
+  const [dateRange, setDateRange] = useState<IDateRange>()
+  const [startDate, endDate] = dateRange ?? []
   const [tableParams, setTableParams] = useReducer(filterReducer, {
-    campaigns: { page: 1 },
+    campaigns: { page: 1, sortBy: 'milestonePercentage', startDate, endDate },
     kycs: { page: 1 },
     withdrawals: { page: 1 },
   })
@@ -178,6 +182,16 @@ const Dashboard = () => {
     setTableParams({ table: selectedTable, type: "reset" })
   }
 
+  // Update campaign params when date range changes
+  useEffect(() => {
+    if (selectedTable === "campaigns") {
+      setTableParams({
+        table: "campaigns",
+        params: { startDate, endDate, page: 1 }
+      })
+    }
+  }, [startDate, endDate, selectedTable])
+
   return (
     <div>
       {/* page title x subtitle */}
@@ -190,8 +204,13 @@ const Dashboard = () => {
         </p>
       </hgroup>
 
+      {/* date range */}
+      <div className="flex justify-between items-center mt-2 px-4">
+        <DateRange onChange={setDateRange} />
+      </div>
+
       {/* stats */}
-      <div className="flex gap-6 px-8 pt-8 mb-8">
+      <div className="flex gap-6 px-4 pt-8 mb-8 justify-between">
         {stats &&
           stats.map((stat, index) => <StatCard key={index} {...stat} />)}
       </div>
@@ -200,7 +219,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center px-4 py-3">
         <ButtonGroup buttons={tablePickerButtons} selected={selectedTable} />
 
-        <div className="flex gap-3 items-center w-[515px]">
+        <div className="flex gap-3 items-center w-[515px] ">
           <TextInput
             value={searchText}
             onChange={(e) => {
