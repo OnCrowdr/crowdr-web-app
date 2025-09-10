@@ -7,7 +7,7 @@ import Footer from "@/app/(homepage)/_components/layout/Footer"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import HowItWorks from "./_components/HowItWorks"
 import Testimonials from "../_components/Testimonials"
-import Faq from "@/app/(homepage)/_components/home-components/Faq"
+import Faq from "./_components/Faq"
 
 const NGOs = () => {
   return (

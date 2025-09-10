@@ -41,5 +41,5 @@ const items = [
   "We recommend a CSR budget based on your company stage.",
   "We build a structured plan for partnerships, donations, and events.",
   "We facilitate CSR projects throughout the chosen period.",
-  "We track impact and secure media coverage for PR",
+  "We track impact and secure media coverage for PR.",
 ]

@@ -36,16 +36,9 @@ const RunningCampaigns = () => {
         <h4 className="text-[28px] md:text-[42px] text-[#181A1D] font-medium">
           Others are already fundraising on Crowdr
         </h4>
-
-        <Link
-          href={"/signup"}
-          className="btn-primary whitespace-nowrap !w-auto"
-        >
-          Start a campaign
-        </Link>
       </div>
 
-      <div className="overflow-x-auto max-w-full scrollbar scrollbar-none">
+      <div className="overflow-x-auto max-w-full scrollbar scrollbar-none mb-16">
         <div className="flex">
           <div
             style={{ "--offset": `${carouselOffset}px` } as any}
@@ -132,6 +125,15 @@ const RunningCampaigns = () => {
             className="min-w-[20px] md:min-w-[calc(var(--offset)_+_20px)]"
           />
         </div>
+      </div>
+
+      <div className="flex justify-end max-w-[1220px] px-[20px] mx-auto">
+        <Link
+          href={"/explore"}
+          className="btn-primary whitespace-nowrap text-center !w-[170px]"
+        >
+          See more
+        </Link>
       </div>
     </section>
   )

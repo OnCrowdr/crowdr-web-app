@@ -34,10 +34,10 @@ export default function Home() {
         <SoundFamiliar />
         <CrowdrFeatures />
         <HowItWorks />
+        <Press />
         {/* <WhyCrowdr /> */}
         <UseCases />
         <Partners />
-        <Press />
         <Faq />
         {/* <Community /> */}
         <Footer />
