@@ -24,7 +24,7 @@ const HowItWorks = () => {
   }
 
   return (
-    <section className="todo max-w-[1484px] mx-auto !pt-20 !pb-[88px]">
+    <section className="todo max-w-[1484px] mx-auto !pt-20 !pb-[40px]">
       <h3 className="!text-[32px] !md:text-[42px]">How It Works</h3>
 
       {width ? (

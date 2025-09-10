@@ -4,8 +4,8 @@ import Hero from "./_components/Hero"
 import SoundFamiliar from "./_components/SoundFamiliar"
 import HowItWorks from "@/app/(homepage)/_components/home-components/HowItWorks"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
+import Faq from "./_components/Faq"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
-import Faq from "@/app/(homepage)/_components/home-components/Faq"
 import Testimonials from "../_components/Testimonials"
 
 const Individuals = () => {
