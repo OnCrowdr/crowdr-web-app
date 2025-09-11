@@ -7,6 +7,7 @@ import { CgSpinner } from "react-icons/cg";
 import "../styles/shared.css";
 import OldButton from "../../../../components/OldButton";
 import { Mixpanel } from "../../../../utils/mixpanel";
+import { isProd } from "@/config";
 
 const SignIn = () => {
   const {
@@ -14,7 +15,8 @@ const SignIn = () => {
     formState: { errors, isValid, isSubmitting },
   } = useFormContext() as LoginFormContext;
   const [passIsVisible, setPassIsVisible] = useState(false);
-  const emailRegex = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
+  const emailRegex = isProd ? /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/ : /^[\w\.\-+]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
+
 
   return (
     <section>

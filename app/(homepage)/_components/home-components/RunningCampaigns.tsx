@@ -80,7 +80,7 @@ const RunningCampaigns = () => {
                             : "0"
                         }
                         currentAmount={donatedAmount}
-                        timePosted={campaign?.campaignStartDate}
+                        timePosted={campaign?.campaignEndDate}
                         volunteer={
                           isVolunteer(campaign)
                             ? campaign?.volunteer
