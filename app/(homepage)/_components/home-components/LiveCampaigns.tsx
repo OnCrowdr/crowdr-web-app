@@ -238,7 +238,7 @@ const LiveCampaigns = () => {
                 totalAmount={campaign.fundraise?.fundingGoalDetails[0].amount}
                 currency={campaign?.fundraise?.fundingGoalDetails[0].currency}
                 currentAmount={donatedAmount}
-                timePosted={campaign?.campaignStartDate}
+                timePosted={campaign?.campaignEndDate}
                 slideImages={[
                   campaign?.campaignCoverImage?.url,
                   ...(urlsOnly || [])
