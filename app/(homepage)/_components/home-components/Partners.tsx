@@ -4,10 +4,16 @@ import "../home-styles/partners.css"
 
 const Partners = () => {
   const partnerLogos = [
-    "/svg/tokan.svg",
-    "/svg/foodbank.svg",
-    "/svg/lisa.png",
-    "/svg/orange-bath.svg",
+    "/images/partners/aiesec.png",
+    "/images/partners/beauty-hut.png",
+    "/images/partners/ecobarter.png",
+    "/images/partners/tech-her.png",
+    "/images/partners/orange-bath.png",
+    "/images/partners/lisa-academy.png",
+    // "/svg/tokan.svg",
+    // "/svg/foodbank.svg",
+    // "/svg/lisa.png",
+    // "/svg/orange-bath.svg",
   ]
 
   const partners = [
@@ -25,7 +31,7 @@ const Partners = () => {
       </h2>
       <div className="scroll-container mt-7">
         <div className="scroll-animation">
-          <div className="flex items-center gap-10">
+          {/* <div className="flex items-center gap-10">
             {partners.map((partner, index) => (
               <p
                 key={index}
@@ -35,8 +41,8 @@ const Partners = () => {
                 {partner}
               </p>
             ))}
-          </div>
-          {/* {partnerLogos.map((logo, index) => (
+          </div> */}
+          {partnerLogos.map((logo, index) => (
             <div key={index} className="logo-container h-[100px] w-[400px]">
               <Image
                 src={logo}
@@ -68,7 +74,7 @@ const Partners = () => {
                 className='h-full w-[300px] max-w-fit'
               />
             </div>
-          ))} */}
+          ))}
         </div>
       </div>
       <Image
