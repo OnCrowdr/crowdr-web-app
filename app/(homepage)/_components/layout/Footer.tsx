@@ -9,13 +9,15 @@ export default function Footer() {
     <footer className="flex flex-col-reverse md:flex-row gap-y-10 gap-x-16 bg-[#F8F8F8]">
       <div className="grid gap-4">
         <div className="description">
-          <div
-            className="w-[150px] md:w-[178px] h-[30px]"
-            style={{
-              background:
-                "url('/images/brand/crowdr_wordmark_svg/crowdr_wordmark_svg-BLACK.svg') transparent -30px center / cover no-repeat",
-            }}
-          />
+          <Link href={"/"}>
+            <div
+              className="w-[150px] md:w-[178px] h-[30px]"
+              style={{
+                background:
+                  "url('/images/brand/crowdr_wordmark_svg/crowdr_wordmark_svg-BLACK.svg') transparent -30px center / cover no-repeat",
+              }}
+            />
+          </Link>
           {/* <Image
             src="/images/brand/crowdr_wordmark_svg/crowdr_wordmark_svg-BLACK.svg"
             alt="crowdr logo"

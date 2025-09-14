@@ -4,9 +4,9 @@ import Hero from "./_components/Hero"
 import SoundFamiliar from "./_components/SoundFamiliar"
 import HowItWorks from "@/app/(homepage)/_components/home-components/HowItWorks"
 import Footer from "@/app/(homepage)/_components/layout/Footer"
-import Faq from "./_components/Faq"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import Testimonials from "../_components/Testimonials"
+import Faq from "@/app/(homepage)/_components/home-components/Faq"
 
 const Individuals = () => {
   return (
@@ -18,7 +18,7 @@ const Individuals = () => {
         <CrowdrFeatures />
         <HowItWorks />
         <Testimonials testimonials={testimonials} />
-        <Faq />
+        <Faq faqs={faqs} />
         <Footer />
       </main>
     </main>
@@ -52,5 +52,25 @@ const testimonials = [
     quote:
       "“I use Crowdr for transparency and accuracy. That way, I can just upload all my relevant proof at once and everybody can see how far along I am with my goal.”",
     name: "Sanni Morenikeji ‘BigBadReni’",
+  },
+]
+
+
+const faqs = [
+  {
+    heading: "What kind of fundraisers can I start?",
+    text: "You can raise money for anything, from medical bills, tuition, emergencies, and community projects—anything that genuinely helps you or someone else.",
+  },
+  {
+    heading: "How do I get people to donate?",
+    text: "Crowdr gives you tools to share your story, track donations, and update your supporters. You can share your fundraiser via WhatsApp, Instagram, Twitter, and more. We also boost your campaign within our network on social media and our Explore page.",
+  },
+  {
+    heading: "Does Crowdr take a fee?",
+    text: "Yes. We charge a small platform fee of 2% to keep the site running and support fundraisers. We’re transparent about all charges.",
+  },
+  {
+    heading: "Can I raise funds for someone else?",
+    text: "Absolutely. You can start a fundraiser on behalf of a friend, family member, or even someone in your community.",
   },
 ]

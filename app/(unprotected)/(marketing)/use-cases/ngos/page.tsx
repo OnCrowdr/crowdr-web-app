@@ -7,7 +7,7 @@ import Footer from "@/app/(homepage)/_components/layout/Footer"
 import CrowdrFeatures from "./_components/CrowdrFeatures"
 import HowItWorks from "./_components/HowItWorks"
 import Testimonials from "../_components/Testimonials"
-import Faq from "./_components/Faq"
+import Faq from "@/app/(homepage)/_components/home-components/Faq"
 
 const NGOs = () => {
   return (
@@ -19,7 +19,7 @@ const NGOs = () => {
         <CrowdrFeatures />
         <HowItWorks />
         <Testimonials testimonials={testimonials} />
-        <Faq />
+        <Faq faqs={faqs} />
         <Footer />
       </main>
     </main>
@@ -39,5 +39,24 @@ const testimonials = [
     quote: "“This product is really amazing. Thank you guys for what you are doing.”",
     name: "Mfonabasi Okutinyang",
     role: "Founder, Kasere",
+  },
+]
+
+const faqs = [
+  {
+    heading: "How does Crowdr verify NGOs?",
+    text: "We verify your organisation’s CAC registration during onboarding. This builds trust with donors and increases your chances of getting funded.",
+  },
+  {
+    heading: "Does Crowdr take a fee?",
+    text: "Yes. We charge a small platform fee of 2% to keep the site running and support fundraisers. We’re transparent about all charges.",
+  },
+  {
+    heading: "Can we run more than one fundraiser at a time?",
+    text: "Yes. As long as each campaign is legitimate and clear, you can run multiple fundraisers for different projects.",
+  },
+  {
+    heading: "Does Crowdr help promote NGO campaigns?",
+    text: "Yes. We boost your campaign on our Explore page and on social media (if you tag us). We may also recommend you to organisations looking to partner on CSR projects.",
   },
 ]
