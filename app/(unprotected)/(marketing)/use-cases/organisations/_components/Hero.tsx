@@ -3,6 +3,7 @@ import Image from "next/image"
 import "@/app/(homepage)/_components/home-styles/header.css"
 import { useRouter } from "next/navigation"
 import { FaApplePay } from "react-icons/fa"
+import { openEmail } from "@/utils/openEmail"
 
 type Props = {
   openModal?: () => void
@@ -25,6 +26,14 @@ export default function Hero({ openModal }: Props) {
         <div className="button-group">
           <button className="btn-primary" onClick={() => router.push("signup")}>
             Start a Campaign
+          </button>
+          <button
+            className="btn-outline min-w-[154px]"
+            onClick={() =>
+              open("https://calendly.com/contact-crowdr/chat-with-crowdr")
+            }
+          >
+            Book a Call
           </button>
         </div>
       </div>

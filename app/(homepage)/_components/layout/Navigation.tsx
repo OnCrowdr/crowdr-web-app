@@ -26,14 +26,20 @@ export default function Navigation({ openModal }: Props) {
 
   return (
     <nav className="font-satoshi">
-      <Link href="/">
-        <Image
-          src="/images/brand/crowdr-logo.svg"
+      <Link
+        href="/"
+        className="w-[150px] md:w-[178px] h-[30px]"
+        style={{
+          background: "url('/images/brand/crowdr_wordmark_svg/crowdr_wordmark_svg-GREEN.svg') transparent -15px center / cover no-repeat",
+        }}
+      >
+        {/* <img
+          src="/images/brand/crowdr_wordmark_svg/crowdr_wordmark_svg-GREEN.svg"
           alt="crowdr logo"
-          width={70}
-          height={30}
-          className="cursor w-[55px] md:w-[70px]"
-        />
+          // width={130}
+          // height={60}
+          className="w-full"
+        /> */}
       </Link>
 
       <ul className="relative md:left-6">
@@ -56,14 +62,14 @@ export default function Navigation({ openModal }: Props) {
           </UseCaseDropdown>
         </li>
         <li>
-          <a href="https://blog.oncrowdr.com" target="_blank">
-            Blog
-          </a>
-        </li>
-        <li>
           <Link href="/pricing" className={isActive("/pricing")}>
             Pricing
           </Link>
+        </li>
+        <li>
+          <a href="https://blog.oncrowdr.com" target="_blank">
+            Blog
+          </a>
         </li>
       </ul>
 
@@ -104,4 +110,3 @@ export default function Navigation({ openModal }: Props) {
     </nav>
   )
 }
-

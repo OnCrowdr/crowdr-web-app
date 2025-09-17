@@ -9,13 +9,22 @@ export default function Footer() {
     <footer className="flex flex-col-reverse md:flex-row gap-y-10 gap-x-16 bg-[#F8F8F8]">
       <div className="grid gap-4">
         <div className="description">
-          <Image
-            src="/svg/crowdr-logo.svg"
+          <Link href={"/"}>
+            <div
+              className="w-[150px] md:w-[178px] h-[30px]"
+              style={{
+                background:
+                  "url('/images/brand/crowdr_wordmark_svg/crowdr_wordmark_svg-BLACK.svg') transparent -30px center / cover no-repeat",
+              }}
+            />
+          </Link>
+          {/* <Image
+            src="/images/brand/crowdr_wordmark_svg/crowdr_wordmark_svg-BLACK.svg"
             alt="crowdr logo"
             width={130}
             height={60}
             className=""
-          />
+          /> */}
         </div>
 
         <div className="flex items-center gap-5">
@@ -72,7 +81,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="relative flex items-center rounded-full border border-[#86868691] max-w-[440px] p-4">
+        {/* <div className="relative flex items-center rounded-full border border-[#86868691] max-w-[440px] p-4">
           <input
             placeholder="Email Address"
             className="flex-1 bg-transparent !outline-none h-full pr-24"
@@ -80,7 +89,7 @@ export default function Footer() {
           <button className="absolute -translate-y-[50%] top-[50%] right-3.5 font-medium text-xs text-[#EBECED] bg-[#00B964] rounded-full w-full max-w-[90px] h-8">
             Subscribe
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex-1 flex md:justify-center">
