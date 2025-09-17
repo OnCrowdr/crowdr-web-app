@@ -1,27 +1,67 @@
+"use client"
 import Image from "next/image"
-import TechCabalLogo from "@/public/images/techcabal-logo.png"
-import BusinessDayLogo from "@/public/images/businessday-logo.png"
+import TechCabalLogo from "@/public/images/misc/techcabal-logo.png"
+import BusinessDayLogo from "@/public/images/misc/businessday-logo.png"
+import ThisDayLogo from "@/public/images/misc/thisday-logo.png"
+import { useElementSize, useViewportSize } from "@mantine/hooks"
 
 const Press = () => {
-  return (
-    <div className="grid gap-[52px] px-[30px] mt-[40px] mb-[100px] md:pt-[80px] md:pb-[140px] place-items-center">
-      <p className="font-medium text-xl md:text-[40px]">As seen in...</p>
+  const { width: windowWidth } = useViewportSize()
+  const { ref: titleElementRef, width: titleElementWidth } = useElementSize()
+  const carouselOffset = Math.abs((windowWidth - titleElementWidth) / 2)
 
-      <div className="flex items-center gap-8 md:gap-16">
-        <Image
-          src={TechCabalLogo}
-          alt="TechCabal Logo"
-          className="w-[160px] md:w-[320px] md:h-[91px] object-contain"
-          width={420}
-          height={91}
-        />
-        <Image
-          src={BusinessDayLogo}
-          alt="Business Day Logo"
-          className="w-[90px] md:w-[231px] md:h-[65px] object-contain"
-          width={331}
-          height={65}
-        />
+  return (
+    <div
+      className="relative h-[260px] sm:h-[248px]"
+      style={{
+        background: "url('/images/misc/newspaper-bg.png')",
+      }}
+    >
+      <div className="absolute inset-0 bg-white opacity-80" />
+
+      <div className="absolute inset-0 flex flex-col justify-center gap-8 md:gap-10 max-w-[1240px] mx-auto">
+        <p
+          ref={titleElementRef}
+          className="font-bold text-black md:text-[40px] px-[30px]"
+        >
+          As seen in...
+        </p>
+
+        <div className="overflow-x-auto max-w-full scrollbar scrollbar-none md:mx-auto">
+          <div className="flex items-center justify-center md:items-start md:justify-center">
+            <div
+              style={{ "--offset": `${carouselOffset}px` } as any}
+              className="min-w-[20px] md:min-w-[calc(var(--offset)_+_20px)] lg:hidden"
+            />
+            <div className="self-center flex flex-col md:flex-row md:items-center gap-6 md:gap-16">
+              <Image
+                src={BusinessDayLogo}
+                alt="Business Day Logo"
+                className="w-[160px] md:w-[350px] object-contain grayscale"
+                width={390}
+                height={72}
+              />
+              <Image
+                src={TechCabalLogo}
+                alt="TechCabal Logo"
+                className="w-[160px] md:w-[270px] object-contain grayscale"
+                width={310}
+                height={69}
+              />
+              <Image
+                src={ThisDayLogo}
+                alt="This Day Logo"
+                className="w-[160px] md:w-[320px] object-contain grayscale"
+                width={310}
+                height={69}
+              />
+            </div>
+            <div
+              style={{ "--offset": `${carouselOffset}px` } as any}
+              className="min-w-[20px] md:min-w-[calc(var(--offset)_+_20px)] lg:hidden"
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

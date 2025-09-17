@@ -95,7 +95,7 @@ const RunningCampaigns = () => {
                         routeTo={`/explore/c/${campaign._id}`}
                         avatar={campaign?.photo?.url || ""}
                         campaignType={campaign.campaignType}
-                        showCtaButtons={false}
+                        // showCtaButtons={false}
                         limitTitleToOneLine={true}
                       />
                     </div>

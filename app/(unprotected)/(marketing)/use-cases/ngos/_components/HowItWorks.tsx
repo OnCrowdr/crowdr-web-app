@@ -5,27 +5,53 @@ import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
 import Slider from "react-slick"
 import { useRouter } from "next/navigation"
+import Pill, { pill } from "@/app/(protected)/dashboard/_components/Pill"
 import useWindowSize from "@/hooks/useWindowSize"
 
 const HowItWorks = () => {
   const router = useRouter()
   const width = useWindowSize(800)
 
-  const settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    fade: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: true,
-    swipeToSlide: true,
-    arrows: false,
-  }
+  const Sports = (
+    <Pill
+      text="Sports"
+      icon="man-swimming-light-skin-tone"
+      textColor="#874100"
+      bgColor="#FFF1E4"
+      className="min-w-[126px]"
+    />
+  )
+  const Climate = (
+    <Pill
+      text="Climate"
+      icon="books"
+      textColor="#076C11"
+      bgColor="#E3FFE6"
+      className="min-w-[126px]"
+    />
+  )
+  const Technology = (
+    <Pill
+      text="Technology"
+      icon="desktop-computer"
+      textColor="#085D70"
+      bgColor="#DEFAFF"
+      className="min-w-[126px]"
+    />
+  )
+  const Startup = (
+    <Pill
+      text="Startup"
+      icon="office-building"
+      textColor="#606E09"
+      bgColor="#FBFFE2"
+      className="min-w-[126px]"
+    />
+  )
 
   return (
-    <section className="todo max-w-[1484px] mx-auto !pt-20 !pb-[88px]">
-      <h3 className="!text-[32px] !sm:text-[42px]">How It Works</h3>
+    <section className="todo max-w-[1484px] mx-auto !pt-20 !pb-[40px]">
+      <h3 className="!text-[32px] !md:text-[42px]">How It Works</h3>
 
       {width ? (
         <div className="todo-content">
@@ -61,7 +87,7 @@ const HowItWorks = () => {
               </div>
             </div>
             <Image
-              src="/svg/iphone.svg"
+              src="/svg/profile-mockup.svg"
               width={300}
               height={500}
               alt="hero-section"
@@ -69,77 +95,108 @@ const HowItWorks = () => {
             />
           </div>
 
-          <div className="flex flex-col items-center gap-4 flex-1">
-            <div className="todo-item !items-center !h-[340px] w-full">
-              <h4 className="text-center !text-[24px]">Create campaigns</h4>
-              <div className="overflow-hidden">
+          <div className="flex flex-col flex-1 gap-4">
+            <div className="todo-item relative flex flex-col !items-center !overflow-hidden !h-[340px] !px-[14px]">
+              <h4 className="text-center !text-[24px] font-medium !leading-snug mb-2">
+                Set up your campaign & publish
+              </h4>
+              <div className="flex-1 flex items-end overflow-hidden max-w-[55%]">
                 <Image
                   src="/images/campaign.png"
                   width={300}
                   height={300}
                   alt="hero-section"
-                  className="w-full h-full"
                 />
               </div>
+
+              <div className="absolute bottom-[43px] left-[-31px] rotate-[-14deg]">
+                {Climate}
+              </div>
+              <div className="absolute bottom-[17px] left-[-12px]">
+                {Sports}
+              </div>
+
+              <div className="absolute bottom-[49px] right-[-26px] rotate-[3deg]">
+                {Startup}
+              </div>
+              <div className="absolute bottom-[8px] right-[-31px]">
+                {Technology}
+              </div>
             </div>
-            <div className="todo-item !items-center !h-[340px]">
-              <h4 className="text-center !text-[24px]">
-                Get support from your community and beyond!
+
+            <div className="todo-item relative !items-center !overflow-hidden !h-[340px]">
+              <h4 className="text-center !text-[24px] font-medium !leading-snug mb-[18px]">
+                Share your campaign & receive donations
               </h4>
-              <div className="overflow-hidden flex flex-col items-start">
+
+              <div className="flex flex-row items-center justify-center gap-4">
                 <Image
-                  src="/svg/notification.svg"
+                  src="/svg/twitter-x.svg"
+                  width={40}
+                  height={40}
+                  alt="twitter"
+                />
+                <Image
+                  src="/svg/facebook-new.svg"
+                  width={40}
+                  height={40}
+                  alt="facebook"
+                />
+                <Image
+                  src="/svg/linkedin-new.svg"
+                  width={40}
+                  height={40}
+                  alt="linkedin"
+                />
+                <Image src="/svg/mail.svg" width={40} height={40} alt="mail" />
+              </div>
+
+              <div className="flex flex-col gap-2 absolute bottom-2 left-0 right-0">
+                <Image
+                  src="/svg/donation-notification.svg"
                   width={500}
                   height={200}
                   alt="hero-section"
-                  className="w-full  overflow-hidden"
+                  className="self-end relative w-[80%] lg:w-[70%] bottom-[-30px] lg:bottom-[-40px] xl:bottom-[-60px]"
                 />
+
                 <Image
                   src="/svg/donation.svg"
                   width={500}
                   height={500}
                   alt="hero-section"
-                  className="w-[350px]  h-full overflow-hidden"
+                  className="relative left-2 md:bottom-[-20px] lg:bottom-[-35px] xl:bottom-[-50px] w-[90%]"
                 />
               </div>
             </div>
           </div>
 
-          <div className="todo-item flex-1">
+          <div className="todo-item flex-1 overflow-hidden">
             <span className="text-black text-sm leading-10">
               Wanna get more reach?
             </span>
             <div className="flex flex-col gap-[14px]">
-              <h4>Share campaign to socials </h4>
+              <h4 className="!leading-snug mb-5">
+                Withdraw your funds securely
+              </h4>
             </div>
-            <div className="flex flex-row items-center justify-center gap-4 mt-10 w-full">
+
+            <div className="w-[90%]">
               <Image
-                src="/svg/twitter-x.svg"
-                width={40}
-                height={40}
-                alt="twitter"
+                src="/svg/campaign-stat-cards.svg"
+                width={300}
+                height={300}
+                alt="hero-section"
+                className="w-full"
               />
               <Image
-                src="/svg/facebook-new.svg"
-                width={40}
-                height={40}
-                alt="facebook"
+                src="/svg/withdrawal-modal.svg"
+                width={300}
+                height={300}
+                alt="hero-section"
+                className="w-full"
               />
-              <Image
-                src="/svg/linkedin-new.svg"
-                width={40}
-                height={40}
-                alt="linkedin"
-              />
-              <Image src="/svg/mail.svg" width={40} height={40} alt="mail" />
             </div>
-            <Image
-              src="/svg/new-modal.svg"
-              width={300}
-              height={300}
-              alt="hero-section"
-              className="w-[340px] mt-10 h-full overflow-hidden"
-            />
           </div>
         </div>
       ) : (
@@ -166,36 +223,78 @@ const HowItWorks = () => {
           </div>
 
           <div className="!flex !flex-col !items-center !gap-4 !mt-4">
-            <div className="todo-item !items-center !h-[340px] w-full">
-              <h4 className="text-center !text-[24px]">Create campaigns</h4>
-              <div className="overflow-hidden">
+            <div className="todo-item relative flex flex-col !items-center !overflow-hidden !h-[340px] !px-[14px]">
+              <h4 className="text-center !text-[24px] font-medium !leading-snug">
+                Set up your campaign & publish
+              </h4>
+              <div className="flex-1 flex items-end overflow-hidden max-w-[55%]">
                 <Image
                   src="/images/campaign.png"
                   width={300}
                   height={300}
                   alt="hero-section"
-                  className="w-full"
                 />
               </div>
+
+              <div className="absolute bottom-[43px] left-[-31px] rotate-[-14deg]">
+                {Climate}
+              </div>
+              <div className="absolute bottom-[17px] left-[-12px]">
+                {Sports}
+              </div>
+
+              <div className="absolute bottom-[49px] right-[-26px] rotate-[3deg]">
+                {Startup}
+              </div>
+              <div className="absolute bottom-[8px] right-[-31px]">
+                {Technology}
+              </div>
             </div>
-            <div className="todo-item !items-center !h-[340px] w-full">
-              <h4 className="text-center !text-[24px]">
-                Get support from your community and beyond!
+
+            <div className="todo-item relative !items-center !overflow-hidden !h-[340px]">
+              <h4 className="text-center !text-[24px] font-medium !leading-snug mb-[18px]">
+                Share your campaign & receive donations
               </h4>
-              <Image
-                src="/svg/notification.svg"
-                width={500}
-                height={500}
-                alt="hero-section"
-                className="w-full  overflow-hidden"
-              />
-              <Image
-                src="/svg/donation.svg"
-                width={500}
-                height={500}
-                alt="hero-section"
-                className="w-full overflow-hidden"
-              />
+
+              <div className="flex flex-row items-center justify-center gap-4">
+                <Image
+                  src="/svg/twitter-x.svg"
+                  width={40}
+                  height={40}
+                  alt="twitter"
+                />
+                <Image
+                  src="/svg/facebook-new.svg"
+                  width={40}
+                  height={40}
+                  alt="facebook"
+                />
+                <Image
+                  src="/svg/linkedin-new.svg"
+                  width={40}
+                  height={40}
+                  alt="linkedin"
+                />
+                <Image src="/svg/mail.svg" width={40} height={40} alt="mail" />
+              </div>
+
+              <div className="flex flex-col gap-2 absolute bottom-2 left-0 right-0">
+                <Image
+                  src="/svg/donation-notification.svg"
+                  width={500}
+                  height={200}
+                  alt="hero-section"
+                  className="self-end relative w-[80%] lg:w-[70%] bottom-[-30px] lg:bottom-[-40px] xl:bottom-[-60px]"
+                />
+
+                <Image
+                  src="/svg/donation.svg"
+                  width={500}
+                  height={500}
+                  alt="hero-section"
+                  className="relative left-2 bottom-[-40px] lg:bottom-[-35px] xl:bottom-[-50px] w-[90%]"
+                />
+              </div>
             </div>
           </div>
 
@@ -204,36 +303,27 @@ const HowItWorks = () => {
               Wanna get more reach?
             </span>
             <div className="flex flex-col gap-[14px]">
-              <h4>Share campaign to socials </h4>
+              <h4 className="!leading-snug mb-5">
+                Withdraw your funds securely
+              </h4>
             </div>
-            <div className="flex flex-row items-center justify-center gap-4 mt-10 w-full">
+
+            <div className="w-[90%]">
               <Image
-                src="/svg/twitter-x.svg"
-                width={40}
-                height={40}
-                alt="twitter"
+                src="/svg/campaign-stat-cards.svg"
+                width={300}
+                height={300}
+                alt="hero-section"
+                className="w-full"
               />
               <Image
-                src="/svg/facebook-new.svg"
-                width={40}
-                height={40}
-                alt="facebook"
+                src="/svg/withdrawal-modal.svg"
+                width={300}
+                height={300}
+                alt="hero-section"
+                className="w-full"
               />
-              <Image
-                src="/svg/linkedin-new.svg"
-                width={40}
-                height={40}
-                alt="linkedin"
-              />
-              <Image src="/svg/mail.svg" width={40} height={40} alt="mail" />
             </div>
-            <Image
-              src="/svg/new-modal.svg"
-              width={300}
-              height={300}
-              alt="hero-section"
-              className="w-full mt-10 overflow-hidden"
-            />
           </div>
         </Slider>
       )}
@@ -242,3 +332,15 @@ const HowItWorks = () => {
 }
 
 export default HowItWorks
+
+const settings = {
+  dots: true,
+  infinite: false,
+  speed: 500,
+  fade: true,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+  adaptiveHeight: true,
+  swipeToSlide: true,
+  arrows: false,
+}

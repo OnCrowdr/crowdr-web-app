@@ -50,7 +50,7 @@ const Testimonials: RFC<Props> = ({ testimonials }) => {
             className="relative rounded-[54px] bg-[#DCFAE6] border-2 border-black pb-1.5"
             style={{ boxShadow: "0 10.558px 0 0 #111" }}
           >
-            <div className="relative text-lg md:text-2xl text-black rounded-[54px] pt-7 md:pt-[43px] pb-5 md:pb-[38px] px-5 md:px-[47px]">
+            <div className="relative text-lg md:text-2xl text-black text-center rounded-[54px] pt-7 md:pt-[43px] pb-5 md:pb-[38px] px-5 md:px-[47px]">
               <div
                 className="absolute inset-0 opacity-10 rounded-[54px] pt-[43px] pb-[38px] px-[47px]"
                 style={{
