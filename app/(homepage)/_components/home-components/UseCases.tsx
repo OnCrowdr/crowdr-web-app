@@ -3,7 +3,7 @@ import { MdArrowOutward } from "react-icons/md"
 
 const UseCases = () => {
   return (
-    <section className="bg-[#181A1D] px-5 py-20 mb-20">
+    <section className="bg-[#181A1D] px-5 py-20">
       <div className="grid gap-6 w-full max-w-[921px] m-auto">
         <div className="grid gap-2 place-items-center mx-auto">
           <h3 className="font-medium text-[40px] text-white">

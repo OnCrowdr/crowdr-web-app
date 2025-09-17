@@ -214,7 +214,7 @@ const HowItWorks = () => {
               </button>
             </div>
             <Image
-              src="/svg/iphone.svg"
+              src="/svg/profile-mockup.svg"
               width={300}
               height={500}
               alt="hero-section"
