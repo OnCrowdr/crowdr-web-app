@@ -6,9 +6,9 @@ const Partners = () => {
   const partnerLogos = [
     "/images/partners/aiesec.png",
     "/images/partners/beauty-hut.png",
-    "/images/partners/ecobarter.png",
-    "/images/partners/tech-her.png",
-    "/images/partners/orange-bath.png",
+    "/images/partners/black-girls-in-tech.png",
+    "/images/partners/mairachamp.png",
+    "/images/partners/bethesda.png",
     "/images/partners/lisa-academy.png",
     // "/svg/tokan.svg",
     // "/svg/foodbank.svg",

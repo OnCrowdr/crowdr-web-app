@@ -4,6 +4,7 @@ import Image from "next/image"
 import Collapsible from "react-collapsible"
 import "../home-styles/faq.css"
 import { RFC } from "@/types"
+import { ReactNode } from "react"
 
 const Faq: RFC<Props> = ({faqs}) => {
   return (
@@ -15,7 +16,7 @@ const Faq: RFC<Props> = ({faqs}) => {
         </p>
 
         <div>
-          {faqs.map((faq: { heading: string; text: string }, index) => (
+          {faqs.map((faq, index) => (
             <div className="faq-collapsible-container" key={index}>
               <Collapsible
                 trigger={
@@ -41,7 +42,7 @@ const Faq: RFC<Props> = ({faqs}) => {
                   </div>
                 }
               >
-                {index === 0 ? (
+                {/* {index === 0 ? (
                   <p className="pt-4 faq-collapsible-body">
                     Please click the “Start a Campaign” button to create an
                     account! After that, please click{" "}
@@ -57,9 +58,9 @@ const Faq: RFC<Props> = ({faqs}) => {
                     into any issues, please don’t hesitate to email us at
                     support@oncrowdr.com.
                   </p>
-                ) : (
+                ) : ( */}
                   <p className="pt-4 faq-collapsible-body">{faq.text}</p>
-                )}
+                {/* )} */}
               </Collapsible>
             </div>
           ))}
@@ -72,5 +73,5 @@ const Faq: RFC<Props> = ({faqs}) => {
 export default Faq
 
 interface Props {
-  faqs: Array<{ heading: string; text: string }>
+  faqs: Array<{ heading: string; text: ReactNode }>
 }

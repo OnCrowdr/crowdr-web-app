@@ -36,7 +36,8 @@ const testimonials = [
     role: "Co-founder, Project Mend",
   },
   {
-    quote: "“This product is really amazing. Thank you guys for what you are doing.”",
+    quote:
+      "“This product is really amazing. Thank you guys for what you are doing.”",
     name: "Mfonabasi Okutinyang",
     role: "Founder, Kasere",
   },
@@ -49,7 +50,16 @@ const faqs = [
   },
   {
     heading: "Does Crowdr take a fee?",
-    text: "Yes. We charge a small platform fee of 2% to keep the site running and support fundraisers. We’re transparent about all charges.",
+    text: (
+      <>
+        Yes, we charge a small platform fee to keep the app running. Please,
+        check out the{" "}
+        <a href="/pricing" target="_blank" className="text-[#00B964] underline">
+          Pricing
+        </a>{" "}
+        section for more details.
+      </>
+    ),
   },
   {
     heading: "Can we run more than one fundraiser at a time?",

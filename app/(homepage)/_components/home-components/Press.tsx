@@ -22,7 +22,7 @@ const Press = () => {
       <div className="absolute inset-0 flex flex-col justify-center gap-8 md:gap-10 max-w-[1240px] mx-auto">
         <p
           ref={titleElementRef}
-          className="font-bold text-black text-xl md:text-[40px] px-[30px]"
+          className="font-bold text-black md:text-[40px] px-[30px]"
         >
           As seen in...
         </p>

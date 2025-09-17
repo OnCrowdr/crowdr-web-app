@@ -55,7 +55,6 @@ const testimonials = [
   },
 ]
 
-
 const faqs = [
   {
     heading: "What kind of fundraisers can I start?",
@@ -67,7 +66,16 @@ const faqs = [
   },
   {
     heading: "Does Crowdr take a fee?",
-    text: "Yes. We charge a small platform fee of 2% to keep the site running and support fundraisers. We’re transparent about all charges.",
+    text: (
+      <>
+        Yes, we charge a small platform fee to keep the app running. Please,
+        check out the{" "}
+        <a href="/pricing" target="_blank" className="text-[#00B964] underline">
+          Pricing
+        </a>{" "}
+        section for more details.
+      </>
+    ),
   },
   {
     heading: "Can I raise funds for someone else?",
