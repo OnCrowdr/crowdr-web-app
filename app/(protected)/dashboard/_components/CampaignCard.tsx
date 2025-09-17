@@ -254,7 +254,13 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
             label: "Delete campaign",
             bgColor: "#D92D20",
             loading: deleteMutation.isLoading,
-            onClick: () => deleteMutation.mutate()
+            onClick: () => {
+              deleteMutation.mutate(undefined, {
+                onSuccess: () => {
+                  hideConfirmationModal(`delete_campaign_modal-${_id}`);
+                }
+              });
+            }
           }}
           secondaryButton={{
             label: "Cancel",
@@ -280,7 +286,13 @@ const CampaignCard: RFC<CampaignCardProps> = ({ campaign, onDelete }) => {
               label: "End campaign",
               bgColor: "#D92D20",
               loading: endMutation.isLoading,
-              onClick: () => endMutation.mutate()
+              onClick: () => {
+                endMutation.mutate(undefined, {
+                  onSuccess: () => {
+                    hideConfirmationModal(`end_campaign_modal-${_id}`);
+                  }
+                });
+              }
             }}
             secondaryButton={{
               label: "Cancel",

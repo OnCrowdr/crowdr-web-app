@@ -7,7 +7,8 @@ export interface ExportParams {
     | "donations"
     | "withdrawals"
     | "volunteers"
-    | "transactions";
+    | "transactions"
+    | "transfers";
   format: "csv";
   startDate?: string;
   endDate?: string;
