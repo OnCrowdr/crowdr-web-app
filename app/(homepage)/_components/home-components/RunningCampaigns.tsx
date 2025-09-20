@@ -19,7 +19,7 @@ const RunningCampaigns = () => {
   const { ref: titleElementRef, width: titleElementWidth } = useElementSize()
   const carouselOffset = Math.abs((windowWidth - titleElementWidth) / 2)
   const queryKey = useQueryKey()
-  const params: IGetCampaignsParams = { perPage: 10, sortBy: 'donatedAmount' }
+  const params: IGetCampaignsParams = { perPage: 10, sortBy: 'donatedAmount' } as any
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.CAMPAIGNS, params),
@@ -56,7 +56,7 @@ const RunningCampaigns = () => {
                   const donatedAmount = campaign?.totalAmountDonated?.[0].amount
 
                   return (
-                    <div key={campaign._id} className="w-[280px] md:w-[350px]">
+                    <div key={campaign._id} className="w-[350px]">
                       <ExploreCard
                         key={campaign._id}
                         userId={userDetails?._id}
@@ -128,7 +128,7 @@ const RunningCampaigns = () => {
         </div>
       </div>
 
-      <div className="flex justify-end max-w-[1220px] px-[20px] mx-auto">
+      <div className="flex justify-center md:justify-end max-w-[1220px] px-[20px] mx-auto">
         <Link
           href={"/explore"}
           className="btn-primary whitespace-nowrap text-center !w-[170px]"

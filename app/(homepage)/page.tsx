@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <main>
       <Navigation />
-      <main className="font-satoshi">
+      <main className="font-satoshi overflow-x-hidden">
         <ForeignDonationsBanner />
         <Hero />
         <CrowdrStats />
@@ -49,7 +49,22 @@ export default function Home() {
 const faqs = [
   {
     heading: "How do I start a campaign?",
-    text: "Please click the “Start a Campaign” button to create an account! After that, please click here for a comprehensive step-by-step guide for creating a campaign. This guide is also located on our blog. If you run into any issues, please don’t hesitate to email us at support@oncrowdr.com.",
+    text: (
+      <>
+        Please click the “Start a Campaign” button to create an account! After
+        that, please click{" "}
+        <a
+          href="https://blog.oncrowdr.com/starting-a-campaign/"
+          target="_blank"
+          className="text-[#00B964] underline"
+        >
+          here
+        </a>{" "}
+        for a comprehensive step-by-step guide for creating a campaign. This
+        guide is also located on our blog. If you run into any issues, please
+        don’t hesitate to email us at support@oncrowdr.com.
+      </>
+    ),
   },
   {
     heading: "Who do I contact if I have tech issues?",

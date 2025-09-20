@@ -10,6 +10,7 @@ import { Mixpanel } from "../../../../utils/mixpanel"
 import { useAuth } from "@/contexts/AppProvider"
 import { ChevronDown } from "lucide-react"
 import UseCaseDropdown from "./UseCasesDropdown"
+import LearnDropdown from "./LearnDropdown"
 
 type Props = {
   openModal?: () => void
@@ -67,9 +68,12 @@ export default function Navigation({ openModal }: Props) {
           </Link>
         </li>
         <li>
-          <a href="https://blog.oncrowdr.com" target="_blank">
-            Blog
-          </a>
+          <LearnDropdown>
+            <a className="flex items-center gap-1">
+              Learn
+              <ChevronDown />
+            </a>
+          </LearnDropdown>
         </li>
       </ul>
 

@@ -1,9 +1,9 @@
 import React from "react"
 import Image from "next/image"
-import "../home-styles/partners.css"
+import Marquee from "@/components/Marquee"
 
 const Partners = () => {
-  const partnerLogos = [
+  const logoUrls = [
     "/images/partners/aiesec.png",
     "/images/partners/beauty-hut.png",
     "/images/partners/black-girls-in-tech.png",
@@ -30,52 +30,34 @@ const Partners = () => {
         Our Partners
       </h2>
       <div className="scroll-container mt-7">
-        <div className="scroll-animation">
-          {/* <div className="flex items-center gap-10">
-            {partners.map((partner, index) => (
-              <p
-                key={index}
-                className="logo-container text-white font-bold text-[20px] whitespace-nowrap"
-                style={{ fontFamily: "Scada" }}
-              >
-                {partner}
-              </p>
+        <Marquee>
+          <div className="flex">
+            {logoUrls.map((logoUrl, index) => (
+              <div key={index} className="w-[253px]">
+                <div className="relative w-[200px] h-[60px]">
+                  <Image
+                    src={logoUrl}
+                    alt=""
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+              </div>
             ))}
-          </div> */}
-          {partnerLogos.map((logo, index) => (
-            <div key={index} className="logo-container h-[100px] w-[400px]">
-              <Image
-                src={logo}
-                alt="partner-logo"
-                width={300}
-                height={300}
-                className='h-full w-[300px] max-w-fit'
-              />
-            </div>
-          ))}
-          {partnerLogos.map((logo, index) => (
-            <div key={`duplicate-${index}`} className="logo-container h-[100px] w-[400px]">
-              <Image
-                src={logo}
-                alt="partner-logo"
-                width={300}
-                height={300}
-                className='h-full w-[300px] max-w-fit'
-              />
-            </div>
-          ))}
-          {partnerLogos.map((logo, index) => (
-            <div key={`duplicated-${index}`} className="logo-container h-[100px] w-[400px]">
-              <Image
-                src={logo}
-                alt="partner-logo"
-                width={300}
-                height={300}
-                className='h-full w-[300px] max-w-fit'
-              />
-            </div>
-          ))}
-        </div>
+            {logoUrls.map((logoUrl, index) => (
+              <div key={index} className="w-[253px]">
+                <div className="relative w-[200px] h-[60px]">
+                  <Image
+                    src={logoUrl}
+                    alt=""
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Marquee>
       </div>
       <Image
         src="/svg/green-leaf.svg"

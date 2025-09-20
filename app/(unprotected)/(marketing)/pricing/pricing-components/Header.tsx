@@ -85,7 +85,7 @@ export default function Header () {
           </a>.
         </p>
         </div>
-        <div className='flex flex-col md:flex-row items-start gap-3 mt-16'>
+        <div className='flex flex-col md:flex-row  gap-3 mt-16'>
         {
           pricingDetails.map(({id, title, description, percentageCharge, percentageDescription, bgColor, textColor}: {
             id: number;
@@ -96,7 +96,7 @@ export default function Header () {
             bgColor: string;
             textColor: string;
           }, index: number) => (
-            <div key={id} className={`flex flex-col items-start justify-between gap-3 p-4 md:p-6 w-full ${bgColor} ${textColor} min-h-[280px] md:h-[340px]`}>
+            <div key={id} className={`flex flex-col items-start justify-between gap-3 p-4 md:p-6 w-full ${bgColor} ${textColor} min-h-[280px] `}>
               <div>
               <h3 className={`text-[20px] md:text-[36px] font-medium  ${textColor} leading-[28px] md:leading-[55px]`}>{title}</h3>
               <p className={`text-[12px] md:text-sm ${textColor} leading-[18px] md:leading-[20px]`}>{description}</p>
