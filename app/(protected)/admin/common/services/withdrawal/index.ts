@@ -103,7 +103,18 @@ async function fetchBankDetails({ userId, authToken }: IGetBankingDetails) {
 }
 
 const refreshWithdrawal = () => {
-  
+
+};
+
+const getPaystackBalance = async () => {
+  const url = `/payments/paystack/balance`;
+
+  try {
+    const res = await api.get(url);
+    return res.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Failed to fetch balance");
+  }
 };
 
 export default {
@@ -111,5 +122,6 @@ export default {
   changeWithdrawalStatus,
   fetchBankDetails,
   refreshWithdrawal,
-  getWithdrawals
+  getWithdrawals,
+  getPaystackBalance
 };

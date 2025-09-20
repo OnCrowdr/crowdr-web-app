@@ -1,30 +1,30 @@
-"use client"
-import React, { useMemo, useState } from "react"
-import Image from "next/image"
-import { RFC } from "@/types"
-import { Button, WhiteButton } from "../../../../components/Button"
-import ProgressBar from "./ProgressBar"
-import moment from "moment"
-import "slick-carousel/slick/slick.css"
-import "slick-carousel/slick/slick-theme.css"
-import Slider from "react-slick"
+"use client";
+import React, { useMemo, useState } from "react";
+import Image from "next/image";
+import { RFC } from "@/types";
+import { Button, WhiteButton } from "../../../../components/Button";
+import ProgressBar from "./ProgressBar";
+import moment from "moment";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
-import Menu from "@/public/svg/menu.svg"
-import ArrowRight from "@/public/svg/new-arrow.svg"
-import OldModal from "../../../../components/OldModal"
-import { formatAmount } from "../_common/utils/currency"
-import { camelCaseToSeparated } from "../../../../utils/seperateText"
-import { getInitials } from "./layout/Header"
-import useClipboard from "../../../../hooks/useClipboard"
-import { IoMdClose } from "react-icons/io"
-import { IoShareSocial } from "react-icons/io5"
-import ShareCampaign from "../../../../components/ShareCampaign"
-import { Mixpanel } from "../../../../utils/mixpanel"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Campaign } from "../../../../utils/api/campaigns/getCampaigns"
-import { IGetCampaignsResponse } from "@/api/_campaigns/models/GetCampaigns"
-import { cn } from "@/utils/style"
+import Menu from "@/public/svg/menu.svg";
+import ArrowRight from "@/public/svg/new-arrow.svg";
+import OldModal from "../../../../components/OldModal";
+import { formatAmount } from "../_common/utils/currency";
+import { camelCaseToSeparated } from "../../../../utils/seperateText";
+import { getInitials } from "./layout/Header";
+import useClipboard from "../../../../hooks/useClipboard";
+import { IoMdClose } from "react-icons/io";
+import { IoShareSocial } from "react-icons/io5";
+import ShareCampaign from "../../../../components/ShareCampaign";
+import { Mixpanel } from "../../../../utils/mixpanel";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Campaign } from "../../../../utils/api/campaigns/getCampaigns";
+import { IGetCampaignsResponse } from "@/api/_campaigns/models/GetCampaigns";
+import { cn } from "@/utils/style";
 
 const ExploreCard: RFC<ExploreCardProps> = (props) => {
   const {
@@ -52,131 +52,131 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     className,
   } = props
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const { copied, copy } = useClipboard()
+  const { copied, copy } = useClipboard();
 
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  const [shareModal, setShareModal] = useState(false)
+  const [shareModal, setShareModal] = useState(false);
 
-  const [hover, setHover] = useState(false)
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const [hover, setHover] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  let allSkills = volunteer?.skillsNeeded ? [...volunteer.skillsNeeded] : []
+  let allSkills = volunteer?.skillsNeeded ? [...volunteer.skillsNeeded] : [];
 
   if (volunteer?.otherSkillsNeeded) {
-    allSkills.push(volunteer.otherSkillsNeeded)
+    allSkills.push(volunteer.otherSkillsNeeded);
   }
 
-  const aggregatedSkills = allSkills.join(", ")
+  const aggregatedSkills = allSkills.join(", ");
 
   interface Add {
-    skillNeeded: string
-    ageRange: string
-    genderPreference: string
-    volunteerCommitment: string
+    skillNeeded: string;
+    ageRange: string;
+    genderPreference: string;
+    volunteerCommitment: string;
   }
 
   const additionalDetails: Add = {
     skillNeeded: aggregatedSkills ?? "",
     ageRange: volunteer?.ageRange ?? "",
     genderPreference: volunteer?.genderPreference ?? "",
-    volunteerCommitment: volunteer?.requiredCommitment ?? "",
-  }
+    volunteerCommitment: volunteer?.requiredCommitment ?? ""
+  };
 
   const openModal = () => {
-    setModalIsOpen(true)
-  }
+    setModalIsOpen(true);
+  };
 
   const closeModal = () => {
-    setModalIsOpen(false)
-  }
+    setModalIsOpen(false);
+  };
 
   const closeShareModal = () => {
-    setShareModal(false)
-  }
+    setShareModal(false);
+  };
 
-  const wordsArray = subheader?.split(" ")
+  const wordsArray = subheader?.split(" ");
 
-  const [isCollapsed, setIsCollapsed] = useState(true)
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const displayText = isCollapsed
     ? wordsArray?.slice(0, 30).join(" ")
-    : subheader
+    : subheader;
 
   const formattedText = useMemo(() => {
-    if (!subheader) return { shortText: "", fullText: "" }
+    if (!subheader) return { shortText: "", fullText: "" };
 
-    const CHAR_LIMIT = 150
+    const CHAR_LIMIT = 150;
 
     // If the entire text is under the character limit, return it as both short and full
     if (subheader.length <= CHAR_LIMIT) {
       return {
         shortText: subheader,
-        fullText: subheader,
-      }
+        fullText: subheader
+      };
     }
 
     // For longer text, try to split by sentences first
-    const sentencePattern = /([^.!?]+[.!?]+)/g
-    const matches = subheader.match(sentencePattern)
+    const sentencePattern = /([^.!?]+[.!?]+)/g;
+    const matches = subheader.match(sentencePattern);
 
     if (matches && matches.length > 0) {
       // We found proper sentences
-      const sentences = matches.map((s) => s.trim())
+      const sentences = matches.map((s) => s.trim());
 
       // Build short text by adding sentences until we hit the limit
-      let shortText = ""
+      let shortText = "";
       for (const sentence of sentences) {
         if ((shortText + sentence).length > CHAR_LIMIT) {
-          break
+          break;
         }
-        shortText += (shortText ? " " : "") + sentence
+        shortText += (shortText ? " " : "") + sentence;
       }
 
       // If we couldn't fit even one sentence, truncate it
       if (!shortText && sentences[0]) {
-        shortText = sentences[0].slice(0, CHAR_LIMIT - 3) + "..."
+        shortText = sentences[0].slice(0, CHAR_LIMIT - 3) + "...";
       }
 
       // Format full text with line breaks every 3 sentences
-      let fullText = ""
+      let fullText = "";
       sentences.forEach((sentence, index) => {
         if (index % 3 === 0 && index !== 0) {
-          fullText += "\n\n"
+          fullText += "\n\n";
         } else if (index !== 0) {
-          fullText += " "
+          fullText += " ";
         }
-        fullText += sentence
-      })
+        fullText += sentence;
+      });
 
       return {
         shortText: shortText || subheader.slice(0, CHAR_LIMIT) + "...",
-        fullText: fullText.trim() || subheader,
-      }
+        fullText: fullText.trim() || subheader
+      };
     } else {
       // No proper sentences found, just truncate by characters
       return {
         shortText: subheader.slice(0, CHAR_LIMIT) + "...",
-        fullText: subheader,
-      }
+        fullText: subheader
+      };
     }
-  }, [subheader])
+  }, [subheader]);
 
   const toggleReadMore = () => {
     if (!!routeTo) {
-      router.push(routeTo)
+      router.push(routeTo);
     } else {
-      setIsCollapsed(!isCollapsed)
+      setIsCollapsed(!isCollapsed);
     }
-  }
+  };
 
-  const progress = totalAmount ? currentAmount / totalAmount : 0
+  const progress = totalAmount ? currentAmount / totalAmount : 0;
 
   const volunteerProgress = volunteer?.volunteersNeeded
     ? totalVolunteers / volunteer?.volunteersNeeded
-    : 0
+    : 0;
 
   const settings = (images: string[]) => {
     return {
@@ -207,17 +207,25 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
           onMouseEnter={() => setHover(true)}
         />
       ),
-      afterChange: (current: number) => setCurrentSlide(current),
-    }
-  }
+      afterChange: (current: number) => setCurrentSlide(current)
+    };
+  };
 
   return (
-    <div className={cn("p-6 rounded-xl border-[#393e4614] border h-fit bg-white")}>
+    <div
+      className={cn(
+        "p-6 rounded-xl border-[#393e4614] border h-fit bg-white",
+        props.limitTitleToOneLine && "cursor-pointer"
+      )}
+      onClick={() => {
+        if (props.limitTitleToOneLine && !!routeTo) {
+          router.push(routeTo);
+        }
+      }}>
       <div className="flex items-center justify-between ">
         <Link
           href={`/profile/${user?._id ?? userId}`}
-          className="group flex items-center"
-        >
+          className="group flex items-center">
           {avatar ? (
             <Image
               src={avatar}
@@ -259,9 +267,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                         <div
                           className="relative p-12"
                           style={{
-                            background: "rgba(76, 76, 76, 0)",
-                          }}
-                        >
+                            background: "rgba(76, 76, 76, 0)"
+                          }}>
                           <IoMdClose
                             size={30}
                             className="absolute top-0 right-0 my-4 mx-4 bg-white p-1 rounded-full z-10 cursor-pointer"
@@ -277,7 +284,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                               objectFit: "unset",
                               height: "60vh",
                               minWidth: "400px",
-                              width: "100%",
+                              width: "100%"
                             }}
                           />
                         </div>
@@ -292,16 +299,16 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                         style={{
                           width: "100%",
                           maxWidth: "100%",
-                          objectFit: "cover",
+                          objectFit: "cover"
                         }}
                         onMouseEnter={() => setHover(true)}
                         onMouseLeave={() => setHover(false)}
                         onClick={() => {
-                          openModal()
+                          openModal();
                         }}
                       />
                     </div>
-                  )
+                  );
                 })}
               </Slider>
             ) : (
@@ -310,9 +317,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                   <div
                     className="relative p-12"
                     style={{
-                      background: "rgba(76, 76, 76, 0)",
-                    }}
-                  >
+                      background: "rgba(76, 76, 76, 0)"
+                    }}>
                     <IoMdClose
                       size={30}
                       className="absolute top-0 right-0 my-4 mx-4 bg-white p-1 rounded-full z-10 cursor-pointer"
@@ -328,7 +334,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                         objectFit: "unset",
                         height: "60vh",
                         minWidth: "400px",
-                        width: "100%",
+                        width: "100%"
                       }}
                     />
                   </div>
@@ -341,10 +347,10 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                   height={400}
                   style={{
                     width: "100%",
-                    objectFit: "cover",
+                    objectFit: "cover"
                   }}
                   onClick={() => {
-                    openModal()
+                    openModal();
                   }}
                 />
               </>
@@ -358,8 +364,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
             {formattedText.shortText !== formattedText.fullText && (
               <span
                 onClick={toggleReadMore}
-                className="text-[#00B964] cursor-pointer pl-1 inline-block mt-2"
-              >
+                className="text-[#00B964] cursor-pointer pl-1 inline-block mt-2">
                 {isCollapsed ? "See more" : "See less"}
               </span>
             )}
@@ -369,8 +374,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
               {Object.entries(additionalDetails).map(([key, value], index) => (
                 <div
                   key={index}
-                  className="flex flex-row items-center justify-start gap-2 mb-2"
-                >
+                  className="flex flex-row items-center justify-start gap-2 mb-2">
                   <h4 className="text-sm">{camelCaseToSeparated(key)}:</h4>
                   <h4 className="text-[#667085] text-sm capitalize">{value}</h4>
                 </div>
@@ -417,9 +421,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
         <div
           className="relative p-12"
           style={{
-            background: "rgba(76, 76, 76, 0)",
-          }}
-        >
+            background: "rgba(76, 76, 76, 0)"
+          }}>
           <ShareCampaign
             onClose={closeShareModal}
             campaignId={id}
@@ -451,8 +454,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
               outlineColor="#D0D5DD"
               className="w-full !justify-center"
               onClick={() => {
-                setShareModal(true)
-                Mixpanel.track("Clicked Share Campaign")
+                setShareModal(true);
+                Mixpanel.track("Clicked Share Campaign");
               }}
             />
           </div>
@@ -465,57 +468,56 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
               outlineColor="#D0D5DD"
               className="w-full !justify-center"
               onClick={() => {
-                setShareModal(true)
-                Mixpanel.track("Clicked Share Campaign")
+                setShareModal(true);
+                Mixpanel.track("Clicked Share Campaign");
               }}
             />
             <a
               className="text-[#00B964] text-[13px] underline mt-4 text-center cursor-pointer"
-              href="mailto:support@oncrowdr.com"
-            >
+              href="mailto:support@oncrowdr.com">
               Report Organiser
             </a>
           </div>
         ))}
     </div>
-  )
-}
+  );
+};
 
-export default ExploreCard
+export default ExploreCard;
 
 type VolunteerDetails = {
-  skillsNeeded: string[]
-  otherSkillsNeeded?: string
-  ageRange: string
-  genderPreference: string
-  commitementStartDate: string
-  commitementEndDate: string
-  requiredCommitment: string
-  additonalNotes: string
-  volunteersNeeded: number
-}
+  skillsNeeded: string[];
+  otherSkillsNeeded?: string;
+  ageRange: string;
+  genderPreference: string;
+  commitementStartDate: string;
+  commitementEndDate: string;
+  requiredCommitment: string;
+  additonalNotes: string;
+  volunteersNeeded: number;
+};
 type ExploreCardProps = {
-  id: string
-  name?: string
-  userId: string
-  tier?: string
-  header?: string
-  subheader?: string
-  totalAmount?: number
-  currentAmount: number
-  donateImage: any
-  slideImages?: string[]
-  totalVolunteers?: number
-  routeTo?: string
-  avatar: any
-  timePosted?: string
-  campaignType?: string
-  category?: string
-  volunteer?: VolunteerDetails | any
-  currency?: string
-  user?: User
-  showCtaButtons?: boolean
-  className?: string
-  limitTitleToOneLine?: boolean
-}
-type User = IGetCampaignsResponse["data"]["campaigns"][number]["user"]
+  id: string;
+  name?: string;
+  userId: string;
+  tier?: string;
+  header?: string;
+  subheader?: string;
+  totalAmount?: number;
+  currentAmount: number;
+  donateImage: any;
+  slideImages?: string[];
+  totalVolunteers?: number;
+  routeTo?: string;
+  avatar: any;
+  timePosted?: string;
+  campaignType?: string;
+  category?: string;
+  volunteer?: VolunteerDetails | any;
+  currency?: string;
+  user?: User;
+  showCtaButtons?: boolean;
+  className?: string;
+  limitTitleToOneLine?: boolean;
+};
+type User = IGetCampaignsResponse["data"]["campaigns"][number]["user"];

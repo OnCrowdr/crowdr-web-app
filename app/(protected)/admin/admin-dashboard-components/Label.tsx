@@ -41,11 +41,16 @@ const Completed = <Label text="Completed" dotColor="#17B26A" />
 const Pending = <Label text="Pending" dotColor="#F3C729" />
 const In_Review = <Label text="In-Review" dotColor="#F3C729" />
 const Rejected = <Label text="Rejected" dotColor="#F04438" />
+const Blocked = <Label text="Blocked" dotColor="#6B7280" />
 
 export const label = (type: string) => {
   switch (type) {
     case "Approved":
     case "approved":
+      return Approved
+    
+    case "Success":
+    case "success":
       return Approved
 
     case "completed":
@@ -60,5 +65,11 @@ export const label = (type: string) => {
 
     case "rejected":
       return Rejected
+
+    case "blocked":
+      return Blocked
+
+    default:
+      return <Label text={type} dotColor="#6B7280" />
   }
 }

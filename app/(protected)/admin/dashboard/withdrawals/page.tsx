@@ -16,6 +16,7 @@ import ExportButton from "../../admin-dashboard-components/ExportButton"
 import { label } from "../../admin-dashboard-components/Label"
 import { activeWithdrawalIdAtom } from "../../admin-dashboard-components/WithdrawalPopup"
 import withdrawalService from "../../common/services/withdrawal"
+import { TbRefresh } from "react-icons/tb"
 
 import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
@@ -63,6 +64,14 @@ const Withdrawals = () => {
     queryKey: ["GET /admin/withdrawals/rejected"],
     queryFn: () => withdrawalService.getWithdrawals({ status: WithdrawalStatus.Rejected, page: 1 }),
     refetchOnWindowFocus: false,
+  })
+
+  // Fetch Paystack balance
+  const { data: balanceData, refetch: refetchBalance, isLoading: balanceLoading } = useAuthQuery({
+    queryKey: ["GET /payments/paystack/balance"],
+    queryFn: () => withdrawalService.getPaystackBalance(),
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
   })
 
   // Calculate metrics from the data
@@ -133,8 +142,40 @@ const Withdrawals = () => {
         </p>
       </hgroup>
 
+      {/* balance section */}
+      <div className="mb-6 px-4 mt-8">
+        <div className="bg-white border border-[rgba(57, 62, 70, 0.08)] rounded-xl p-4 flex items-center justify-between w-fit">
+          <div className="mr-4">
+            <p className="text-sm text-gray-600 mb-1">Balance</p>
+            <p className="text-xl font-semibold text-gray-900">
+              {balanceLoading ? (
+                "Loading..."
+              ) : balanceData?.data?.data ? (
+                (() => {
+                  const ngnBalance = balanceData.data.data.find((item: any) => item.currency === "NGN");
+                  const amountInNaira = (ngnBalance?.balance || 0) / 100;
+                  return `₦${amountInNaira.toLocaleString()}`;
+                })()
+              ) : (
+                "₦0"
+              )}
+            </p>
+          </div>
+          <Button
+            text="Refresh"
+            icon={TbRefresh}
+            bgColor="#FFF"
+            textColor="#344054"
+            outlineColor="#D0D5DD"
+            onClick={() => refetchBalance()}
+            loading={balanceLoading}
+            className="w-fit font-semibold"
+          />
+        </div>
+      </div>
+
       {/* stats */}
-      <div className="flex gap-6 px-8 pt-8 mb-8">
+      <div className="flex gap-6 px-4 pt-2 mb-8 w-full justify-between">
         {metrics.map((stat, index) => <StatCard key={index} {...stat} />)}
       </div>
 
