@@ -4,6 +4,7 @@ import TechCabalLogo from "@/public/images/misc/techcabal-logo.png"
 import BusinessDayLogo from "@/public/images/misc/businessday-logo.png"
 import ThisDayLogo from "@/public/images/misc/thisday-logo.png"
 import { useElementSize, useViewportSize } from "@mantine/hooks"
+import Marquee from "@/components/Marquee"
 
 const Press = () => {
   const { width: windowWidth } = useViewportSize()
@@ -17,17 +18,43 @@ const Press = () => {
         background: "url('/images/misc/newspaper-bg.png')",
       }}
     >
-      <div className="absolute inset-0 bg-white opacity-80" />
+      <div className="absolute inset-0 bg-[#060606] opacity-90" />
 
       <div className="absolute inset-0 flex flex-col justify-center gap-8 md:gap-10 max-w-[1240px] mx-auto">
         <p
           ref={titleElementRef}
-          className="font-bold text-black md:text-[40px] px-[30px]"
+          className="font-bold text-white text-center text-3xl md:text-[40px] px-[30px]"
         >
           As seen in...
         </p>
 
-        <div className="overflow-x-auto max-w-full scrollbar scrollbar-none md:mx-auto">
+        <Marquee>
+          <div className="flex gap-20 mr-20">
+            <Image
+              src={BusinessDayLogo}
+              alt="Business Day Logo"
+              className="w-[160px] md:w-[350px] object-contain grayscale"
+              width={390}
+              height={72}
+            />
+            <Image
+              src={TechCabalLogo}
+              alt="TechCabal Logo"
+              className="w-[160px] md:w-[270px] object-contain grayscale"
+              width={310}
+              height={69}
+            />
+            <Image
+              src={ThisDayLogo}
+              alt="This Day Logo"
+              className="w-[160px] md:w-[320px] object-contain grayscale"
+              width={310}
+              height={69}
+            />
+          </div>
+        </Marquee>
+
+        {/* <div className="overflow-x-auto max-w-full scrollbar scrollbar-none md:mx-auto">
           <div className="flex items-center justify-center md:items-start md:justify-center">
             <div
               style={{ "--offset": `${carouselOffset}px` } as any}
@@ -61,7 +88,7 @@ const Press = () => {
               className="min-w-[20px] md:min-w-[calc(var(--offset)_+_20px)] lg:hidden"
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

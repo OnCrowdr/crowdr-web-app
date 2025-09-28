@@ -48,8 +48,9 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     currency,
     user,
     showCtaButtons = true,
-    className
-  } = props;
+    limitTitleToOneLine = true,
+    className,
+  } = props
 
   const router = useRouter();
 
@@ -357,13 +358,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
           </div>
         )}
         <div className="my-5">
-          <h3
-            className={cn(
-              "font-semibold text-[18px]",
-              props.limitTitleToOneLine && "line-clamp-1"
-            )}>
-            {header}
-          </h3>
+          <h3 className={cn("font-semibold text-[18px]", limitTitleToOneLine && "line-clamp-1")}>{header}</h3>
           <p className="mt-2 break-words text-sm whitespace-pre-line">
             {isCollapsed ? formattedText.shortText : formattedText.fullText}
             {formattedText.shortText !== formattedText.fullText && (

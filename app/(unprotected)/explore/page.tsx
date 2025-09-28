@@ -48,7 +48,7 @@ const Explore = () => {
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.CAMPAIGNS, campaignParams),
-    queryFn: () => _campaigns.getCampaigns(campaignParams),
+    queryFn: () => _campaigns.getCampaigns(campaignParams as any),
   })
   const campaigns = campaignsQuery.data
   const selectedInterest = params.category ?? ALL_CATEGORY.value

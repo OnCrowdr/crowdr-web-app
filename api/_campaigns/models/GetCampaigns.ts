@@ -8,7 +8,16 @@ export interface IGetCampaignsParams extends PaginationParams {
   type?: CampaignType;
   category?: CampaignCategory;
   userId?: string;
-  sortBy?: string;
+  startDate?: string;
+  endDate?: string;
+  minGoalAmount?: number;
+  maxGoalAmount?: number;
+  minDonatedAmount?: number;
+  maxDonatedAmount?: number;
+  minMilestonePercentage?: number;
+  maxMilestonePercentage?: number;
+  sortOrder?: 'asc' | 'desc';
+  sortBy?: 'createdAt' | 'title' | 'campaignEndDate' | 'campaignStartDate';
 }
 
 export enum CampaignStatus {

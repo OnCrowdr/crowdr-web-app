@@ -73,7 +73,7 @@ const HowItWorks = () => {
                   className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
                   onClick={() => {
                     open(
-                      "https://youtube.com/playlist?list=PL_Rbth8fvDDxbh5l-5sNCDRcNpSNSn1GZ&si=RcMGWZoLrAxwhhJK",
+                      "https://youtu.be/JHJB81JAMLM?si=oOUFCsXYTcWsmS17",
                       "_blank"
                     )
                   }}
@@ -168,9 +168,9 @@ const HowItWorks = () => {
           </div>
 
           <div className="todo-item overflow-hidden">
-            <span className="text-black text-sm leading-10">
+            {/* <span className="text-black text-sm leading-10">
               Wanna get more reach?
-            </span>
+            </span> */}
             <div className="flex flex-col gap-[14px]">
               <h4 className="!leading-snug mb-5">
                 Withdraw your funds securely
@@ -200,14 +200,27 @@ const HowItWorks = () => {
           <div className="todo-item !mt-4">
             <div className="flex flex-col gap-[14px]">
               <h4>Create an account in minutes</h4>
-              <button
-                className="btn-primary !w-[171px] z-10"
-                onClick={() => {
-                  router.push("signup")
-                }}
-              >
-                Get started
-              </button>
+              <div className="flex gap-2">
+                <button
+                  className="btn-primary !w-[171px] z-10"
+                  onClick={() => {
+                    router.push("signup")
+                  }}
+                >
+                  Get started
+                </button>
+                  <button
+                    className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
+                    onClick={() => {
+                      open(
+                        "https://youtu.be/JHJB81JAMLM?si=oOUFCsXYTcWsmS17",
+                        "_blank"
+                      )
+                    }}
+                  >
+                    Watch Demo
+                  </button>
+              </div>
             </div>
             <Image
               src="/svg/iphone.svg"
@@ -295,9 +308,9 @@ const HowItWorks = () => {
           </div>
 
           <div className="todo-item !mt-4">
-            <span className="text-black text-sm leading-10">
+            {/* <span className="text-black text-sm leading-10">
               Wanna get more reach?
-            </span>
+            </span> */}
             <div className="flex flex-col gap-[14px]">
               <h4 className="!leading-snug mb-5">
                 Withdraw your funds securely
