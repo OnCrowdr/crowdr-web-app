@@ -172,9 +172,9 @@ const HowItWorks = () => {
           </div>
 
           <div className="todo-item flex-1 overflow-hidden">
-            <span className="text-black text-sm leading-10">
+            {/* <span className="text-black text-sm leading-10">
               Wanna get more reach?
-            </span>
+            </span> */}
             <div className="flex flex-col gap-[14px]">
               <h4 className="!leading-snug mb-5">
                 Withdraw your funds securely
@@ -312,9 +312,9 @@ const HowItWorks = () => {
           </div>
 
           <div className="todo-item !mt-4">
-            <span className="text-black text-sm leading-10">
+            {/* <span className="text-black text-sm leading-10">
               Wanna get more reach?
-            </span>
+            </span> */}
             <div className="flex flex-col gap-[14px]">
               <h4 className="!leading-snug mb-5">
                 Withdraw your funds securely
