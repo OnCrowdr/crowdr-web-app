@@ -8,10 +8,11 @@ type SelectProps = {
   options: any[];
   value?: string;
   onChange?: any;
+  error?: string;
 };
 
 const Select: RFC<SelectProps> = (props) => {
-  const { label, name, id, options, value, onChange } = props;
+  const { label, name, id, options, value, onChange, error } = props;
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = e.target.value;
@@ -26,7 +27,9 @@ const Select: RFC<SelectProps> = (props) => {
       <select
         name={name}
         id={id}
-        className="text-[15px] rounded-lg border border-[#D0D5DD] py-[10px] px-[14px]"
+        className={`text-[15px] rounded-lg border py-[10px] px-[14px] ${
+          error ? "border-red-500" : "border-[#D0D5DD]"
+        }`}
         value={value}
         onChange={handleChange}>
         <option value="" selected>
@@ -38,6 +41,12 @@ const Select: RFC<SelectProps> = (props) => {
           </option>
         ))}
       </select>
+
+      {error && (
+        <span className="text-[13px] text-red-500 mt-[6px]">
+          {error}
+        </span>
+      )}
     </div>
   );
 };
