@@ -92,7 +92,9 @@ const Input: RFC<InputProps> = props => {
           disableGroupSeparators={disableGroupSeparators}
           value={value}
           style={{ boxShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)" }}
-          className="text-[15px] rounded-lg border border-[#D0D5DD] w-full py-[10px] px-[14px]"
+          className={`text-[15px] rounded-lg border w-full py-[10px] px-[14px] ${
+            error ? "border-red-500" : "border-[#D0D5DD]"
+          }`}
         />
         
         {error && (
@@ -128,7 +130,9 @@ const Input: RFC<InputProps> = props => {
         id={id || name}
         placeholder={placeholder}
         name={name}
-        className='text-[15px] rounded-lg border border-[#D0D5DD] py-[10px] px-[14px]'
+        className={`text-[15px] rounded-lg border py-[10px] px-[14px] ${
+          error ? "border-red-500" : "border-[#D0D5DD]"
+        }`}
         onChange={onChange}
       />
       
