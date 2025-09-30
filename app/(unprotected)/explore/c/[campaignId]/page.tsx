@@ -247,10 +247,6 @@ export default function DonateOrVolunteer(props: {
     [donationErrors.amount]
   )
 
-  const areAllInputsFilled = useCallback((inputs: Record<string, any>) => {
-    return Object.values(inputs).every((value) => value !== "")
-  }, [])
-
   // Share modal handlers
   const closeShareModal = useCallback(() => {
     setShareModal(false)
@@ -352,7 +348,23 @@ export default function DonateOrVolunteer(props: {
     }
 
     setDonationErrors(errors)
-    return !errors.amount && !errors.fullName && !errors.email
+
+    // Scroll to first error field
+    const isValid = !errors.amount && !errors.fullName && !errors.email
+    if (!isValid) {
+      const firstErrorField = errors.amount
+        ? "amount"
+        : errors.fullName
+        ? "fullName"
+        : "email"
+      const element = document.getElementById(firstErrorField)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+        element.focus()
+      }
+    }
+
+    return isValid
   }, [donationInputs])
 
   const validateVolunteerInputs = useCallback(() => {
@@ -395,7 +407,31 @@ export default function DonateOrVolunteer(props: {
     }
 
     setVolunteerErrors(errors)
-    return Object.values(errors).every((error) => !error)
+
+    // Scroll to first error field
+    const isValid = Object.values(errors).every((error) => !error)
+    if (!isValid) {
+      const firstErrorField = errors.fullName
+        ? "fullName"
+        : errors.email
+        ? "email"
+        : errors.phoneNumber
+        ? "phoneNumber"
+        : errors.gender
+        ? "gender"
+        : errors.ageRange
+        ? "ageRange"
+        : errors.address
+        ? "address"
+        : "about"
+      const element = document.getElementById(firstErrorField)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+        element.focus()
+      }
+    }
+
+    return isValid
   }, [volunteerInputs])
 
   // API calls
