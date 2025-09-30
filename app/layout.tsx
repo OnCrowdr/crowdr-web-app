@@ -9,6 +9,7 @@ import "react-loading-skeleton/dist/skeleton.css"
 import App from "./app"
 import GoogleAnalyticsSetup from "./_components/GoogleAnalyticsSetup"
 import ElfSight from "./_components/ElfSight"
+import WhatsAppWidget from "@/components/WhatsAppWidget"
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -21,11 +22,12 @@ export default function RootLayout({ children }: PropsWithChildren) {
       </head>
 
       <GoogleAnalyticsSetup />
-      <ElfSight.Script />
+      {/* <ElfSight.Script /> */}
 
       <body className={`${satoshi.variable} ${inter.className}`}>
         <App children={children} />
-        <ElfSight.Body />
+        {/* <ElfSight.Body /> */}
+        <WhatsAppWidget />
       </body>
     </html>
   )
