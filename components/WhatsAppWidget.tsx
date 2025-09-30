@@ -1,5 +1,6 @@
 "use client"
 
+import { Mixpanel } from "@/utils/mixpanel"
 import { useState } from "react"
 import { FaWhatsapp } from "react-icons/fa"
 
@@ -9,6 +10,7 @@ const WhatsAppWidget = () => {
   const whatsappUrl = `https://wa.me/${phoneNumber}`
 
   const handleClick = () => {
+    Mixpanel.track("WhatsApp Chat Clicked")
     window.open(whatsappUrl, "_blank", "noopener,noreferrer")
   }
 
