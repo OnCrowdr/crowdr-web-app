@@ -4,15 +4,34 @@ import Image from "next/image"
 import Collapsible from "react-collapsible"
 import "../home-styles/faq.css"
 import { RFC } from "@/types"
-import { ReactNode } from "react"
+import { ReactNode, useState, useEffect } from "react"
 
 const Faq: RFC<Props> = ({faqs}) => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    return (
+      <section className="faq">
+        <div className="faq-container max-w-[1484px] mx-auto">
+          <p className="faq-header">Frequently Asked Questions</p>
+          <p className="faq-header-big mt-[20px]">
+            We knew you would ask. See? We're two peas in a pod.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="faq">
       <div className="faq-container max-w-[1484px] mx-auto">
         <p className="faq-header">Frequently Asked Questions</p>
         <p className="faq-header-big mt-[20px]">
-          We knew you would ask. See? We’re two peas in a pod.
+          We knew you would ask. See? We're two peas in a pod.
         </p>
 
         <div>

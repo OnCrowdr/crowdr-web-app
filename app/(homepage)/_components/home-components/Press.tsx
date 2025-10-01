@@ -20,34 +20,34 @@ const Press = () => {
     >
       <div className="absolute inset-0 bg-[#060606] opacity-90" />
 
-      <div className="absolute inset-0 flex flex-col justify-center gap-8 md:gap-10 max-w-[1240px] mx-auto">
+      <div className="absolute inset-0 flex flex-col justify-center gap-6 md:gap-10 max-w-[1240px] mx-auto px-4">
         <p
           ref={titleElementRef}
-          className="font-bold text-white text-center text-3xl md:text-[40px] px-[30px]"
+          className="font-bold text-white text-center text-2xl sm:text-3xl md:text-[40px]"
         >
           As seen in...
         </p>
 
-        <Marquee>
-          <div className="flex gap-20 mr-20">
+        <Marquee speed={30}>
+          <div className="flex items-center gap-16 sm:gap-20 md:gap-24 mr-16 sm:mr-20 md:mr-24">
             <Image
               src={BusinessDayLogo}
               alt="Business Day Logo"
-              className="w-[160px] md:w-[350px] object-contain grayscale"
+              className="w-[150px] sm:w-[220px] md:w-[350px] h-auto object-contain grayscale flex-shrink-0"
               width={390}
               height={72}
             />
             <Image
               src={TechCabalLogo}
               alt="TechCabal Logo"
-              className="w-[160px] md:w-[270px] object-contain grayscale"
+              className="w-[130px] sm:w-[200px] md:w-[270px] h-auto object-contain grayscale flex-shrink-0"
               width={310}
               height={69}
             />
             <Image
               src={ThisDayLogo}
               alt="This Day Logo"
-              className="w-[160px] md:w-[320px] object-contain grayscale"
+              className="w-[140px] sm:w-[220px] md:w-[320px] h-auto object-contain grayscale flex-shrink-0"
               width={310}
               height={69}
             />
