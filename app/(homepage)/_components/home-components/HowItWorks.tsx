@@ -70,7 +70,7 @@ const HowItWorks = () => {
                   Get Started
                 </button>
                 <button
-                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
+                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px] z-10"
                   onClick={() => {
                     open(
                       "https://youtu.be/JHJB81JAMLM?si=oOUFCsXYTcWsmS17",
@@ -200,7 +200,7 @@ const HowItWorks = () => {
           <div className="todo-item !mt-4">
             <div className="flex flex-col gap-[14px]">
               <h4>Create an account in minutes</h4>
-              <div className="flex gap-2">
+              <div className="flex gap-2 z-50">
                 <button
                   className="btn-primary !w-[171px] z-10"
                   onClick={() => {
@@ -210,7 +210,7 @@ const HowItWorks = () => {
                   Get started
                 </button>
                   <button
-                    className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
+                    className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px] z-10"
                     onClick={() => {
                       open(
                         "https://youtu.be/JHJB81JAMLM?si=oOUFCsXYTcWsmS17",

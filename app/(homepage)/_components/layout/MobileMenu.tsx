@@ -10,6 +10,7 @@ import { cn } from "@/utils/style"
 import { useAuth } from "@/contexts/AppProvider"
 import MenuItem from "./MenuItem"
 import { useCases } from "./UseCasesDropdown"
+import { learnItems } from "./LearnDropdown"
 
 type Props = {
   openModal?: () => void
@@ -102,8 +103,7 @@ const items = [
     href: "/pricing",
   },
   {
-    label: "Blog",
-    href: "https://blog.oncrowdr.com",
-    external: "_blank" as const,
+    label: "Learn",
+    children: learnItems,
   },
 ]
