@@ -13,16 +13,26 @@ import Label from "../../admin-dashboard-components/Label"
 import { Button } from "../../../../../components/Button"
 import ExportButton from "../../admin-dashboard-components/ExportButton"
 import userService from "../../common/services/user"
+import otpService from "../../common/services/otp"
+import ModalTrigger, { modalStoreAtom } from "../../../../../components/ModalTrigger"
+import SidebarModal from "../../../dashboard/_components/SidebarModal"
+import CompletionCard from "../../../dashboard/_components/CompletionCard"
 
 import { IGetUsersParams } from "../../common/services/user/models/GetUsers"
 
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6"
+import { BsThreeDotsVertical } from "react-icons/bs"
+import { LuTrash2 } from "react-icons/lu"
 import SearchIcon from "@/public/svg/search.svg"
 import FilterIcon from "@/public/svg/filter-2.svg"
 import TempLogo from "@/public/temp/c-logo.png"
 import { UserType } from "@/types"
 import DateRange from "../../../dashboard/_components/DateRange"
 import { IDateRange } from "../../../dashboard/_components/DateRange"
+import { useAuth } from "@/contexts/AppProvider"
+import { useToast } from "@/hooks/useToast"
+import { extractErrorMessage } from "@/utils/extractErrorMessage"
+import { useAtomValue } from "jotai"
 
 const Users = () => {
   const [page, setPage] = useState(1)
@@ -35,6 +45,14 @@ const Users = () => {
     startDate,
     endDate,
   })
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
+  const [adminOtp, setAdminOtp] = useState("")
+  const [deleteReason, setDeleteReason] = useState("")
+  const [hardDelete, setHardDelete] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const { user } = useAuth()
+  const toast = useToast()
+  const modalStore = useAtomValue(modalStoreAtom)
 
   const { data } = useAuthQuery({
     queryKey: ["GET /admin/users", params],
@@ -111,6 +129,56 @@ const Users = () => {
     setParams(prev => ({ ...prev, startDate, endDate, page: 1 }))
     setPage(1)
   }, [startDate, endDate])
+
+  const generateToken = async () => {
+    if (user) {
+      try {
+        const res = await otpService.generateOtp(user.token)
+        toast({ title: "OTP created!", body: `OTP sent to ${res.email}` })
+      } catch (error) {
+        const message = extractErrorMessage(error)
+        toast({ title: "Oops!", body: message, type: "error" })
+      }
+    }
+  }
+
+  const deleteUser = async () => {
+    if (user && selectedUserId) {
+      setIsDeleting(true)
+
+      try {
+        await userService.deleteUser({
+          userId: selectedUserId,
+          adminOtp: adminOtp,
+          authToken: user.token,
+          reason: deleteReason,
+          hardDelete: hardDelete,
+        })
+
+        toast({ title: "User Deleted", body: "User has been successfully deleted" })
+        setIsDeleting(false)
+
+        const modal = modalStore.get(`delete_user_modal-${selectedUserId}`)
+        modal?.hide()
+
+        // Refresh the user list
+        window.location.reload()
+      } catch (error) {
+        setIsDeleting(false)
+        const message = extractErrorMessage(error)
+        toast({ title: "Oops!", body: message, type: "error" })
+      }
+    }
+  }
+
+  const hideConfirmationModal = (modalId: string) => {
+    const modal = modalStore.get(modalId)
+    modal?.hide()
+    setAdminOtp("")
+    setDeleteReason("")
+    setHardDelete(false)
+    setSelectedUserId(null)
+  }
 
   const sort = () => {
     let nameOrder = undefined as typeof params.nameOrder
@@ -316,7 +384,33 @@ const Users = () => {
 
                   <Table.Cell>{user.userType}</Table.Cell>
 
-                  <Table.Cell></Table.Cell>
+                  <Table.Cell>
+                    <DropdownTrigger
+                      triggerId={`userActionsBtn-${user._id}`}
+                      targetId={`userActions-${user._id}`}
+                      options={{ placement: "left-start" }}
+                    >
+                      <button className="hover:bg-gray-100 rounded-full transition-colors p-2">
+                        <BsThreeDotsVertical size={20} />
+                      </button>
+                    </DropdownTrigger>
+
+                    {/* Dropdown menu */}
+                    <div
+                      id={`userActions-${user._id}`}
+                      className="hidden w-36 text-gray-900 bg-white border border-gray-200 rounded-lg"
+                    >
+                      <ModalTrigger id={`delete_user_modal-${user._id}`}>
+                        <button
+                          onClick={() => setSelectedUserId(user._id)}
+                          className="relative inline-flex items-center gap-2 w-full px-2 py-2 text-sm font-medium border-gray-200 rounded-lg hover:bg-gray-100 text-[#FE0A2D]"
+                        >
+                          <LuTrash2 stroke="#FE0A2D" size={16} />
+                          Delete
+                        </button>
+                      </ModalTrigger>
+                    </div>
+                  </Table.Cell>
                 </Table.Row>
               ))}
             </Table.Body>
@@ -333,6 +427,76 @@ const Users = () => {
           </Table>
         )}
       </div>
+
+      {/* Delete User Modal */}
+      {data?.results.map((user) => (
+        <SidebarModal key={user._id} id={`delete_user_modal-${user._id}`} position="center">
+          <CompletionCard
+            title="Delete User"
+            text={
+              <div className="flex flex-col gap-4">
+                <p className="text-sm text-[#475467]">
+                  Are you sure you want to delete this user? This action cannot be undone.
+                </p>
+
+                <div className="max-w-xs">
+                  <TextInput
+                    label="Reason for deletion (optional)"
+                    value={deleteReason}
+                    onChange={(e) => setDeleteReason(e.target.value)}
+                    placeholder="Enter reason..."
+                    controlled
+                  />
+                </div>
+
+                <div className="max-w-xs">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={hardDelete}
+                      onChange={(e) => setHardDelete(e.target.checked)}
+                      className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500"
+                    />
+                    <span className="text-[#475467]">Hard delete (permanent removal)</span>
+                  </label>
+                </div>
+
+                <div className="max-w-xs">
+                  <p
+                    className="text-primary text-xs mb-1.5 hover:underline cursor-pointer"
+                    onClick={generateToken}
+                  >
+                    Generate OTP
+                  </p>
+                  <TextInput
+                    value={adminOtp}
+                    onChange={(e) => setAdminOtp(e.target.value)}
+                    placeholder="Fill in OTP"
+                    controlled
+                  />
+                </div>
+              </div>
+            }
+            primaryButton={{
+              label: "Delete User",
+              bgColor: "#D92D20",
+              loading: isDeleting,
+              onClick: deleteUser,
+            }}
+            secondaryButton={{
+              label: "Cancel",
+              onClick: () => hideConfirmationModal(`delete_user_modal-${user._id}`),
+            }}
+            clearModal={() => hideConfirmationModal(`delete_user_modal-${user._id}`)}
+            icon={
+              <div className="grid place-items-center rounded-full bg-[#FEE4E2] p-3">
+                <LuTrash2 fill="#D92D20" size={20} />
+              </div>
+            }
+            altLayout
+          />
+        </SidebarModal>
+      ))}
     </div>
   )
 }
