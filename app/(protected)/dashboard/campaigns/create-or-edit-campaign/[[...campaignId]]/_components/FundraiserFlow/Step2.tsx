@@ -23,10 +23,14 @@ const Step2: RFC<Props> = ({ index, onStep }) => {
     const category = form.getValues("category")
     const campaignDuration = form.getValues("campaignDuration")
     const story = form.getValues("story")
+
+    // Validate campaign duration is a proper range (2 dates)
+    const isValidDateRange = Array.isArray(campaignDuration) && campaignDuration.length === 2
+
     const isInvalid =
       !title ||
       !category ||
-      !campaignDuration ||
+      !isValidDateRange ||
       !story ||
       story.length < 60 ||
       story.length > 5000
@@ -111,6 +115,12 @@ const Step2: RFC<Props> = ({ index, onStep }) => {
             <DateInput
               config={form.register("campaignDuration", {
                 required: "Campaign duration is required",
+                validate: (value) => {
+                  if (!Array.isArray(value) || value.length !== 2) {
+                    return "Please select both start and end dates"
+                  }
+                  return true
+                },
               })}
               error={errors.campaignDuration as any}
               mode="range"
