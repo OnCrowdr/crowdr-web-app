@@ -74,7 +74,7 @@ const HowItWorks = () => {
                   Get Started
                 </button>
                 <button
-                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
+                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px] z-10"
                   onClick={() => {
                     open(
                       "https://youtube.com/playlist?list=PL_Rbth8fvDDxbh5l-5sNCDRcNpSNSn1GZ&si=RcMGWZoLrAxwhhJK",
@@ -172,9 +172,9 @@ const HowItWorks = () => {
           </div>
 
           <div className="todo-item flex-1 overflow-hidden">
-            <span className="text-black text-sm leading-10">
+            {/* <span className="text-black text-sm leading-10">
               Wanna get more reach?
-            </span>
+            </span> */}
             <div className="flex flex-col gap-[14px]">
               <h4 className="!leading-snug mb-5">
                 Withdraw your funds securely
@@ -203,7 +203,13 @@ const HowItWorks = () => {
         <Slider {...settings}>
           <div className="todo-item !mt-4">
             <div className="flex flex-col gap-[14px]">
-              <h4>Create an account in minutes</h4>
+              <h4 className="!text-[24px] !leading-snug">
+                Create an account within minutes and get a{" "}
+                <span className="italic text-[#00B964]">
+                  free dedicated website
+                </span>{" "}
+                for your NGO
+              </h4>
               <div className="flex gap-2">
                 <button
                   className="btn-primary !w-[171px]"
@@ -214,7 +220,7 @@ const HowItWorks = () => {
                   Get Started
                 </button>
                 <button
-                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
+                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px] z-10"
                   onClick={() => {
                     open(
                       "https://youtube.com/playlist?list=PL_Rbth8fvDDxbh5l-5sNCDRcNpSNSn1GZ&si=RcMGWZoLrAxwhhJK",
@@ -312,9 +318,9 @@ const HowItWorks = () => {
           </div>
 
           <div className="todo-item !mt-4">
-            <span className="text-black text-sm leading-10">
+            {/* <span className="text-black text-sm leading-10">
               Wanna get more reach?
-            </span>
+            </span> */}
             <div className="flex flex-col gap-[14px]">
               <h4 className="!leading-snug mb-5">
                 Withdraw your funds securely

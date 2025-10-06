@@ -13,14 +13,14 @@ const LearnDropdown: RFC = ({ children }) => {
     <DropdownMenu>
       <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
       <DropdownMenuContent>
-        {learnItems.map((useCase, index) => {
-          const isExternal = useCase.href.startsWith("http")
+        {learnItems.map((item, index) => {
+          const isExternal = item.href.startsWith("http")
           const Anchor = isExternal ? "a" : Link
           const props = { ...(isExternal && { target: "_blank" }) }
 
           return (
-            <Anchor key={index} href={useCase.href} {...props}>
-              <DropdownMenuItem>{useCase.label}</DropdownMenuItem>
+            <Anchor key={index} href={item.href} {...props}>
+              <DropdownMenuItem>{item.label}</DropdownMenuItem>
             </Anchor>
           )
         })}

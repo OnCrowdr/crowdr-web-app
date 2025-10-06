@@ -19,7 +19,7 @@ const RunningCampaigns = () => {
   const { ref: titleElementRef, width: titleElementWidth } = useElementSize()
   const carouselOffset = Math.abs((windowWidth - titleElementWidth) / 2)
   const queryKey = useQueryKey()
-  const params: IGetCampaignsParams = { perPage: 10, sortBy: 'donatedAmount' } as any
+  const params: IGetCampaignsParams = { perPage: 10, sortBy: 'milestonePercentage' } as any
 
   const campaignsQuery = useQuery({
     queryKey: queryKey(query.keys.CAMPAIGNS, params),

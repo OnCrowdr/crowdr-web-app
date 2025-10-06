@@ -1,14 +1,15 @@
-import { PropsWithChildren } from "react"
-import type { Metadata } from "next"
-import { Public_Sans } from "next/font/google"
-import localFont from "next/font/local"
-import "@/styles/globals.css"
-import "@/styles/button.css"
-import "react-loading-skeleton/dist/skeleton.css"
+import { PropsWithChildren } from "react";
+import type { Metadata } from "next";
+import { Public_Sans } from "next/font/google";
+import localFont from "next/font/local";
+import "@/styles/globals.css";
+import "@/styles/button.css";
+import "react-loading-skeleton/dist/skeleton.css";
 
-import App from "./app"
-import GoogleAnalyticsSetup from "./_components/GoogleAnalyticsSetup"
-import ElfSight from "./_components/ElfSight"
+import App from "./app";
+import GoogleAnalyticsSetup from "./_components/GoogleAnalyticsSetup";
+import ElfSight from "./_components/ElfSight";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
@@ -21,20 +22,21 @@ export default function RootLayout({ children }: PropsWithChildren) {
       </head>
 
       <GoogleAnalyticsSetup />
-      <ElfSight.Script />
+      {/* <ElfSight.Script /> */}
 
       <body className={`${satoshi.variable} ${inter.className}`}>
-        <App children={children} />
-        <ElfSight.Body />
+        <App>{children}</App>
+        {/* <ElfSight.Body /> */}
+        <WhatsAppWidget />
       </body>
     </html>
-  )
+  );
 }
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Crowdr",
-    default: "Crowdr - Crowdfund in Nigeria",
+    default: "Crowdr - Crowdfund in Nigeria"
   },
 
   applicationName: "Crowdr",
@@ -52,7 +54,7 @@ export const metadata: Metadata = {
     "Nigeria",
     "Africa",
     "Crowdfunding in Nigeria",
-    "Crowdfunding in Africa",
+    "Crowdfunding in Africa"
   ],
 
   description:
@@ -69,9 +71,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: "https://res.cloudinary.com/dqx8jfcj0/image/upload/v1713100843/crowdr_wordmark_png-GREEN_weutm8.png",
-        alt: "Crowdr logo",
-      },
-    ],
+        alt: "Crowdr logo"
+      }
+    ]
   },
 
   twitter: {
@@ -81,35 +83,35 @@ export const metadata: Metadata = {
     images:
       "https://res.cloudinary.com/dqx8jfcj0/image/upload/v1713100843/crowdr_wordmark_png-GREEN_weutm8.png",
     description:
-      "Crowdr is the Gofundme alternative makes fundraising easy for individuals, NGOs, and businesses in Nigeria. Start your crowdfunding campaign today.",
+      "Crowdr is the Gofundme alternative makes fundraising easy for individuals, NGOs, and businesses in Nigeria. Start your crowdfunding campaign today."
   },
 
   appleWebApp: {
     statusBarStyle: "default",
     capable: true,
-    title: "Crowdr - Crowdfund in Nigeria",
+    title: "Crowdr - Crowdfund in Nigeria"
   },
 
   verification: {
-    google: "9Yb3G9DGqrNGVcr7mLbrpoIRZD6Kj4YHixwQileL0EI",
-  },
-}
+    google: "9Yb3G9DGqrNGVcr7mLbrpoIRZD6Kj4YHixwQileL0EI"
+  }
+};
 
 const satoshi = localFont({
   src: [
     {
       path: "../public/fonts/Satoshi-Regular.otf",
-      weight: "400",
+      weight: "400"
     },
     {
       path: "../public/fonts/Satoshi-Medium.otf",
-      weight: "500",
+      weight: "500"
     },
     {
       path: "../public/fonts/Satoshi-Bold.otf",
-      weight: "700",
-    },
+      weight: "700"
+    }
   ],
-  variable: "--font-satoshi",
-})
-const inter = Public_Sans({ subsets: ["latin"] })
+  variable: "--font-satoshi"
+});
+const inter = Public_Sans({ subsets: ["latin"] });

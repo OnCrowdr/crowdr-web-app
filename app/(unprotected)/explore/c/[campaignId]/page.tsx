@@ -107,6 +107,22 @@ export default function DonateOrVolunteer(props: {
     // agreedToTerms: false,
   })
 
+  const [donationErrors, setDonationErrors] = useState({
+    amount: "",
+    fullName: "",
+    email: "",
+  })
+
+  const [volunteerErrors, setVolunteerErrors] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    gender: "",
+    ageRange: "",
+    address: "",
+    about: "",
+  })
+
   // Memoized values
   const campaignImages = useMemo(() => {
     return (
@@ -172,8 +188,16 @@ export default function DonateOrVolunteer(props: {
         ...prev,
         [name]: value,
       }))
+
+      // Clear error for this field when user starts typing
+      if (donationErrors[name as keyof typeof donationErrors]) {
+        setDonationErrors((prev) => ({
+          ...prev,
+          [name]: "",
+        }))
+      }
     },
-    []
+    [donationErrors]
   )
 
   const updateVolunteerInputs = useCallback(
@@ -183,8 +207,16 @@ export default function DonateOrVolunteer(props: {
         ...prev,
         [name]: value,
       }))
+
+      // Clear error for this field when user starts typing
+      if (volunteerErrors[name as keyof typeof volunteerErrors]) {
+        setVolunteerErrors((prev) => ({
+          ...prev,
+          [name]: "",
+        }))
+      }
     },
-    []
+    [volunteerErrors]
   )
 
   const updateCheckbox = useCallback(
@@ -197,17 +229,23 @@ export default function DonateOrVolunteer(props: {
     []
   )
 
-  const onAmountSelect = useCallback((amount: string) => {
-    setSelectedAmount(amount)
-    setDonationInputs((prev) => ({
-      ...prev,
-      amount: amount,
-    }))
-  }, [])
-
-  const areAllInputsFilled = useCallback((inputs: Record<string, any>) => {
-    return Object.values(inputs).every((value) => value !== "")
-  }, [])
+  const onAmountSelect = useCallback(
+    (amount: string) => {
+      setSelectedAmount(amount)
+      setDonationInputs((prev) => ({
+        ...prev,
+        amount: amount,
+      }))
+      // Clear error when amount is selected
+      if (donationErrors.amount) {
+        setDonationErrors((prev) => ({
+          ...prev,
+          amount: "",
+        }))
+      }
+    },
+    [donationErrors.amount]
+  )
 
   // Share modal handlers
   const closeShareModal = useCallback(() => {
@@ -289,9 +327,120 @@ export default function DonateOrVolunteer(props: {
     }
   }, [])
 
+  // Validation functions
+  const validateDonationInputs = useCallback(() => {
+    const errors = {
+      amount: "",
+      fullName: "",
+      email: "",
+    }
+
+    if (!donationInputs.amount || parseFloat(donationInputs.amount) <= 0) {
+      errors.amount = "Donation amount is required"
+    }
+
+    if (!donationInputs.fullName.trim()) {
+      errors.fullName = "Full name is required"
+    }
+
+    if (!donationInputs.email.trim()) {
+      errors.email = "Email address is required"
+    }
+
+    setDonationErrors(errors)
+
+    // Scroll to first error field
+    const isValid = !errors.amount && !errors.fullName && !errors.email
+    if (!isValid) {
+      const firstErrorField = errors.amount
+        ? "amount"
+        : errors.fullName
+        ? "fullName"
+        : "email"
+      const element = document.getElementById(firstErrorField)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+        element.focus()
+      }
+    }
+
+    return isValid
+  }, [donationInputs])
+
+  const validateVolunteerInputs = useCallback(() => {
+    const errors = {
+      fullName: "",
+      email: "",
+      phoneNumber: "",
+      gender: "",
+      ageRange: "",
+      address: "",
+      about: "",
+    }
+
+    if (!volunteerInputs.fullName.trim()) {
+      errors.fullName = "Full name is required"
+    }
+
+    if (!volunteerInputs.email.trim()) {
+      errors.email = "Email address is required"
+    }
+
+    if (!volunteerInputs.phoneNumber.trim()) {
+      errors.phoneNumber = "Phone number is required"
+    }
+
+    if (!volunteerInputs.gender) {
+      errors.gender = "Gender is required"
+    }
+
+    if (!volunteerInputs.ageRange) {
+      errors.ageRange = "Age range is required"
+    }
+
+    if (!volunteerInputs.address.trim()) {
+      errors.address = "Address is required"
+    }
+
+    if (!volunteerInputs.about.trim()) {
+      errors.about = "This field is required"
+    }
+
+    setVolunteerErrors(errors)
+
+    // Scroll to first error field
+    const isValid = Object.values(errors).every((error) => !error)
+    if (!isValid) {
+      const firstErrorField = errors.fullName
+        ? "fullName"
+        : errors.email
+        ? "email"
+        : errors.phoneNumber
+        ? "phoneNumber"
+        : errors.gender
+        ? "gender"
+        : errors.ageRange
+        ? "ageRange"
+        : errors.address
+        ? "address"
+        : "about"
+      const element = document.getElementById(firstErrorField)
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+        element.focus()
+      }
+    }
+
+    return isValid
+  }, [volunteerInputs])
+
   // API calls
   const donate = useCallback(
     async (paymentMethod: "card" | "apple_pay") => {
+      if (!validateDonationInputs()) {
+        return
+      }
+
       setLoading(true)
       const endpoint = "/payments/initiate"
 
@@ -342,10 +491,21 @@ export default function DonateOrVolunteer(props: {
         setLoading(false)
       }
     },
-    [donationInputs, checkboxValues, currency, params.campaignId, toast]
+    [
+      donationInputs,
+      checkboxValues,
+      currency,
+      params.campaignId,
+      toast,
+      validateDonationInputs,
+    ]
   )
 
   const volunteer = useCallback(async () => {
+    if (!validateVolunteerInputs()) {
+      return
+    }
+
     setLoading(true)
     const endpoint = `/campaigns/${params.campaignId}/volunteer`
 
@@ -385,7 +545,13 @@ export default function DonateOrVolunteer(props: {
     } finally {
       setLoading(false)
     }
-  }, [volunteerInputs, params.campaignId, toast, refetchCampaign])
+  }, [
+    volunteerInputs,
+    params.campaignId,
+    toast,
+    refetchCampaign,
+    validateVolunteerInputs,
+  ])
 
   // Effects
   useEffect(() => {
@@ -624,6 +790,7 @@ export default function DonateOrVolunteer(props: {
                     id="fullName"
                     value={volunteerInputs.fullName}
                     onChange={updateVolunteerInputs}
+                    error={volunteerErrors.fullName}
                   />
                   <Input
                     label="Email address"
@@ -632,6 +799,7 @@ export default function DonateOrVolunteer(props: {
                     id="email"
                     value={volunteerInputs.email}
                     onChange={updateVolunteerInputs}
+                    error={volunteerErrors.email}
                   />
 
                   <PhoneNumberInput
@@ -645,9 +813,16 @@ export default function DonateOrVolunteer(props: {
                         ...prev,
                         phoneNumber: value,
                       }))
+                      // Clear error when user starts typing
+                      if (volunteerErrors.phoneNumber) {
+                        setVolunteerErrors((prev) => ({
+                          ...prev,
+                          phoneNumber: "",
+                        }))
+                      }
                     }}
                     required={true}
-                    error=""
+                    error={volunteerErrors.phoneNumber}
                   />
 
                   <Select
@@ -657,6 +832,7 @@ export default function DonateOrVolunteer(props: {
                     options={genderOptions}
                     value={volunteerInputs.gender}
                     onChange={updateVolunteerInputs}
+                    error={volunteerErrors.gender}
                   />
 
                   <Select
@@ -666,6 +842,7 @@ export default function DonateOrVolunteer(props: {
                     options={ageRange}
                     value={volunteerInputs.ageRange}
                     onChange={updateVolunteerInputs}
+                    error={volunteerErrors.ageRange}
                   />
 
                   <Input
@@ -675,9 +852,10 @@ export default function DonateOrVolunteer(props: {
                     id="address"
                     value={volunteerInputs.address}
                     onChange={updateVolunteerInputs}
+                    error={volunteerErrors.address}
                   />
 
-                  <div className="flex flex-col items-start w-full">
+                  <div className="flex flex-col items-start w-full mb-[14px]">
                     <label
                       htmlFor="about"
                       className="text-[14px] text-[#344054] mb-[6px]"
@@ -687,18 +865,26 @@ export default function DonateOrVolunteer(props: {
                     </label>
                     <textarea
                       id="about"
-                      className="w-full text-[15px] rounded-lg border border-[#D0D5DD] py-[10px] px-[14px]"
+                      className={`w-full text-[15px] rounded-lg border py-[10px] px-[14px] ${
+                        volunteerErrors.about
+                          ? "border-red-500"
+                          : "border-[#D0D5DD]"
+                      }`}
                       value={volunteerInputs.about}
                       onChange={updateVolunteerInputs}
                       name="about"
                     />
+                    {volunteerErrors.about && (
+                      <span className="text-[13px] text-red-500 mt-[6px]">
+                        {volunteerErrors.about}
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <Button
                   text="Apply"
                   className="w-full mt-4 !justify-center"
-                  disabled={!areAllInputsFilled(volunteerInputs)}
                   loading={loading}
                   onClick={volunteer}
                 />
@@ -783,22 +969,25 @@ export default function DonateOrVolunteer(props: {
                         currency?.toLowerCase()
                       )
                     }
+                    error={donationErrors.amount}
                   />
                   <Input
-                    label="Full name"
+                    label="Full name *"
                     placeholder="John doe"
                     name="fullName"
                     id="fullName"
                     onChange={updateDonationInputs}
                     value={donationInputs.fullName}
+                    error={donationErrors.fullName}
                   />
                   <Input
-                    label="Email address"
+                    label="Email address *"
                     placeholder="example@crowdr.com"
                     name="email"
                     id="email"
                     onChange={updateDonationInputs}
                     value={donationInputs.email}
+                    error={donationErrors.email}
                   />
 
                   <div className="flex flex-col mt-[30px]">
@@ -853,10 +1042,6 @@ export default function DonateOrVolunteer(props: {
                     className="w-full !justify-center"
                     onClick={() => donate("card")}
                     loading={loading}
-                    disabled={
-                      !areAllInputsFilled(donationInputs) 
-                      // || !checkboxValues.agreedToTerms
-                    }
                   />
 
                   {paystackLoaded && applePaySupported && (
@@ -866,7 +1051,7 @@ export default function DonateOrVolunteer(props: {
                         Mixpanel.track("Apple Pay Donation Clicked")
                       }}
                       className="apple-pay-button"
-                      disabled={!areAllInputsFilled(donationInputs) || loading}
+                      disabled={loading}
                     >
                       <span className="apple-pay-text">Donate with</span>
                       <FaApplePay

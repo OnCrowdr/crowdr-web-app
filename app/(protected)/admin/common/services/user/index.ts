@@ -1,6 +1,7 @@
-import axios from "axios"
 import { IGetUsersParams, IGetUsersResponse } from "./models/GetUsers"
 import api from "@/api"
+import makeRequest from "@/utils/makeRequest"
+import { extractErrorMessage } from "@/utils/extractErrorMessage"
 
 const getUsers = async (params: Partial<IGetUsersParams> = {}) => {
   const url = `/admin/users`
@@ -20,4 +21,42 @@ const getUsers = async (params: Partial<IGetUsersParams> = {}) => {
   }
 }
 
-export default { getUsers }
+const deleteUser = async ({
+  userId,
+  adminOtp,
+  authToken,
+  reason = "",
+  hardDelete = false,
+}: {
+  userId: string
+  adminOtp: string
+  authToken: string
+  reason?: string
+  hardDelete?: boolean
+}) => {
+  const endpoint = `/admin/users/${userId}`
+  const headers = {
+    "x-auth-token": authToken,
+    "x-admin-otp": adminOtp,
+  }
+
+  const body = {
+    reason,
+    hardDelete
+  }
+
+  try {
+    const { data } = await makeRequest<any>(endpoint, {
+      headers,
+      method: "DELETE",
+      payload: JSON.stringify(body),
+    })
+
+    return data
+  } catch (error) {
+    const message = extractErrorMessage(error)
+    throw new Error(message)
+  }
+}
+
+export default { getUsers, deleteUser }

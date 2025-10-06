@@ -50,7 +50,7 @@ const DateInput: RFC<DateInputProps> = ({
 
   if (config) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    var { setValue, getValues, setError } = useFormContext()
+    var { setValue, getValues, setError, clearErrors } = useFormContext()
     var dateRange = getValues(config.name)
   } else {
     var dateRange = value as any
@@ -75,13 +75,17 @@ const DateInput: RFC<DateInputProps> = ({
           if (config) {
             if (dateStr) {
               if (mode === "range" && selectedDates.length < 2) {
-                setValue(config.name, null)
-                setError(config.name, { type: "required" })
+                setValue(config.name, null, { shouldValidate: true })
+                setError(config.name, {
+                  type: "validate",
+                  message: "Please select both start and end dates"
+                })
               } else {
-                setValue(config.name, selectedDates)
+                setValue(config.name, selectedDates, { shouldValidate: true })
+                clearErrors(config.name)
               }
             } else {
-              setValue(config.name, null)
+              setValue(config.name, null, { shouldValidate: true })
               setError(config.name, { type: "required" })
             }
             config.onChange({ target: inputRef.current })
