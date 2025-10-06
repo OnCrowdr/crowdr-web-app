@@ -13,7 +13,7 @@ const LearnDropdown: RFC = ({ children }) => {
     <DropdownMenu>
       <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
       <DropdownMenuContent>
-        {useCases.map((useCase, index) => {
+        {learnItems.map((useCase, index) => {
           const isExternal = useCase.href.startsWith("http")
           const Anchor = isExternal ? "a" : Link
           const props = { ...(isExternal && { target: "_blank" }) }
@@ -31,7 +31,7 @@ const LearnDropdown: RFC = ({ children }) => {
 
 export default LearnDropdown
 
-export const useCases = [
+export const learnItems = [
   {
     label: "Blog",
     href: "https://blog.oncrowdr.com",

@@ -10,6 +10,7 @@ import { cn } from "@/utils/style"
 import { useAuth } from "@/contexts/AppProvider"
 import MenuItem from "./MenuItem"
 import { useCases } from "./UseCasesDropdown"
+import { learnItems } from "./LearnDropdown"
 
 type Props = {
   openModal?: () => void
@@ -100,6 +101,10 @@ const items = [
   {
     label: "Pricing",
     href: "/pricing",
+  },
+  {
+    label: "Learn",
+    children: learnItems,
   },
   {
     label: "Blog",

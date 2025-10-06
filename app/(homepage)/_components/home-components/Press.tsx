@@ -20,39 +20,41 @@ const Press = () => {
     >
       <div className="absolute inset-0 bg-[#060606] opacity-90" />
 
-      <div className="absolute inset-0 flex flex-col justify-center gap-8 md:gap-10 max-w-[1240px] mx-auto">
-        <p
-          ref={titleElementRef}
-          className="font-bold text-white text-center text-3xl md:text-[40px] px-[30px]"
-        >
-          As seen in...
-        </p>
+      <div className="absolute inset-0  max-w-[1240px] md:mx-auto">
+        <div className="flex flex-col justify-center gap-8 md:gap-10">
+          <p
+            ref={titleElementRef}
+            className="font-bold text-white text-center text-3xl md:text-[40px] px-[30px]"
+          >
+            As seen in...
+          </p>
 
-        <Marquee>
-          <div className="flex gap-20 mr-20">
-            <Image
-              src={BusinessDayLogo}
-              alt="Business Day Logo"
-              className="w-[160px] md:w-[350px] object-contain grayscale"
-              width={390}
-              height={72}
-            />
-            <Image
-              src={TechCabalLogo}
-              alt="TechCabal Logo"
-              className="w-[160px] md:w-[270px] object-contain grayscale"
-              width={310}
-              height={69}
-            />
-            <Image
-              src={ThisDayLogo}
-              alt="This Day Logo"
-              className="w-[160px] md:w-[320px] object-contain grayscale"
-              width={310}
-              height={69}
-            />
-          </div>
-        </Marquee>
+          <Marquee duplicate={false}>
+            <div className="flex flex-nowrap gap-20 mr-20">
+              <Image
+                src={BusinessDayLogo}
+                alt="Business Day Logo"
+                className="w-[160px] md:w-[350px] object-contain grayscale"
+                width={390}
+                height={72}
+              />
+              <Image
+                src={TechCabalLogo}
+                alt="TechCabal Logo"
+                className="w-[160px] md:w-[270px] object-contain grayscale"
+                width={310}
+                height={69}
+              />
+              <Image
+                src={ThisDayLogo}
+                alt="This Day Logo"
+                className="w-[160px] md:w-[320px] object-contain grayscale"
+                width={310}
+                height={69}
+              />
+            </div>
+          </Marquee>
+        </div>
 
         {/* <div className="overflow-x-auto max-w-full scrollbar scrollbar-none md:mx-auto">
           <div className="flex items-center justify-center md:items-start md:justify-center">
