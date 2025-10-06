@@ -106,4 +106,9 @@ const items = [
     label: "Learn",
     children: learnItems,
   },
+  {
+    label: "Blog",
+    href: "https://blog.oncrowdr.com",
+    external: "_blank" as const,
+  },
 ]
