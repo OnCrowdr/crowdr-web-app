@@ -209,17 +209,17 @@ const HowItWorks = () => {
                 >
                   Get started
                 </button>
-                  <button
-                    className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px] z-10"
-                    onClick={() => {
-                      open(
-                        "https://youtu.be/JHJB81JAMLM?si=oOUFCsXYTcWsmS17",
-                        "_blank"
-                      )
-                    }}
-                  >
-                    Watch Demo
-                  </button>
+                <button
+                  className="btn-secondary text-[#00B964] rounded-full hover:bg-[#00b96312] transition-colors border-[1.6px] border-[#00B964] !w-[171px]"
+                  onClick={() => {
+                    open(
+                      "https://youtube.com/playlist?list=PL_Rbth8fvDDxbh5l-5sNCDRcNpSNSn1GZ&si=RcMGWZoLrAxwhhJK",
+                      "_blank"
+                    )
+                  }}
+                >
+                  Watch Demo
+                </button>
               </div>
             </div>
             <Image
