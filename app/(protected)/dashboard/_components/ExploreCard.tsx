@@ -49,8 +49,9 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     user,
     showCtaButtons = true,
     limitTitleToOneLine = true,
+    isEnded,
     className,
-  } = props
+  } = props;
 
   const router = useRouter();
 
@@ -82,7 +83,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     skillNeeded: aggregatedSkills ?? "",
     ageRange: volunteer?.ageRange ?? "",
     genderPreference: volunteer?.genderPreference ?? "",
-    volunteerCommitment: volunteer?.requiredCommitment ?? ""
+    volunteerCommitment: volunteer?.requiredCommitment ?? "",
   };
 
   const openModal = () => {
@@ -114,7 +115,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
     if (subheader.length <= CHAR_LIMIT) {
       return {
         shortText: subheader,
-        fullText: subheader
+        fullText: subheader,
       };
     }
 
@@ -153,13 +154,13 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
 
       return {
         shortText: shortText || subheader.slice(0, CHAR_LIMIT) + "...",
-        fullText: fullText.trim() || subheader
+        fullText: fullText.trim() || subheader,
       };
     } else {
       // No proper sentences found, just truncate by characters
       return {
         shortText: subheader.slice(0, CHAR_LIMIT) + "...",
-        fullText: subheader
+        fullText: subheader,
       };
     }
   }, [subheader]);
@@ -207,7 +208,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
           onMouseEnter={() => setHover(true)}
         />
       ),
-      afterChange: (current: number) => setCurrentSlide(current)
+      afterChange: (current: number) => setCurrentSlide(current),
     };
   };
 
@@ -221,11 +222,13 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
         if (props.limitTitleToOneLine && !!routeTo) {
           router.push(routeTo);
         }
-      }}>
-      <div className="flex items-center justify-between ">
+      }}
+    >
+      <div className="flex items-center justify-between">
         <Link
           href={`/profile/${user?._id ?? userId}`}
-          className="group flex items-center">
+          className="group flex items-center"
+        >
           {avatar ? (
             <Image
               src={avatar}
@@ -249,7 +252,12 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
             </h4>
           </div>
         </Link>
-        {/* <Image src={Menu} alt='menu' /> */}
+
+        {isEnded && (
+          <div className="flex items-center rounded-full text-sm text-[#E61D26] bg-[#FFDDDA] h-9 px-3">
+            Ended
+          </div>
+        )}
       </div>
 
       <div className={cn("mt-4 relative", !showCtaButtons && "mb-6")}>
@@ -267,8 +275,9 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                         <div
                           className="relative p-12"
                           style={{
-                            background: "rgba(76, 76, 76, 0)"
-                          }}>
+                            background: "rgba(76, 76, 76, 0)",
+                          }}
+                        >
                           <IoMdClose
                             size={30}
                             className="absolute top-0 right-0 my-4 mx-4 bg-white p-1 rounded-full z-10 cursor-pointer"
@@ -284,7 +293,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                               objectFit: "unset",
                               height: "60vh",
                               minWidth: "400px",
-                              width: "100%"
+                              width: "100%",
                             }}
                           />
                         </div>
@@ -299,7 +308,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                         style={{
                           width: "100%",
                           maxWidth: "100%",
-                          objectFit: "cover"
+                          objectFit: "cover",
                         }}
                         onMouseEnter={() => setHover(true)}
                         onMouseLeave={() => setHover(false)}
@@ -317,8 +326,9 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                   <div
                     className="relative p-12"
                     style={{
-                      background: "rgba(76, 76, 76, 0)"
-                    }}>
+                      background: "rgba(76, 76, 76, 0)",
+                    }}
+                  >
                     <IoMdClose
                       size={30}
                       className="absolute top-0 right-0 my-4 mx-4 bg-white p-1 rounded-full z-10 cursor-pointer"
@@ -334,7 +344,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                         objectFit: "unset",
                         height: "60vh",
                         minWidth: "400px",
-                        width: "100%"
+                        width: "100%",
                       }}
                     />
                   </div>
@@ -347,7 +357,7 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
                   height={400}
                   style={{
                     width: "100%",
-                    objectFit: "cover"
+                    objectFit: "cover",
                   }}
                   onClick={() => {
                     openModal();
@@ -358,13 +368,21 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
           </div>
         )}
         <div className="my-5">
-          <h3 className={cn("font-semibold text-[18px]", limitTitleToOneLine && "line-clamp-1")}>{header}</h3>
+          <h3
+            className={cn(
+              "font-semibold text-[18px]",
+              limitTitleToOneLine && "line-clamp-1"
+            )}
+          >
+            {header}
+          </h3>
           <p className="mt-2 break-words text-sm whitespace-pre-line">
             {isCollapsed ? formattedText.shortText : formattedText.fullText}
             {formattedText.shortText !== formattedText.fullText && (
               <span
                 onClick={toggleReadMore}
-                className="text-[#00B964] cursor-pointer pl-1 inline-block mt-2">
+                className="text-[#00B964] cursor-pointer pl-1 inline-block mt-2"
+              >
                 {isCollapsed ? "See more" : "See less"}
               </span>
             )}
@@ -374,7 +392,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
               {Object.entries(additionalDetails).map(([key, value], index) => (
                 <div
                   key={index}
-                  className="flex flex-row items-center justify-start gap-2 mb-2">
+                  className="flex flex-row items-center justify-start gap-2 mb-2"
+                >
                   <h4 className="text-sm">{camelCaseToSeparated(key)}:</h4>
                   <h4 className="text-[#667085] text-sm capitalize">{value}</h4>
                 </div>
@@ -421,8 +440,9 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
         <div
           className="relative p-12"
           style={{
-            background: "rgba(76, 76, 76, 0)"
-          }}>
+            background: "rgba(76, 76, 76, 0)",
+          }}
+        >
           <ShareCampaign
             onClose={closeShareModal}
             campaignId={id}
@@ -434,7 +454,31 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
       </OldModal>
 
       {showCtaButtons &&
-        (!!routeTo ? (
+        (isEnded ? (
+          <div className="flex flex-col w-full gap-3 mt-4">
+            <Button
+              text="Explore other campaigns"
+              className="!justify-center"
+              href="/explore"
+            />
+            {user?.email && (
+              <Button
+                text="Contact organiser"
+                bgColor="#FFF"
+                textColor="#344054"
+                outlineColor="#D0D5DD"
+                className="!justify-center"
+                onClick={() => open(`mailto:${user.email}`)}
+              />
+            )}
+            <a
+              className="text-[#00B964] text-[13px] underline mt-4 text-center cursor-pointer"
+              href="mailto:support@oncrowdr.com"
+            >
+              Report Organiser
+            </a>
+          </div>
+        ) : !!routeTo ? (
           <div className="flex flex-col w-full gap-3 mt-4">
             <Button
               text={
@@ -474,7 +518,8 @@ const ExploreCard: RFC<ExploreCardProps> = (props) => {
             />
             <a
               className="text-[#00B964] text-[13px] underline mt-4 text-center cursor-pointer"
-              href="mailto:support@oncrowdr.com">
+              href="mailto:support@oncrowdr.com"
+            >
               Report Organiser
             </a>
           </div>
@@ -519,5 +564,6 @@ type ExploreCardProps = {
   showCtaButtons?: boolean;
   className?: string;
   limitTitleToOneLine?: boolean;
+  isEnded?: boolean;
 };
 type User = IGetCampaignsResponse["data"]["campaigns"][number]["user"];

@@ -51,6 +51,7 @@ export type Campaign = {
     startOfFundraise: string;
     endOfFundraise: string;
   };
+  isCompleted: boolean
   campaignDonors: CampaignDonors[];
   volunteer: {
     skillsNeeded: string[];
