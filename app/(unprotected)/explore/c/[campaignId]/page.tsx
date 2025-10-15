@@ -512,7 +512,10 @@ export default function DonateOrVolunteer(props: {
     try {
       const { data } = await makeRequest(endpoint, {
         method: "POST",
-        payload: JSON.stringify(volunteerInputs),
+        payload: JSON.stringify({
+          ...volunteerInputs,
+          campaignId: params.campaignId,
+        }),
       })
 
       toast({ title: "Success!", body: data.message, type: "success" })
